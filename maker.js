@@ -22,7 +22,8 @@ export async function instantiateMaker(network) {
         }
       ],
       validatorPlugin
-    ]
+    ],
+    gasLimit: '100000'
   };
 
   maker = await Maker.create('browser', config);

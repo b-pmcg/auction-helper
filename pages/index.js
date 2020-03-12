@@ -24,6 +24,23 @@ const Index = () => {
     }
   }
 
+  async function callTend() {
+    try {
+      const t = await maker.service("validator").tend();
+      console.log("tend", t);
+    } catch (err) {
+      window.alert(err);
+    }
+  }
+  async function callBids() {
+    try {
+      const t = await maker.service("validator").getBid();
+      console.log("bids", t);
+    } catch (err) {
+      window.alert(err);
+    }
+  }
+
   const [tendAmount, setTendAmount] = useState(0);
   const [joinAmount, setJoinAmount] = useState("");
 
@@ -89,17 +106,17 @@ const Index = () => {
           <p>Insert amount in wei</p>
           <br />
           <button onClick={() => joinDaiToAdapter()}>Send To Adapter</button>
-
-          <Input
-            type="number"
-            min="0"
-            value={tendAmount}
-            onChange={setTendAmount}
-            // placeholder={`0.00 ${symbol}`}
-            // failureMessage={amountErrors}
-            data-testid="deposit-input"
-          />
-          <button onClick={() => null}>Call Tend</button>
+          {/* <Input
+          type="number"
+          min="0"
+          value={tendAmount}
+          onChange={(e) => setTendAmount(e)}
+          // placeholder={`0.00 ${symbol}`}
+          // failureMessage={amountErrors}
+          data-testid="deposit-input"
+        /> */}
+          <button onClick={callTend}>Call Tend</button>
+          <button onClick={callBids}>Call Bids</button>
         </div>
       )}
     </div>
