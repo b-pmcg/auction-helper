@@ -1,5 +1,5 @@
 import { PublicService } from '@makerdao/services-core';
-import BigNumber from "bignumber.js";
+import BigNumber from 'bignumber.js';
 
 export default class ValidatorService extends PublicService {
   constructor(name = 'validator') {
@@ -74,18 +74,18 @@ export default class ValidatorService extends PublicService {
   // }
 
   async getAllAuctions() {
-    // const query = `{activePolls {
-    //   nodes {
-    //       creator
-    //       pollId
-    //       blockCreated
-    //       startDate
-    //       endDate
-    //       multiHash
-    //       url
-    //     }
-    //   }
-    // }`;
+    const query = `{activePolls {
+      nodes {
+          creator
+          pollId
+          blockCreated
+          startDate
+          endDate
+          multiHash
+          url
+        }
+      }
+    }`;
 
     const response = await this.getQueryResponse(this.serverUrl, query);
     console.log('GraphQL response', response);
@@ -103,15 +103,15 @@ export default class ValidatorService extends PublicService {
 
   async getLots(id) {
     // const bidId = 2590;
-    const bids = await this._flipperContract().bids(id)
+    const bids = await this._flipperContract().bids(id);
     console.log('bids', bids);
-    const lotSize = bids[0]
+    const lotSize = bids[0];
     return lotSize;
     // console.log('bid in service', bid);
   }
   //tend(uint id, uint lot, uint bid)
   async tend(id, size, amount) {
-    function toRad(value) {
+    function toRad(amount) {
       return BigNumber(amount.toString()).shiftedBy(45);
     }
     // console.log('id in tend', id);
@@ -121,15 +121,19 @@ export default class ValidatorService extends PublicService {
     const lotSizeInWei = this.get('web3')._web3.utils.toWei(size.toString());
     const bidAmountRad = toRad(amount);
 
-    console.log('id', id)
-    console.log('lotSizeInWei', lotSizeInWei)
-    console.log('bidAmountRad', bidAmountRad.toFixed())
+    console.log('id', id);
+    console.log('lotSizeInWei', lotSizeInWei);
+    console.log('bidAmountRad', bidAmountRad.toFixed());
 
     //convert amount to 10^45;
 
     // const collateralAmount = '50000000000000000000';
     // const highestBid = '1000000000000000000000000000000000000000000000';
-    const tend = await this._flipperContract().tend(id, lotSizeInWei, bidAmountRad.toFixed());
+    const tend = await this._flipperContract().tend(
+      id,
+      lotSizeInWei,
+      bidAmountRad.toFixed()
+    );
     console.log('tend in service', tend);
   }
 
