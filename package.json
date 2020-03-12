@@ -1,5 +1,5 @@
 {
-  "name": "nextjs-daijs-example",
+  "name": "auction-helper",
   "license": "MIT",
   "version": "1.0.0",
   "scripts": {
@@ -9,7 +9,7 @@
     "build-ipfs": "IPFS=true next build",
     "start": "next start",
     "export": "next export",
-    "ipfs": "ipfs add -r out"
+    "deploy": "now && now alias"
   },
   "dependencies": {
     "@makerdao/currency": "^0.9.6",

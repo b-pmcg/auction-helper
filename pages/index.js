@@ -7,6 +7,7 @@ import BigNumber from "bignumber.js";
 const Index = () => {
   const { maker } = useMaker();
   const [daiBalance, setDaiBalance] = useState(null);
+  const [joinBalance, setJoinBalance] = useState(null);
   const [web3Connected, setWeb3Connected] = useState(false);
 
   async function connectBrowserWallet() {
@@ -17,7 +18,13 @@ const Index = () => {
         const daiBalance = await maker
           .getToken("MDAI")
           .balanceOf(maker.currentAddress());
+        const joinBalance = await maker
+          .getToken("MDAI")
+          .balanceOf(maker
+            .service("smartContract")
+            .getContract("MCD_JOIN_DAI").address);
         setDaiBalance(daiBalance);
+        setJoinBalance(joinBalance);
       }
     } catch (err) {
       window.alert(err);
@@ -66,10 +73,12 @@ const Index = () => {
       .service("smartContract")
       .getContract("MCD_JOIN_DAI");
 
+      const joinAmountInDai = maker.service("web3")._web3.utils.toWei(joinAmount);
+
     await maker.getToken("MDAI").approveUnlimited(DaiJoinAdapter.address);
     await DaiJoinAdapter.join(
       maker.currentAddress(),
-      BigNumber(joinAmount).toString()
+      BigNumber(joinAmountInDai).toString()
     );
   }
   return (
@@ -97,26 +106,32 @@ const Index = () => {
               <p>Loading your DAI balance...</p>
             )}
           </div>
+          <div>
+            {joinBalance ? (
+              <p>{joinBalance.toNumber()} DAI in the adapter</p>
+            ) : (
+              <p>Loading your adapter balance...</p>
+            )}
+          </div>
           <Input
           type="number"
           min="0"
           onChange={handleAuctionIdInputChange}
-          data-testid="deposit-input"//auctionid
+          placeholder={"Auction ID"}
         />
           <Input
           type="number"
           min="0"
           onChange={handleLotSizeInputChange}
-          data-testid="deposit-input" //lotSize
+          placeholder={"Lot Size"}
         />
           <Input
           type="number"
           min="0"
           onChange={handleBidAmountInputChange}
-          data-testid="deposit-input" //bidAmount
+          placeholder={"Bid Amount"}
         />
           <button onClick={() => callTend(auctionId, lotSize, bidAmount)}>Call Tend</button>
-          {/* <button onClick={callBids}>Call Bids</button> */}
           <Input
             type="number"
             min="0"
