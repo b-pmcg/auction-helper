@@ -87,9 +87,9 @@ const Index = () => {
   return (
     <div className="wrap">
       <Head>
-        <title>Next.js Dai.js Example</title>
+        <title>Auction Helper (Beta)</title>
       </Head>
-      <h1>Next.js Dai.js Example</h1>
+      <h1>Auction Helper (Beta)</h1>
       {!maker ? (
         <div>
           <h3>Loading...</h3>
