@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import Head from 'next/head';
-import useMaker from '../hooks/useMaker';
-import { Text, Input, Grid, Button } from '@makerdao/ui-components-core';
+import React, { useState } from "react";
+import Head from "next/head";
+import useMaker from "../hooks/useMaker";
+import { Text, Input, Grid, Button } from "@makerdao/ui-components-core";
+import BigNumber from "bignumber.js";
 
 const Index = () => {
   const { maker } = useMaker();
@@ -14,7 +15,7 @@ const Index = () => {
         await maker.authenticate();
         setWeb3Connected(true);
         const daiBalance = await maker
-          .getToken('MDAI')
+          .getToken("MDAI")
           .balanceOf(maker.currentAddress());
         setDaiBalance(daiBalance);
       }
@@ -24,8 +25,21 @@ const Index = () => {
   }
 
   const [tendAmount, setTendAmount] = useState(0);
-/**.
- * 
+  const [joinAmount, setJoinAmount] = useState("");
+
+  async function joinDaiToAdapter() {
+    const ethAJoinAdapter = maker
+      .service("smartContract")
+      .getContract("MCD_JOIN_ETH_A");
+    console.log("Joining", BigNumber(joinAmount).toNumber());
+    ethAJoinAdapter.join(
+      maker.currentAddress(),
+      BigNumber(joinAmount).toNumber()
+    );
+  }
+
+  /**.
+ *
  * <Input
           type="number"
           min="0"
@@ -36,7 +50,7 @@ const Index = () => {
           data-testid="deposit-input"
         />
  */
-// console.log('tendAmount', tendAmount);
+  // console.log('tendAmount', tendAmount);
   return (
     <div className="wrap">
       <Head>
@@ -63,15 +77,29 @@ const Index = () => {
             )}
           </div>
           <Input
-          type="number"
-          min="0"
-          value={tendAmount}
-          onChange={setTendAmount}
-          // placeholder={`0.00 ${symbol}`}
-          // failureMessage={amountErrors}
-          data-testid="deposit-input"
-        />
-          <button onClick={connectBrowserWallet}>Call Tend</button>
+            type="number"
+            min="0"
+            value={joinAmount}
+            placeholder={"0.00 DAI"}
+            onChange={e => setJoinAmount(e.target.value)}
+            // placeholder={`0.00 ${symbol}`}
+            // failureMessage={amountErrors}
+            data-testid="deposit-input"
+          />
+          <p>Insert amount in wei</p>
+          <br />
+          <button onClick={() => joinDaiToAdapter()}>Send To Adapter</button>
+
+          <Input
+            type="number"
+            min="0"
+            value={tendAmount}
+            onChange={setTendAmount}
+            // placeholder={`0.00 ${symbol}`}
+            // failureMessage={amountErrors}
+            data-testid="deposit-input"
+          />
+          <button onClick={() => null}>Call Tend</button>
         </div>
       )}
     </div>
