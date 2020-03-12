@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Head from 'next/head';
 import useMaker from '../hooks/useMaker';
+import { Text, Input, Grid, Button } from '@makerdao/ui-components-core';
 
 const Index = () => {
   const { maker } = useMaker();
@@ -22,6 +23,20 @@ const Index = () => {
     }
   }
 
+  const [tendAmount, setTendAmount] = useState(0);
+/**.
+ * 
+ * <Input
+          type="number"
+          min="0"
+          value={amount}
+          onChange={onAmountChange}
+          placeholder={`0.00 ${symbol}`}
+          failureMessage={amountErrors}
+          data-testid="deposit-input"
+        />
+ */
+// console.log('tendAmount', tendAmount);
   return (
     <div className="wrap">
       <Head>
@@ -47,6 +62,16 @@ const Index = () => {
               <p>Loading your DAI balance...</p>
             )}
           </div>
+          <Input
+          type="number"
+          min="0"
+          value={tendAmount}
+          onChange={setTendAmount}
+          // placeholder={`0.00 ${symbol}`}
+          // failureMessage={amountErrors}
+          data-testid="deposit-input"
+        />
+          <button onClick={connectBrowserWallet}>Call Tend</button>
         </div>
       )}
     </div>

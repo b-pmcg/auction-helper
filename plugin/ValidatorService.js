@@ -53,13 +53,28 @@ export default class ValidatorService extends PublicService {
     // this._url = 'http://rancher.local:4001';
   }
 
-  // connect() {
-  // }
+  /**
+   * 
+   seth send "$MCD_FLIP_ETH" 
+   'tend(uint256,uint256,uint256)' 
+   “$ID” $(seth --to-wei “$ETH_AMOUNT” “eth”) 
+   $(echo "$DAI_AMOUNT"*10^45 | bc) -P $(seth --to-wei 500 "gwei")
+   */
 
   async getValidatorInfo(index) {
     const route = `eth/v1alpha1/validator?index=${index}`;
     const response = await this.request(route, 'GET');
     console.log('response', this._flipperContract);
+  }
+
+  //tend(uint id, uint lot, uint bid)
+  async tend( ) {
+    //suctionId, collateralAmount, highestBid
+    const auctionId = 1;
+    const collateralAmount = 2;
+    const highestBid = 3;
+    const tend = this._flipperContract(auctionId, collateralAmount, highestBid);
+
   }
 
   async getBlockNumber(id) {
