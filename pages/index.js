@@ -24,14 +24,15 @@ const Index = () => {
   }
 
 
-  async function callTend() {
+  async function callTend(auctionId) {
     try {
-        const t = await maker.service('validator').tend();
+        const t = await maker.service('validator').tend(auctionId);
         console.log('tend', t);
     } catch (err) {
       window.alert(err);
     }
   }
+  
   async function callBids() {
     try {
         const t = await maker.service('validator').getBid();
@@ -41,20 +42,11 @@ const Index = () => {
     }
   }
 
-  const [tendAmount, setTendAmount] = useState(0);
-/**.
- * 
- * <Input
-          type="number"
-          min="0"
-          value={amount}
-          onChange={onAmountChange}
-          placeholder={`0.00 ${symbol}`}
-          failureMessage={amountErrors}
-          data-testid="deposit-input"
-        />
- */
-// console.log('tendAmount', tendAmount);
+  const [auctionId, setAuctionId] = useState(0);
+  function handleInputChange({ target }) {
+    console.log('target', target.value);
+    setAuctionId(target.value);
+  }
   return (
     <div className="wrap">
       <Head>
@@ -80,17 +72,17 @@ const Index = () => {
               <p>Loading your DAI balance...</p>
             )}
           </div>
-          {/* <Input
+          <Input
           type="number"
           min="0"
-          value={tendAmount}
-          onChange={(e) => setTendAmount(e)}
+          // value={tendAmount}
+          onChange={handleInputChange}
           // placeholder={`0.00 ${symbol}`}
           // failureMessage={amountErrors}
           data-testid="deposit-input"
-        /> */}
-          <button onClick={callTend}>Call Tend</button>
-          <button onClick={callBids}>Call Bids</button>
+        />
+          <button onClick={() => callTend(auctionId)}>Call Tend</button>
+          {/* <button onClick={callBids}>Call Bids</button> */}
         </div>
       )}
     </div>

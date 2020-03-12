@@ -5,7 +5,31 @@ export default class ValidatorService extends PublicService {
     super(name, ['web3', 'smartContract']);
     this.queryPromises = {};
     this.staging = false;
-    this.id = 123
+    this.serverUrl = '';
+    this.id = 123;
+  }
+
+  async getQueryResponse(serverUrl, query) {
+    const resp = await fetch(serverUrl, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        query
+      })
+    });
+    const { data } = await resp.json();
+    assert(data, `error fetching data from ${serverUrl}`);
+    return data;
+  }
+
+  async getQueryResponseMemoized(serverUrl, query) {
+    let cacheKey = `${serverUrl};${query}`;
+    if (this.queryPromises[cacheKey]) return this.queryPromises[cacheKey];
+    this.queryPromises[cacheKey] = this.getQueryResponse(serverUrl, query);
+    return this.queryPromises[cacheKey];
   }
 
   async request(route, method, url = this._url, body = {}) {
@@ -48,69 +72,58 @@ export default class ValidatorService extends PublicService {
   //   return this.queryPromises[cacheKey];
   // }
 
+  async getAllAuctions() {
+    // const query = `{activePolls {
+    //   nodes {
+    //       creator
+    //       pollId
+    //       blockCreated
+    //       startDate
+    //       endDate
+    //       multiHash
+    //       url
+    //     }
+    //   }
+    // }`;
+
+    const response = await this.getQueryResponse(this.serverUrl, query);
+    console.log('GraphQL response', response);
+    // return response.activePolls.nodes.map(p => {
+    //   p.startDate = new Date(p.startDate * 1000);
+    //   p.endDate = new Date(p.endDate * 1000);
+    //   return p;
+    // });
+  }
+
   initialize(settings) {
     console.log('settings', settings);
     this._url = 'https://api.prylabs.net';
-    // this._url = 'http://rancher.local:4001';
   }
 
-
-  async getValidatorInfo(index) {
-    const route = `eth/v1alpha1/validator?index=${index}`;
-    const response = await this.request(route, 'GET');
-    console.log('response', this._flipperContract);
-  }
-
-  async getBid() {
+  async getLots(id) {
     // const bidId = 2590;
-    const bid = await this._flipperContract().bids(this.id)
-    console.log('bid', bid);
-    const lotSize = bid[0]
+    const bids = await this._flipperContract().bids(id)
+    console.log('bids', bids);
+    const lotSize = bids[0]
     return lotSize;
     // console.log('bid in service', bid);
   }
   //tend(uint id, uint lot, uint bid)
-  async tend( ) {
-    // const auctionId = 2590;
+  async tend(id) {
+    console.log('id in tend', id);
     //auctionId, collateralAmount, highestBid
-    console.log('calling tend')
-    const lotSize = await this.getBid();
-    console.log('lotSize', lotSize)
-    const lotSizeInWei = this.get('web3')._web3.utils.toWei(lotSize.toString());
+    const lotSize = await this.getLots(id);
+    console.log('lotSize', lotSize);
+    // const lotSizeInWei = this.get('web3')._web3.utils.toWei(lotSize.toString());
 
-    console.log('lotSizeInWei', lotSizeInWei)
-    // const collateralAmount = '50000000000000000000';
-    // const collateralAmount = 1224000000000000000;
+    // console.log('lotSizeInWei', lotSizeInWei)
+    const collateralAmount = '50000000000000000000';
     const highestBid = '1000000000000000000000000000000000000000000000';
-    const tend = await this._flipperContract().tend(this.id, lotSizeInWei, highestBid);
+    const tend = await this._flipperContract().tend(id, collateralAmount, highestBid);
     console.log('tend in service', tend);
   }
 
-  async getBlockNumber(id) {
-    const { details: chain } = await this.getChain(id);
-
-    if (chain.status !== 'ready') {
-      return null;
-    } else {
-      const url = this._parseChainUrl(chain);
-      const res = await this.request(
-        '',
-        'POST',
-        url,
-        '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}'
-      );
-      if (res && res.result) return parseInt(res.result, 16);
-    }
-  }
-
   _flipperContract({ web3js = false } = {}) {
-    // if (web3js) return this.get('smartContract').getWeb3ContractByName('FLIPPER');
     return this.get('smartContract').getContractByName('FLIPPER');
   }
-  
-  // async getValidatorInfo(index) {
-  //   const route = `eth/v1alpha1/validator?index=${index}`;
-  //   const response = await this.request(route, 'GET');
-  //   console.log('response', response);
-  // }
 }
