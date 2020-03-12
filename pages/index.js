@@ -9,6 +9,7 @@ const Index = () => {
   const [daiBalance, setDaiBalance] = useState(null);
   const [joinBalance, setJoinBalance] = useState(null);
   const [web3Connected, setWeb3Connected] = useState(false);
+  const [auctions, setAuctions] = useState([]);
 
   async function connectBrowserWallet() {
     try {
@@ -73,7 +74,7 @@ const Index = () => {
       .service("smartContract")
       .getContract("MCD_JOIN_DAI");
 
-      const joinAmountInDai = maker.service("web3")._web3.utils.toWei(joinAmount);
+    const joinAmountInDai = maker.service("web3")._web3.utils.toWei(joinAmount);
 
     await maker.getToken("MDAI").approveUnlimited(DaiJoinAdapter.address);
     await DaiJoinAdapter.join(
@@ -81,6 +82,25 @@ const Index = () => {
       BigNumber(joinAmountInDai).toString()
     );
   }
+
+  async function fetchAuctions() {
+
+    // await maker.service('validator').getAuctions();
+    try {
+      const a = [];
+      for(let i =2600; i< 2603; i++) {
+
+        const auction = await maker.service('validator').getAuction(i);
+        a.push(auction);
+      }
+      console.log('set a',);
+      setAuctions(a);
+    } catch (err) {
+      window.alert(err);
+    }
+  }
+
+  console.log('auctions', auctions);
   return (
     <div className="wrap">
       <Head>
@@ -98,7 +118,6 @@ const Index = () => {
         <div>
           <h3>Connected Account</h3>
           <p>{maker.currentAddress()}</p>
-
           <div>
             {daiBalance ? (
               <p>{daiBalance.toNumber()} DAI in your wallet</p>
@@ -114,23 +133,23 @@ const Index = () => {
             )}
           </div>
           <Input
-          type="number"
-          min="0"
-          onChange={handleAuctionIdInputChange}
-          placeholder={"Auction ID"}
-        />
+            type="number"
+            min="0"
+            onChange={handleAuctionIdInputChange}
+            placeholder={"Auction ID"}
+          />
           <Input
-          type="number"
-          min="0"
-          onChange={handleLotSizeInputChange}
-          placeholder={"Lot Size"}
-        />
+            type="number"
+            min="0"
+            onChange={handleLotSizeInputChange}
+            placeholder={"Lot Size"}
+          />
           <Input
-          type="number"
-          min="0"
-          onChange={handleBidAmountInputChange}
-          placeholder={"Bid Amount"}
-        />
+            type="number"
+            min="0"
+            onChange={handleBidAmountInputChange}
+            placeholder={"Bid Amount"}
+          />
           <button onClick={() => callTend(auctionId, lotSize, bidAmount)}>Call Tend</button>
           <Input
             type="number"
@@ -141,6 +160,14 @@ const Index = () => {
           />
           <br />
           <button onClick={() => joinDaiToAdapter()}>Send To Adapter</button>
+          <button onClick={fetchAuctions}>Get auctions</button>
+          <>
+            {
+              auctions ? auctions.forEach( (a) => {
+                return (<div>111</div>)
+              }) : <div> empty</div>
+            }
+          </>
         </div>
       )}
     </div>
