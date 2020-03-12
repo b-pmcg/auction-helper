@@ -110,20 +110,20 @@ const Index = () => {
   }
 
   async function fetchAuctions() {
-
-    // await maker.service('validator').getAuctions();
-    try {
-      const a = [];
-      for(let i =2600; i< 2603; i++) {
-
-        const auction = await maker.service('validator').getAuction(i);
-        a.push(auction);
-      }
-      console.log('set a',);
-      setAuctions(a);
-    } catch (err) {
-      window.alert(err);
-    }
+    const a = await maker.service('validator').getAllAuctions();
+    setAuctions(a);
+    // try {
+    //   const a = [];
+    //   for(let i =2600; i< 2603; i++) {
+    //
+    //     const auction = await maker.service('validator').getAuction(i);
+    //     a.push(auction);
+    //   }
+    //   console.log('set a',);
+    //   setAuctions(a);
+    // } catch (err) {
+    //   window.alert(err);
+    // }
   }
 
   console.log('auctions', auctions);
@@ -226,6 +226,40 @@ const Index = () => {
           >
             DAI_JOIN
           </button>
+          <button onClick={fetchAuctions}>Get auctions</button>
+          <table style={{border: '1px solid #e5e5e5'}}>
+            <tbody>
+            <tr>
+              <th>Auction Id</th>
+              <th>Event</th>
+              <th>Ilk</th>
+              <th>Amount</th>
+              <th>Lot</th>
+              <th>Bid</th>
+              <th>Ink</th>
+              <th>Tab</th>
+            </tr>
+            {
+              auctions ? auctions.map( (a) => {
+                return (
+                  <tr key={a.id}>
+                    <td>{a.auctionId}</td>
+                    <td>{a.type}</td>
+                    <td>{a.ilk}</td>
+                    <td>{a.amount}</td>
+                    <td>{a.lot}</td>
+                    <td>{a.bid}</td>
+                    <td>{a.ink}</td>
+                    <td>{a.tab}</td>
+                  </tr>
+                )
+              }) : <>Empty</>
+            }
+
+
+            </tbody>
+          </table>
+
         </div>
       )}
     </div>

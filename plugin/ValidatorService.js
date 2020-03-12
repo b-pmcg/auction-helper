@@ -6,11 +6,11 @@ export default class ValidatorService extends PublicService {
     super(name, ['web3', 'smartContract']);
     this.queryPromises = {};
     this.staging = false;
-    this.serverUrl = '';
+    this.serverUrl = 'https://staging-cache.eth2dai.com/api/v1';
     this.id = 123;
   }
 
-  async getQueryResponse(serverUrl, query) {
+  async getQueryResponse(serverUrl, query, variables={}) {
     const resp = await fetch(serverUrl, {
       method: 'POST',
       headers: {
@@ -18,11 +18,11 @@ export default class ValidatorService extends PublicService {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        query
+        query,
+        variables
       })
     });
     const { data } = await resp.json();
-    assert(data, `error fetching data from ${serverUrl}`);
     return data;
   }
 
@@ -87,13 +87,36 @@ export default class ValidatorService extends PublicService {
       }
     }`;
 
-    const response = await this.getQueryResponse(this.serverUrl, query);
+    const query = `query allLeveragedEvents($token: String) {
+      allLeveragedEvents(filter: {ilk: {equalTo: $token}}) {
+      nodes {
+        id
+        type
+        ilk
+        amount
+        payAmount
+        minPayAmount
+        maxPayAmount
+        dgem
+        ddai
+        auctionId
+        lot
+        bid
+        ink
+        tab
+        timestamp
+        price
+      }
+      }
+    }`;
+
+    const variables = {
+      token: 'ETH-A'
+    }
+
+    const response = await this.getQueryResponse(this.serverUrl, query, variables);
     console.log('GraphQL response', response);
-    // return response.activePolls.nodes.map(p => {
-    //   p.startDate = new Date(p.startDate * 1000);
-    //   p.endDate = new Date(p.endDate * 1000);
-    //   return p;
-    // });
+    return response.allLeveragedEvents.nodes;
   }
 
   initialize(settings) {
