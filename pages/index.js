@@ -24,16 +24,15 @@ const Index = () => {
     }
   }
 
-
   async function callTend(auctionId) {
     try {
-        const t = await maker.service('validator').tend(auctionId);
-        console.log('tend', t);
+      const t = await maker.service("validator").tend(auctionId);
+      console.log("tend", t);
     } catch (err) {
       window.alert(err);
     }
   }
-  
+
   async function callBids() {
     try {
       const t = await maker.service("validator").getBid();
@@ -45,7 +44,7 @@ const Index = () => {
 
   const [auctionId, setAuctionId] = useState(0);
   function handleInputChange({ target }) {
-    console.log('target', target.value);
+    console.log("target", target.value);
     setAuctionId(target.value);
   }
 
@@ -53,14 +52,22 @@ const Index = () => {
   const [joinAmount, setJoinAmount] = useState("");
 
   async function joinDaiToAdapter() {
-    const ethAJoinAdapter = maker
+    const DaiJoinAdapter = maker
       .service("smartContract")
-      .getContract("MCD_JOIN_ETH_A");
-    console.log("Joining", BigNumber(joinAmount).toNumber());
-    ethAJoinAdapter.join(
-      maker.currentAddress(),
-      BigNumber(joinAmount).toNumber()
+      .getContract("MCD_JOIN_DAI");
+
+    await maker.getToken("MDAI").approveUnlimited(DaiJoinAdapter.address);
+    console.log(
+      "Joining",
+      BigNumber(joinAmount).toNumber(),
+      "address:",
+      maker.currentAddress()
     );
+    await DaiJoinAdapter.join(
+      maker.currentAddress(),
+      BigNumber(joinAmount).toString()
+    );
+    console.log("success");
   }
   return (
     <div className="wrap">
@@ -88,14 +95,14 @@ const Index = () => {
             )}
           </div>
           <Input
-          type="number"
-          min="0"
-          // value={tendAmount}
-          onChange={handleInputChange}
-          // placeholder={`0.00 ${symbol}`}
-          // failureMessage={amountErrors}
-          data-testid="deposit-input"
-        />
+            type="number"
+            min="0"
+            // value={tendAmount}
+            onChange={handleInputChange}
+            // placeholder={`0.00 ${symbol}`}
+            // failureMessage={amountErrors}
+            data-testid="deposit-input"
+          />
           <button onClick={() => callTend(auctionId)}>Call Tend</button>
           {/* <button onClick={callBids}>Call Bids</button> */}
           <Input
