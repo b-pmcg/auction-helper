@@ -1,4 +1,4 @@
-// import { map, prop } from 'ramda';
+import { map, prop } from 'ramda';
 // import {
 //   VOTE_PROXY_FACTORY,
 //   CHIEF,
@@ -9,6 +9,8 @@
 //   MKR,
 //   IOU
 // } from './utils/constants';
+
+const FLIPPER = 'FLIPPER';
 
 import ValidatorService from './ValidatorService';
 // import ChiefService from './ChiefService';
@@ -21,10 +23,10 @@ import ValidatorService from './ValidatorService';
 
 export default {
   addConfig: function(config, { network = 'mainnet', staging = false }) {
-    // const contractAddresses = {
-    //   kovan: require('../contracts/addresses/kovan.json'),
-    //   mainnet: require('../contracts/addresses/mainnet.json')
-    // };
+    const contractAddresses = {
+      // kovan: require('../contracts/addresses/kovan.json'),
+      mainnet: require('../contracts/addresses/mainnet.json')
+    };
 
     // try {
     //   contractAddresses.testnet = require('../contracts/addresses/testnet.json');
@@ -45,12 +47,12 @@ export default {
     //   }
     // };
 
-    // const addContracts = {
-    //   [CHIEF]: {
-    //     address: map(prop('CHIEF'), contractAddresses),
-    //     // TODO check for MCD-specific version of DSChief
-    //     abi: require('../contracts/abis/DSChief.json')
-    //   },
+    const addContracts = {
+      [FLIPPER]: {
+        address: map(prop('FLIPPER'), contractAddresses),
+        // TODO check for MCD-specific version of DSChief
+        abi: require('../contracts/abis/Flipper.json')
+      }
     //   [VOTE_PROXY_FACTORY]: {
     //     address: map(prop('VOTE_PROXY_FACTORY'), contractAddresses),
     //     abi: require('../contracts/abis/VoteProxyFactory.json')
@@ -64,7 +66,7 @@ export default {
     //     abi: require('../contracts/abis/DSPause.json')
     //   },
     //   ...esmContracts
-    // };
+    };
 
     const makerConfig = {
       ...config,
@@ -72,7 +74,7 @@ export default {
         'validator'
       ],
       validator: [ValidatorService],
-    //   smartContract: { addContracts },
+      smartContract: { addContracts },
     //   token: {
     //     erc20: [
     //       {

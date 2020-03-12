@@ -2,7 +2,7 @@ import { PublicService } from '@makerdao/services-core';
 
 export default class ValidatorService extends PublicService {
   constructor(name = 'validator') {
-    super(name, ['web3']);
+    super(name, ['web3', 'smartContract']);
     this.queryPromises = {};
     this.staging = false;
   }
@@ -59,7 +59,29 @@ export default class ValidatorService extends PublicService {
   async getValidatorInfo(index) {
     const route = `eth/v1alpha1/validator?index=${index}`;
     const response = await this.request(route, 'GET');
-    console.log('response', response);
+    console.log('response', this._flipperContract);
+  }
+
+  async getBlockNumber(id) {
+    const { details: chain } = await this.getChain(id);
+
+    if (chain.status !== 'ready') {
+      return null;
+    } else {
+      const url = this._parseChainUrl(chain);
+      const res = await this.request(
+        '',
+        'POST',
+        url,
+        '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}'
+      );
+      if (res && res.result) return parseInt(res.result, 16);
+    }
+  }
+
+  _flipperContract({ web3js = false } = {}) {
+    if (web3js) return this.get('smartContract').getWeb3ContractByName('FLIPPER');
+    return this.get('smartContract').getContractByName('FLIPPER');
   }
   
   // async getValidatorInfo(index) {
