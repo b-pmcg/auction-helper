@@ -84,7 +84,7 @@ const Index = () => {
   }
 
   async function fetchAuctions() {
-    const a = await maker.service('validator').getAllAuctions();
+    const a = await maker.service('validator').getAllAuctions(2000);
     setAuctions(a);
     // try {
     //   const a = [];
@@ -189,8 +189,6 @@ const Index = () => {
                 )
               }) : <>Empty</>
             }
-
-
             </tbody>
           </table>
 
