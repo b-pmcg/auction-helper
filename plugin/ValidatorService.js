@@ -5,6 +5,7 @@ export default class ValidatorService extends PublicService {
     super(name, ['web3', 'smartContract']);
     this.queryPromises = {};
     this.staging = false;
+    this.id = 123
   }
 
   async request(route, method, url = this._url, body = {}) {
@@ -53,13 +54,6 @@ export default class ValidatorService extends PublicService {
     // this._url = 'http://rancher.local:4001';
   }
 
-  /**
-   * 
-   seth send "$MCD_FLIP_ETH" 
-   'tend(uint256,uint256,uint256)' 
-   “$ID” $(seth --to-wei “$ETH_AMOUNT” “eth”) 
-   $(echo "$DAI_AMOUNT"*10^45 | bc) -P $(seth --to-wei 500 "gwei")
-   */
 
   async getValidatorInfo(index) {
     const route = `eth/v1alpha1/validator?index=${index}`;
@@ -67,17 +61,29 @@ export default class ValidatorService extends PublicService {
     console.log('response', this._flipperContract);
   }
 
+  async getBid() {
+    // const bidId = 2590;
+    const bid = await this._flipperContract().bids(this.id)
+    console.log('bid', bid);
+    const lotSize = bid[0]
+    return lotSize;
+    // console.log('bid in service', bid);
+  }
   //tend(uint id, uint lot, uint bid)
   async tend( ) {
-    //suctionId, collateralAmount, highestBid
+    // const auctionId = 2590;
+    //auctionId, collateralAmount, highestBid
     console.log('calling tend')
-    const auctionId = 2447;
-    const collateralAmount = '43044000000000000000';
+    const lotSize = await this.getBid();
+    console.log('lotSize', lotSize)
+    const lotSizeInWei = this.get('web3')._web3.utils.toWei(lotSize.toString());
+
+    console.log('lotSizeInWei', lotSizeInWei)
+    // const collateralAmount = '50000000000000000000';
     // const collateralAmount = 1224000000000000000;
     const highestBid = '1000000000000000000000000000000000000000000000';
-    const tend = await this._flipperContract().tend(auctionId, collateralAmount, highestBid);
+    const tend = await this._flipperContract().tend(this.id, lotSizeInWei, highestBid);
     console.log('tend in service', tend);
-
   }
 
   async getBlockNumber(id) {

@@ -28,11 +28,14 @@ const Index = () => {
     try {
         const t = await maker.service('validator').tend();
         console.log('tend', t);
-        // const daiBalance = await maker
-        //   .getToken('MDAI')
-        //   .balanceOf(maker.currentAddress());
-        // setDaiBalance(daiBalance);
-      // }
+    } catch (err) {
+      window.alert(err);
+    }
+  }
+  async function callBids() {
+    try {
+        const t = await maker.service('validator').getBid();
+        console.log('bids', t);
     } catch (err) {
       window.alert(err);
     }
@@ -87,6 +90,7 @@ const Index = () => {
           data-testid="deposit-input"
         /> */}
           <button onClick={callTend}>Call Tend</button>
+          <button onClick={callBids}>Call Bids</button>
         </div>
       )}
     </div>
