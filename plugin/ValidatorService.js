@@ -73,22 +73,24 @@ export default class ValidatorService extends PublicService {
   //   return this.queryPromises[cacheKey];
   // }
 
-  async getAllAuctions() {
-    const query = `{activePolls {
-      nodes {
-          creator
-          pollId
-          blockCreated
-          startDate
-          endDate
-          multiHash
-          url
-        }
-      }
-    }`;
-
-    const query = `query allLeveragedEvents($token: String) {
-      allLeveragedEvents(filter: {ilk: {equalTo: $token}}) {
+  async getAllAuctions(from_id) {
+    // const query = `{activePolls {
+    //   nodes {
+    //       creator
+    //       pollId
+    //       blockCreated
+    //       startDate
+    //       endDate
+    //       multiHash
+    //       url
+    //     }
+    //   }
+    // }`;
+2
+    const query = `query allLeveragedEvents($token: String, $fromId: Int) {
+      allLeveragedEvents(
+      filter: { and:[ {ilk: {equalTo: $token}}, {id: {greaterThan: $fromId}} ] }
+      ) {
       nodes {
         id
         type
@@ -111,7 +113,8 @@ export default class ValidatorService extends PublicService {
     }`;
 
     const variables = {
-      token: 'ETH-A'
+      token: 'ETH-A',
+      fromId: from_id,
     }
 
     const response = await this.getQueryResponse(this.serverUrl, query, variables);
