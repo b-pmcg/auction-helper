@@ -11,6 +11,7 @@ const Index = () => {
   const { maker } = useMaker();
   const [daiBalance, setDaiBalance] = useState(null);
   const [web3Connected, setWeb3Connected] = useState(false);
+  const [auctions, setAuctions] = useState([]);
 
   const [joinBalance, setJoinBalance] = useState(null);
 
@@ -108,6 +109,24 @@ const Index = () => {
     );
   }
 
+  async function fetchAuctions() {
+
+    // await maker.service('validator').getAuctions();
+    try {
+      const a = [];
+      for(let i =2600; i< 2603; i++) {
+
+        const auction = await maker.service('validator').getAuction(i);
+        a.push(auction);
+      }
+      console.log('set a',);
+      setAuctions(a);
+    } catch (err) {
+      window.alert(err);
+    }
+  }
+
+  console.log('auctions', auctions);
   return (
     <div className="wrap">
       <Head>

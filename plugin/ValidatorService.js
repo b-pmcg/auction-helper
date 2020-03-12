@@ -137,6 +137,15 @@ export default class ValidatorService extends PublicService {
     console.log('tend in service', tend);
   }
 
+  async getAuction(id) {
+    console.log('fetching', id);
+    try {
+      return await this._flipperContract().bids(id);
+    } catch(err) {
+
+    }
+  }
+
   _flipperContract({ web3js = false } = {}) {
     return this.get('smartContract').getContractByName('FLIPPER');
   }
