@@ -57,17 +57,10 @@ const Index = () => {
       .getContract("MCD_JOIN_DAI");
 
     await maker.getToken("MDAI").approveUnlimited(DaiJoinAdapter.address);
-    console.log(
-      "Joining",
-      BigNumber(joinAmount).toNumber(),
-      "address:",
-      maker.currentAddress()
-    );
     await DaiJoinAdapter.join(
       maker.currentAddress(),
       BigNumber(joinAmount).toString()
     );
-    console.log("success");
   }
   return (
     <div className="wrap">
@@ -97,30 +90,21 @@ const Index = () => {
           <Input
             type="number"
             min="0"
-            // value={tendAmount}
+            placeholder="Id"
             onChange={handleInputChange}
-            // placeholder={`0.00 ${symbol}`}
-            // failureMessage={amountErrors}
-            data-testid="deposit-input"
           />
           <button onClick={() => callTend(auctionId)}>Call Tend</button>
-          {/* <button onClick={callBids}>Call Bids</button> */}
+          <br />
+          <br />
           <Input
             type="number"
             min="0"
             value={joinAmount}
             placeholder={"0.00 DAI"}
             onChange={e => setJoinAmount(e.target.value)}
-            // placeholder={`0.00 ${symbol}`}
-            // failureMessage={amountErrors}
-            data-testid="deposit-input"
           />
           <br />
           <button onClick={() => joinDaiToAdapter()}>Send To Adapter</button>
-          <br />
-          <br />
-          <button onClick={callTend}>Call Tend</button>
-          <button onClick={callBids}>Call Bids</button>
         </div>
       )}
     </div>
