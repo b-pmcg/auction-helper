@@ -54,20 +54,6 @@ const Index = () => {
       BigNumber(joinAmount).toNumber()
     );
   }
-
-  /**.
- *
- * <Input
-          type="number"
-          min="0"
-          value={amount}
-          onChange={onAmountChange}
-          placeholder={`0.00 ${symbol}`}
-          failureMessage={amountErrors}
-          data-testid="deposit-input"
-        />
- */
-  // console.log('tendAmount', tendAmount);
   return (
     <div className="wrap">
       <Head>
@@ -103,18 +89,16 @@ const Index = () => {
             // failureMessage={amountErrors}
             data-testid="deposit-input"
           />
-          <p>Insert amount in wei</p>
           <br />
           <button onClick={() => joinDaiToAdapter()}>Send To Adapter</button>
-          {/* <Input
-          type="number"
-          min="0"
-          value={tendAmount}
-          onChange={(e) => setTendAmount(e)}
-          // placeholder={`0.00 ${symbol}`}
-          // failureMessage={amountErrors}
-          data-testid="deposit-input"
-        /> */}
+          <br />
+          <br />
+          <Input
+            type="number"
+            min="0"
+            value={tendAmount}
+            onChange={e => setTendAmount(e)}
+          />
           <button onClick={callTend}>Call Tend</button>
           <button onClick={callBids}>Call Bids</button>
         </div>
