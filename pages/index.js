@@ -23,11 +23,15 @@ const Index = () => {
       window.alert(err);
     }
   }
+  const [auctionId, setAuctionId] = useState('');
+  const [lotSize, setLotSize] = useState('');
+  const [bidAmount, setBidAmount] = useState('');
 
-  async function callTend(auctionId) {
+
+  async function callTend(auctionId, lotSize, bidAmount) {
     try {
-      const t = await maker.service("validator").tend(auctionId);
-      console.log("tend", t);
+      const t = await maker.service("validator").tend(auctionId, lotSize, bidAmount);
+      // console.log("tend", t);
     } catch (err) {
       window.alert(err);
     }
@@ -36,19 +40,25 @@ const Index = () => {
   async function callBids() {
     try {
       const t = await maker.service("validator").getBid();
-      console.log("bids", t);
+      // console.log("bids", t);
     } catch (err) {
       window.alert(err);
     }
   }
 
-  const [auctionId, setAuctionId] = useState(0);
-  function handleInputChange({ target }) {
-    console.log("target", target.value);
+  function handleAuctionIdInputChange({ target }) {
+    console.log('auctionid', target.value);
     setAuctionId(target.value);
   }
+  function handleLotSizeInputChange({ target }) {
+    console.log('lotSize', target.value);
+    setLotSize(target.value);
+  }
+  function handleBidAmountInputChange({ target }) {
+    console.log('bidAmount', target.value);
+    setBidAmount(target.value);
+  }
 
-  const [tendAmount, setTendAmount] = useState(0);
   const [joinAmount, setJoinAmount] = useState("");
 
   async function joinDaiToAdapter() {
@@ -88,14 +98,25 @@ const Index = () => {
             )}
           </div>
           <Input
-            type="number"
-            min="0"
-            placeholder="Id"
-            onChange={handleInputChange}
-          />
-          <button onClick={() => callTend(auctionId)}>Call Tend</button>
-          <br />
-          <br />
+          type="number"
+          min="0"
+          onChange={handleAuctionIdInputChange}
+          data-testid="deposit-input"//auctionid
+        />
+          <Input
+          type="number"
+          min="0"
+          onChange={handleLotSizeInputChange}
+          data-testid="deposit-input" //lotSize
+        />
+          <Input
+          type="number"
+          min="0"
+          onChange={handleBidAmountInputChange}
+          data-testid="deposit-input" //bidAmount
+        />
+          <button onClick={() => callTend(auctionId, lotSize, bidAmount)}>Call Tend</button>
+          {/* <button onClick={callBids}>Call Bids</button> */}
           <Input
             type="number"
             min="0"
