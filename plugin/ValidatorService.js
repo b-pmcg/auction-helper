@@ -70,10 +70,13 @@ export default class ValidatorService extends PublicService {
   //tend(uint id, uint lot, uint bid)
   async tend( ) {
     //suctionId, collateralAmount, highestBid
-    const auctionId = 1;
-    const collateralAmount = 2;
-    const highestBid = 3;
-    const tend = this._flipperContract(auctionId, collateralAmount, highestBid);
+    console.log('calling tend')
+    const auctionId = 2447;
+    const collateralAmount = '43044000000000000000';
+    // const collateralAmount = 1224000000000000000;
+    const highestBid = '1000000000000000000000000000000000000000000000';
+    const tend = await this._flipperContract().tend(auctionId, collateralAmount, highestBid);
+    console.log('tend in service', tend);
 
   }
 
@@ -95,7 +98,7 @@ export default class ValidatorService extends PublicService {
   }
 
   _flipperContract({ web3js = false } = {}) {
-    if (web3js) return this.get('smartContract').getWeb3ContractByName('FLIPPER');
+    // if (web3js) return this.get('smartContract').getWeb3ContractByName('FLIPPER');
     return this.get('smartContract').getContractByName('FLIPPER');
   }
   

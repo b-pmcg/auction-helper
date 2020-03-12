@@ -23,6 +23,21 @@ const Index = () => {
     }
   }
 
+
+  async function callTend() {
+    try {
+        const t = await maker.service('validator').tend();
+        console.log('tend', t);
+        // const daiBalance = await maker
+        //   .getToken('MDAI')
+        //   .balanceOf(maker.currentAddress());
+        // setDaiBalance(daiBalance);
+      // }
+    } catch (err) {
+      window.alert(err);
+    }
+  }
+
   const [tendAmount, setTendAmount] = useState(0);
 /**.
  * 
@@ -62,16 +77,16 @@ const Index = () => {
               <p>Loading your DAI balance...</p>
             )}
           </div>
-          <Input
+          {/* <Input
           type="number"
           min="0"
           value={tendAmount}
-          onChange={setTendAmount}
+          onChange={(e) => setTendAmount(e)}
           // placeholder={`0.00 ${symbol}`}
           // failureMessage={amountErrors}
           data-testid="deposit-input"
-        />
-          <button onClick={connectBrowserWallet}>Call Tend</button>
+        /> */}
+          <button onClick={callTend}>Call Tend</button>
         </div>
       )}
     </div>
