@@ -110,7 +110,7 @@ const Index = () => {
   }
 
   async function fetchAuctions() {
-    const a = await maker.service('validator').getAllAuctions(2000);
+    const a = await maker.service('validator').getAllAuctions(9000);
     setAuctions(a);
     // try {
     //   const a = [];
@@ -238,6 +238,7 @@ const Index = () => {
               <th>Bid</th>
               <th>Ink</th>
               <th>Tab</th>
+              <th>Timestamp</th>
             </tr>
             {
               auctions ? auctions.map( (a) => {
@@ -251,6 +252,7 @@ const Index = () => {
                     <td>{a.bid}</td>
                     <td>{a.ink}</td>
                     <td>{a.tab}</td>
+                    <td>{a.timestamp}</td>
                   </tr>
                 )
               }) : <>Empty</>
