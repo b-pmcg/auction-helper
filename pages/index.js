@@ -37,11 +37,12 @@ const panelBody = {
 const eventData = {
   display: 'flex',
   padding: '16px',
+  justifyContent: 'space-between',
   width: '100%'
 }
 
 const eventParam = {
-  width: '200px'
+  width: 'auto'
 }
 
 const bidButton = {
@@ -64,6 +65,37 @@ const bidInput = {
 function fromRad(value) {
   return BigNumber(value).shiftedBy(-45);
 }
+
+const Bidform = (props) => {
+  const [amount, setAmount] = useState(undefined);
+  const {auctionId, lot, onClick} = props;
+
+  const bid = () => {
+    onClick(auctionId, lot, amount);
+  }
+
+  return (
+    <div>
+    <input style={bidInput} type="text" placeholder="Bid Amount" onChange={
+      event => {
+        const inputValue = event.target.value;
+        if(inputValue === '') {
+          setAmount(undefined);
+        }
+        setAmount(inputValue);
+      }
+    }/>
+    <Button style={bidButton} 
+            onClick={() => {console.log(amount, auctionId, lot)}}
+            disabled={!amount || !lot || !auctionId}
+            onClick={bid}
+    >
+              Bid
+    </Button>
+  </div>
+  )
+}
+
 const Index = () => {
   const { maker } = useMaker();
   const [daiBalance, setDaiBalance] = useState(null);
@@ -274,18 +306,22 @@ const Index = () => {
           >
             DAI_JOIN
           </button>
-          <button onClick={fetchAuctions}>Get auctions</button>
+          <br/>
+          <br/>
+          <button onClick={fetchAuctions}>List Auctions</button>
           <div>
             { !auctions && <span> Loading Auctions...</span >}
             { auctions && Object.keys(auctions).map(
               auctionId => {
+                const kickEvent = auctions[auctionId].find(event=>event.type === 'Kick');
+                const firstTend = auctions[auctionId].find(event=>event.type === 'Tend');
+                let lot = kickEvent ? kickEvent.lot : firstTend.lot;
                 return <div key={auctionId} style={panelStyle}>
                   <div style={panelHeader}>
                     Auction ID: {auctionId} 
-                    <div>
-                      <input style={bidInput} type="text" placeholder="Bid Amount"></input>
-                      <Button style={bidButton}>Bid</Button>
-                    </div>
+                    <span> Lot: { lot }
+                    </span>
+                    <Bidform auctionId={auctionId} lot={lot} onClick={callTend}/>
                   </div>
                   <div style={panelBody}>
                     {
