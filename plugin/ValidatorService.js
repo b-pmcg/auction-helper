@@ -87,9 +87,24 @@ export default class ValidatorService extends PublicService {
     //   }
     // }`;
 
-    const query = `query allLeveragedEvents($token: String, $fromId: Int) {
+    const queryDate = new Date();
+    queryDate.setHours(queryDate.getHours() - 10);
+
+    const query = `query allLeveragedEvents($token: String, $fromId: Int, $fromDate: Datetime) {
       allLeveragedEvents(
-      filter: { and:[ {ilk: {equalTo: $token}}, {id: {greaterThan: $fromId}} ] }
+      filter: { 
+      and:[ 
+      {ilk: {equalTo: $token}},
+      {id: {greaterThan: $fromId}},
+      {timestamp: {greaterThan: $fromDate}},
+       {
+         or : [
+           {type: {equalTo: "Tend"}},
+           {type: {equalTo: "Kick"}},
+         ]
+       }
+       ]
+      }
       ) {
       nodes {
         id
@@ -115,6 +130,7 @@ export default class ValidatorService extends PublicService {
     const variables = {
       token: 'ETH-A',
       fromId: from_id,
+      fromDate: queryDate,
     }
 
     const response = await this.getQueryResponse(this.serverUrl, query, variables);
