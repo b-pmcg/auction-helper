@@ -1,6 +1,6 @@
 import Maker from '@makerdao/dai';
 import mcdPlugin, { MDAI } from '@makerdao/dai-plugin-mcd';
-import validatorPlugin from './plugin/index'
+import validatorPlugin from './plugin/index';
 import { createCurrency } from '@makerdao/currency';
 
 export const SAI = createCurrency('SAI');
@@ -23,7 +23,11 @@ export async function instantiateMaker(network) {
       ],
       validatorPlugin
     ],
-    gasLimit: '100000'
+    web3: {
+      transactionSettings: {
+        gasLimit: '150000'
+      }
+    }
   };
 
   maker = await Maker.create('browser', config);
