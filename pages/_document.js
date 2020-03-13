@@ -11,6 +11,10 @@ const scriptTxt = `
 })();
 `;
 
+const bodyStyle = {
+  backgroundColor: "rgb(246, 248, 249)"
+}
+
 class MyDocument extends Document {
   render() {
     return (
@@ -20,7 +24,7 @@ class MyDocument extends Document {
             <script dangerouslySetInnerHTML={{ __html: scriptTxt }} />
           )}
         </Head>
-        <body>
+        <body style={bodyStyle}>
           <Main />
           <NextScript />
         </body>

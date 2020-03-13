@@ -1,8 +1,65 @@
-import React, { useState } from 'react';
-import Head from 'next/head';
-import useMaker from '../hooks/useMaker';
-import { Input } from '@makerdao/ui-components-core';
-import BigNumber from 'bignumber.js';
+import React, { useState } from "react";
+import Head from "next/head";
+import useMaker from "../hooks/useMaker";
+import * as _ from 'lodash';
+import { Text, Input, Grid, Button, Flex } from "@makerdao/ui-components-core";
+import BigNumber from "bignumber.js";
+import { withTheme } from "styled-components";
+
+const panelStyle = {
+  display: 'flex',
+  maxWidth:'1440px',
+  width: '100%',
+  flexWrap: 'wrap',
+  padding: '16px',
+  border: '1px solid rgb(212, 217, 225)',
+  background: 'white',
+  margin:'auto',
+  marginBottom: '8px'
+};
+
+const panelHeader = {
+  display:'flex',
+  padding: '16px 0',
+  width: `100%`,
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  borderBottom: '1px solid rgb(212, 217, 225)'
+}
+
+const panelBody = {
+  display: 'flex',
+  width: '100%',
+  flexWrap: 'wrap',
+  padding: '16px 0'
+}
+
+const eventData = {
+  display: 'flex',
+  padding: '16px',
+  width: '100%'
+}
+
+const eventParam = {
+  width: '200px'
+}
+
+const bidButton = {
+  padding: '4px',
+  height: '40px',
+  width: '60px',
+  fontSize: '18px',
+  backgroundColor: 'rgb(26, 171, 155)',
+  border: '1px solid rgb(26, 171, 155)',
+  color: 'white'
+}
+
+const bidInput = {
+  width: '100px',
+  marginRight: '16px',
+  height: '30px',
+  padding: '4px',
+}
 
 function fromRad(value) {
   return BigNumber(value).shiftedBy(-45);
@@ -110,23 +167,14 @@ const Index = () => {
   }
 
   async function fetchAuctions() {
-    const a = await maker.service('validator').getAllAuctions(9000);
-    setAuctions(a);
-    // try {
-    //   const a = [];
-    //   for(let i =2600; i< 2603; i++) {
-    //
-    //     const auction = await maker.service('validator').getAuction(i);
-    //     a.push(auction);
-    //   }
-    //   console.log('set a',);
-    //   setAuctions(a);
-    // } catch (err) {
-    //   window.alert(err);
-    // }
+    const auctions = await maker.service('validator').getAllAuctions();
+    setAuctions(_.groupBy(auctions, (auction) => auction.auctionId));
   }
 
-  console.log('auctions', auctions);
+  const getValueOrDefault = (value, def = '-')=> {
+    return value ? value : def;
+  }
+
   return (
     <div className="wrap">
       <Head>
@@ -227,38 +275,39 @@ const Index = () => {
             DAI_JOIN
           </button>
           <button onClick={fetchAuctions}>Get auctions</button>
-          <table style={{border: '1px solid #e5e5e5'}}>
-            <tbody>
-            <tr>
-              <th>Auction Id</th>
-              <th>Event</th>
-              <th>Ilk</th>
-              <th>Amount</th>
-              <th>Lot</th>
-              <th>Bid</th>
-              <th>Ink</th>
-              <th>Tab</th>
-              <th>Timestamp</th>
-            </tr>
-            {
-              auctions ? auctions.map( (a) => {
-                return (
-                  <tr key={a.id}>
-                    <td>{a.auctionId}</td>
-                    <td>{a.type}</td>
-                    <td>{a.ilk}</td>
-                    <td>{a.amount}</td>
-                    <td>{a.lot}</td>
-                    <td>{a.bid}</td>
-                    <td>{a.ink}</td>
-                    <td>{a.tab}</td>
-                    <td>{a.timestamp}</td>
-                  </tr>
-                )
-              }) : <>Empty</>
-            }
-            </tbody>
-          </table>
+          <div>
+            { !auctions && <span> Loading Auctions...</span >}
+            { auctions && Object.keys(auctions).map(
+              auctionId => {
+                return <div key={auctionId} style={panelStyle}>
+                  <div style={panelHeader}>
+                    Auction ID: {auctionId} 
+                    <div>
+                      <input style={bidInput} type="text" placeholder="Bid Amount"></input>
+                      <Button style={bidButton}>Bid</Button>
+                    </div>
+                  </div>
+                  <div style={panelBody}>
+                    {
+                      auctions[auctionId].map(event => {
+                        return (
+                          <div style={eventData} key={`${auctionId}-${event.id}`}>
+                            <div style={eventParam} ><span>Type: <span></span></span><span>{ event.type }</span></div>
+                            <div style={eventParam}><span>Lot: <span></span></span><span>{ getValueOrDefault(event.lot) }</span></div>
+                            <div style={eventParam}><span>Bid: <span></span></span><span>{ getValueOrDefault(event.bid)}</span></div>
+                            <div style={eventParam}><span>Ink: <span></span></span><span>{ getValueOrDefault(event.ink)}</span></div>
+                            <div style={eventParam}><span>Tab: <span></span></span><span>{ getValueOrDefault(event.tab) }</span></div>
+                            <div style={eventParam}><span>Timestamp: <span></span></span><span>{ event.timestamp}</span></div>
+                          </div>
+                        )
+                      })
+                    }                   
+                  </div>
+                </div>
+              }
+            )}
+
+          </div>
 
         </div>
       )}

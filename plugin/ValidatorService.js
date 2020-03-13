@@ -73,7 +73,7 @@ export default class ValidatorService extends PublicService {
   //   return this.queryPromises[cacheKey];
   // }
 
-  async getAllAuctions(from_id) {
+  async getAllAuctions() {
     // const query = `{activePolls {
     //   nodes {
     //       creator
@@ -90,20 +90,19 @@ export default class ValidatorService extends PublicService {
     const queryDate = new Date();
     queryDate.setHours(queryDate.getHours() - 10);
 
-    const query = `query allLeveragedEvents($token: String, $fromId: Int, $fromDate: Datetime) {
+    const query = `query allLeveragedEvents($token: String, $fromDate: Datetime) {
       allLeveragedEvents(
       filter: { 
       and:[ 
       {ilk: {equalTo: $token}},
-      {id: {greaterThan: $fromId}},
       {timestamp: {greaterThan: $fromDate}},
-       {
-         or : [
-           {type: {equalTo: "Tend"}},
-           {type: {equalTo: "Kick"}},
-         ]
-       }
-       ]
+        {
+          or: [
+            {type: {equalTo: "Tend"}},
+            {type: {equalTo: "Kick"}},
+          ]
+        }
+        ]
       }
       ) {
       nodes {
@@ -129,7 +128,6 @@ export default class ValidatorService extends PublicService {
 
     const variables = {
       token: 'ETH-A',
-      fromId: from_id,
       fromDate: queryDate,
     }
 
