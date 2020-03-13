@@ -10,8 +10,9 @@ function fromRad(value) {
 const Index = () => {
   const { maker } = useMaker();
   const [daiBalance, setDaiBalance] = useState(null);
-  const [joinBalance, setJoinBalance] = useState(null);
   const [web3Connected, setWeb3Connected] = useState(false);
+
+  const [joinBalance, setJoinBalance] = useState(null);
 
   async function connectBrowserWallet() {
     try {
@@ -78,6 +79,7 @@ const Index = () => {
   }
 
   const [joinAmount, setJoinAmount] = useState('');
+  const [exitAmount, setExitAmount] = useState('');
 
   async function joinDaiToAdapter() {
     const DaiJoinAdapter = maker
@@ -92,6 +94,20 @@ const Index = () => {
       BigNumber(joinAmountInDai).toString()
     );
   }
+
+  async function exit() {
+    const DaiJoinAdapter = maker
+      .service('smartContract')
+      .getContract('MCD_JOIN_DAI');
+
+    const exitAmountInDai = maker.service('web3')._web3.utils.toWei(exitAmount);
+
+    await DaiJoinAdapter.exit(
+      maker.currentAddress(),
+      BigNumber(exitAmountInDai).toString()
+    );
+  }
+
   return (
     <div className="wrap">
       <Head>
@@ -152,6 +168,16 @@ const Index = () => {
           />
           <br />
           <button onClick={() => joinDaiToAdapter()}>Send To Adapter</button>
+
+          <Input
+            type="number"
+            min="0"
+            value={exitAmount}
+            placeholder={'0.00 DAI'}
+            onChange={e => setExitAmount(e.target.value)}
+          />
+          <br />
+          <button onClick={() => exit()}>Exit from Adapter</button>
 
           <br />
           <br />
