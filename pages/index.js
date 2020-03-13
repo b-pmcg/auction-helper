@@ -56,6 +56,17 @@ const Index = () => {
     }
   }
 
+  // seth send “$MCD_VAT” ‘hope(address)’ "$MCD_FLIP_ETH"
+  async function hope() {
+    const flipEth = maker
+      .service('smartContract')
+      .getContract('MCD_FLIP_ETH_A');
+    await maker
+      .service('smartContract')
+      .getContract('MCD_VAT')
+      .hope(flipEth.address);
+  }
+
   function handleAuctionIdInputChange({ target }) {
     console.log('auctionid', target.value);
     setAuctionId(target.value);
@@ -144,6 +155,9 @@ const Index = () => {
           />
           <br />
           <button onClick={() => joinDaiToAdapter()}>Send To Adapter</button>
+
+          <br />
+          <button onClick={() => hope()}>Hope</button>
         </div>
       )}
     </div>
