@@ -2,65 +2,94 @@ import React, { useState } from 'react';
 import Head from 'next/head';
 import useMaker from '../hooks/useMaker';
 import * as _ from 'lodash';
-import { Text, Input, Grid, Button, Flex } from '@makerdao/ui-components-core';
-import BigNumber from 'bignumber.js';
-import { withTheme } from 'styled-components';
+import { Text, Grid, Input, Flex } from "@makerdao/ui-components-core";
+import BigNumber from "bignumber.js";
+import styled, { withTheme } from "styled-components";
 
-const panelStyle = {
-  display: 'flex',
-  maxWidth: '1440px',
+const Button = styled.button`
+  display: inline-flex;
+  height: 48px;
+  width: 130px;
+  padding: 12px;
+  font-size: 16px;
+  line-height: 24px;
+  justify-content: center;
+  border: 1px solid #1AAB9B;
+  align-items: center;
+  background: #1AAB9B;
+  border-radius: 4px;
+  color: white;
+
+  &:hover:not(:disabled) {
+    border: 1px solid #139d8d;
+    background: #139d8d;
+    cursor: pointer;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    pointerEvents: none;
+  }
+`;
+
+const Panel = styled.section`
+  flex-direction: column;
+  display: flex;
+  border: 1px solid #D8E0E3;
+  box-sizing: border-box;
+  border-radius: 6px;
+  width: 100%;
+  max-width: 1140px;
+  background: white;
+  margin:auto;
+  margin-bottom: 22px;
+`;
+
+const PanelHeader = styled.header`
+  display: flex;
+  padding: 24px 18px 24px 36px;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #D8E0E3;
+`;
+
+const PanelBody = styled.div`
+  display: flex;
+  flexWrap: wrap;
+  padding: 36px 28px;
+`;
+
+const thStyle = {
+  width: 'calc(100% / 5 )',
+  textAlign:'left',
+  fontSize:'11px',
+  fontWeight: 'bold',
+  color: '#48495F',
+  textTransform:'uppercase',
+  letterSpacing:'0.05em',
+};
+
+const tdStyle = {
+  width: 'calc(100% / 5 )',
+  textAlign:'left',
+  fontSize:'15px',
+  color: '#231536',
+}
+
+const trStyle = {
   width: '100%',
-  flexWrap: 'wrap',
-  padding: '16px',
-  border: '1px solid rgb(212, 217, 225)',
-  background: 'white',
-  margin: 'auto',
-  marginBottom: '8px'
-};
+  height: '48px',
+  borderBottom: '1px solid #D8E0E3'
+}
 
-const panelHeader = {
-  display: 'flex',
-  padding: '16px 0',
-  width: `100%`,
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  borderBottom: '1px solid rgb(212, 217, 225)'
-};
-
-const panelBody = {
-  display: 'flex',
-  width: '100%',
-  flexWrap: 'wrap',
-  padding: '16px 0'
-};
-
-const eventData = {
-  display: 'flex',
-  padding: '16px',
-  justifyContent: 'space-between',
-  width: '100%'
-};
-
-const eventParam = {
-  width: 'auto'
-};
-
-const bidButton = {
-  padding: '4px',
-  height: '40px',
-  width: '60px',
-  fontSize: '18px',
-  backgroundColor: 'rgb(26, 171, 155)',
-  border: '1px solid rgb(26, 171, 155)',
-  color: 'white'
-};
-
-const bidInput = {
-  width: '100px',
-  marginRight: '16px',
-  height: '30px',
-  padding: '4px'
-};
+const AuctionId = ({id}) => <span style={{
+  fontSize: '20px',
+  color: '#231536',
+  letterSpacing: '.3px',
+}}>
+  Auction ID: {id}
+</span>;
 
 function fromRad(value) {
   return BigNumber(value).shiftedBy(-45);
@@ -75,32 +104,37 @@ const Bidform = props => {
   };
 
   return (
-    <div>
-      <input
-        style={bidInput}
-        type="text"
-        placeholder="Bid Amount"
-        onChange={event => {
-          const inputValue = event.target.value;
-          if (inputValue === '') {
-            setAmount(undefined);
-          }
-          setAmount(inputValue);
-        }}
+    <div style={{display: 'flex'}}>
+      <input  type="text"
+              placeholder="Bid Amount"
+              onChange={
+              event => {
+                const inputValue = event.target.value;
+
+                if(inputValue === '') {
+                  setAmount(undefined);
+                }
+
+                setAmount(inputValue);
+              }}
+              style={{
+                  border: '1px solid #546978',
+                  boxSizing: 'border-box',
+                  height: '48px',
+                  borderRadius: '4px',
+                  marginRight: '10px',
+                  padding: '16px',
+                  color: '#231536',
+              }}
       />
-      <Button
-        style={bidButton}
-        onClick={() => {
-          console.log(amount, auctionId, lot);
-        }}
-        disabled={!amount || !lot || !auctionId}
-        onClick={bid}
+      <Button disabled={!amount || !lot || !auctionId}
+              onClick={bid}
       >
-        Bid
+                Bid
       </Button>
     </div>
-  );
-};
+  )
+}
 
 const Index = () => {
   const { maker } = useMaker();
@@ -206,7 +240,18 @@ const Index = () => {
     return value ? value : def;
   };
 
+  const autoConnect = async () => {
+    if(!web3Connected) {
+      connectBrowserWallet();
+    } else if(auctions.length === 0) {
+      fetchAuctions();
+    }
+  }
+  
+  autoConnect();
+
   return (
+    
     <div className="wrap">
       <Head>
         <title>Auction Helper (Beta)</title>
@@ -308,80 +353,57 @@ const Index = () => {
           <br />
           <br />
           <button onClick={fetchAuctions}>List Auctions</button>
-          <div>
-            {!auctions && <span> Loading Auctions...</span>}
-            {auctions &&
-              Object.keys(auctions).map(auctionId => {
-                const kickEvent = auctions[auctionId].find(
-                  event => event.type === 'Kick'
-                );
-                const firstTend = auctions[auctionId].find(
-                  event => event.type === 'Tend'
-                );
+          
+            { !auctions && <span> Loading Auctions...</span >}
+            { auctions && Object.keys(auctions).reverse().map(
+              auctionId => {
+                const kickEvent = auctions[auctionId].find(event=>event.type === 'Kick');
+                const firstTend = auctions[auctionId].find(event=>event.type === 'Tend');
                 let lot = kickEvent ? kickEvent.lot : firstTend.lot;
-                return (
-                  <div key={auctionId} style={panelStyle}>
-                    <div style={panelHeader}>
-                      Auction ID: {auctionId}
-                      <span> Lot: {lot}</span>
-                      <Bidform
-                        auctionId={auctionId}
-                        lot={lot}
-                        onClick={callTend}
-                      />
-                    </div>
-                    <div style={panelBody}>
-                      {auctions[auctionId].map(event => {
-                        return (
-                          <div
-                            style={eventData}
-                            key={`${auctionId}-${event.id}`}
-                          >
-                            <div style={eventParam}>
-                              <span>
-                                Type: <span></span>
-                              </span>
-                              <span>{event.type}</span>
-                            </div>
-                            <div style={eventParam}>
-                              <span>
-                                Lot: <span></span>
-                              </span>
-                              <span>{getValueOrDefault(event.lot)}</span>
-                            </div>
-                            <div style={eventParam}>
-                              <span>
-                                Bid: <span></span>
-                              </span>
-                              <span>{getValueOrDefault(event.bid)}</span>
-                            </div>
-                            <div style={eventParam}>
-                              <span>
-                                Ink: <span></span>
-                              </span>
-                              <span>{getValueOrDefault(event.ink)}</span>
-                            </div>
-                            <div style={eventParam}>
-                              <span>
-                                Tab: <span></span>
-                              </span>
-                              <span>{getValueOrDefault(event.tab)}</span>
-                            </div>
-                            <div style={eventParam}>
-                              <span>
-                                Timestamp: <span></span>
-                              </span>
-                              <span>{event.timestamp}</span>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
+                return <Panel key={auctionId}>
+                  <PanelHeader>
+                    <AuctionId id={auctionId}/>
+                    <Bidform auctionId={auctionId} lot={lot} onClick={callTend}/>
+                  </PanelHeader>
+                  <PanelBody>
+                    <table style={{width: '100%',  borderCollapse: 'collapse'}}>
+                      <thead>
+                        <tr style={trStyle}>
+                          <th style={thStyle}>Event Type:</th>
+                          <th style={thStyle}>Lot Size:</th>
+                          <th style={thStyle}>Current Bid Price:</th>
+                          <th style={thStyle}>Bid Value:</th>
+                          <th style={thStyle}>Timestamp:</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {
+                        auctions[auctionId].map(event => {
+                          return (
+                            <tr key={`${auctionId}-${event.id}` } style={trStyle}>
+                              <td style={tdStyle}>{ event.type }</td>
+                              <td style={tdStyle}>{ new BigNumber(getValueOrDefault(event.lot)).toFormat(5,4) } ETH</td>
+                              <td style={tdStyle}>
+                                { new BigNumber(getValueOrDefault(event.bid))
+                                  .div(new BigNumber(getValueOrDefault(event.lot)))
+                                  .toFormat(5,4)
+                                } DAI
+                              </td>
+                              <td style={tdStyle}>{ new BigNumber(getValueOrDefault(event.bid)).toFormat(5,4)} DAI</td>
+                              <td style={tdStyle} title={event.timestamp}>{ new Date(event.timestamp).toDateString() }</td>
+                            </tr>
+                          )
+                        })
+                      }  
+                      </tbody>
+                    </table>
+                                     
+                  </PanelBody>
+                </Panel>
+              }
+            )}
+
           </div>
-        </div>
       )}
     </div>
   );

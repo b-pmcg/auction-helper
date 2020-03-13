@@ -88,7 +88,7 @@ export default class ValidatorService extends PublicService {
     // }`;
 
     const queryDate = new Date();
-    queryDate.setHours(queryDate.getHours() - 10);
+    queryDate.setHours(queryDate.getHours() - 12);
 
     const query = `query allLeveragedEvents($token: String, $fromDate: Datetime) {
       allLeveragedEvents(
