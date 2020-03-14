@@ -6,7 +6,7 @@ import useMaker from '../hooks/useMaker';
 import GuttedLayout from './GuttedLayout';
 import Logo from './Logo';
 export default ({ web3Connected, setWeb3Connected }) => {
-  const { maker } = useMaker();
+  const { maker, network } = useMaker();  
 
   async function connectBrowserWallet() {
     try {
@@ -81,7 +81,7 @@ export default ({ web3Connected, setWeb3Connected }) => {
                 flex: '1 1 auto'
               }}>
                 <span  sx={{
-                  color:'primary',
+                  color: network === 'mainnet' ? 'primary' : 'purple',
                   marginRight: 2
                 }}>
                   ●
