@@ -31,6 +31,7 @@ export default {
     text: '#231536',
     background: '#F6F8F9',
     primary: '#1AAB9B',
+    lightGreen: '#B6EDE7',
     purple:'#7c4dff',
     blackThree: '#333',
     border: '#D4D9E1',
@@ -46,11 +47,14 @@ export default {
   buttons: {
     primary: {
       fontFamily: 'body',
-      fontSize: 1,
+      fontSize: 4,
       color: 'background',
       bg: 'primary',
       '&:hover': {
         bg: 'text',
+      },
+      '&:disabled': {
+        bg: 'lightGreen'
       }
     },
   },

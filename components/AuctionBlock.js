@@ -58,7 +58,7 @@ const AuctionEvent = () => {
     </Grid>
   );
 };
-export default ({}) => {
+export default ({web3Connected}) => {
   return (
     <Grid
       gap={5}
@@ -96,7 +96,7 @@ export default ({}) => {
               borderColor: 'border'
             }}
           ></Input>
-          <Button sx={{ ml: 2 }}>Bid Now</Button>
+          <Button sx={{ ml: 2 }} disabled={!web3Connected}>Bid Now</Button>
         </Flex>
         <Text variant="small">info / error msgg</Text>
       </Grid>
@@ -104,52 +104,4 @@ export default ({}) => {
   );
 };
 
-// export default ({ auctionId, lot }) => {
-//   return (
-//     <Flex key={auctionId}>
-//       <Flex>
-//         <AuctionId id={auctionId} />
-//         <Bidform auctionId={auctionId} lot={lot} onClick={callTend} />
-//       </Flex>
-//       <Flex>
-//         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-//           <thead>
-//             <tr style={trStyle}>
-//               <th style={thStyle}>Event Type:</th>
-//               <th style={thStyle}>Lot Size:</th>
-//               <th style={thStyle}>Current Bid Price:</th>
-//               <th style={thStyle}>Bid Value:</th>
-//               <th style={thStyle}>Timestamp:</th>
-//             </tr>
-//           </thead>
-//           <tbody>
-//             {auctions[auctionId].map(event => {
-//               return (
-//                 <tr key={`${auctionId}-${event.id}`} style={trStyle}>
-//                   <td style={tdStyle}>{event.type}</td>
-//                   <td style={tdStyle}>
-//                     {new BigNumber(getValueOrDefault(event.lot)).toFormat(5, 4)}{' '}
-//                     ETH
-//                   </td>
-//                   <td style={tdStyle}>
-//                     {new BigNumber(getValueOrDefault(event.bid))
-//                       .div(new BigNumber(getValueOrDefault(event.lot)))
-//                       .toFormat(5, 4)}{' '}
-//                     DAI
-//                   </td>
-//                   <td style={tdStyle}>
-//                     {new BigNumber(getValueOrDefault(event.bid)).toFormat(5, 4)}{' '}
-//                     DAI
-//                   </td>
-//                   <td style={tdStyle} title={event.timestamp}>
-//                     {new Date(event.timestamp).toDateString()}
-//                   </td>
-//                 </tr>
-//               );
-//             })}
-//           </tbody>
-//         </table>
-//       </Flex>
-//     </Flex>
-//   );
-// };
+
