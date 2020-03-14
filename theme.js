@@ -6,7 +6,7 @@ export default {
 
   breakpoints: ['40em', '52em', '64em'],
 
-  space: [0, 4, 8, 12, 14, 16, 32, 64, 128, 256, 512],
+  space: [0, 4, 8, 12, 14, 16, 24, 32, 64, 128, 256, 512],
   
   fonts: {
     body: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
@@ -33,7 +33,7 @@ export default {
     primary: '#1AAB9B',
     blackThree: '#333',
     border: '#D4D9E1',
-    background: '#fff'
+    white: '#fff'
 
     // text: '#000',
     // background: '#fff',
@@ -70,6 +70,11 @@ export default {
       fontWeight: 'semiBold',
       letterSpacing: '0.4px',
       
+    },
+    boldBody: {
+      fontSize: 4,
+      fontWeight: 'semiBold',
+      letterSpacing: '0.3px'
     },
     small: {
       fontSize: 1,

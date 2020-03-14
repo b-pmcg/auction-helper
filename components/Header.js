@@ -25,7 +25,7 @@ export default ({ web3Connected, setWeb3Connected }) => {
     }
   };
 
-  autoConnect();
+  // autoConnect();
 
  const formatAccountAddress = (address) => 
   address.slice(0, 7) + '...' + address.slice(-4) 
@@ -65,7 +65,7 @@ export default ({ web3Connected, setWeb3Connected }) => {
         ) : (
           <Flex sx={{
             p: 2,
-            bg: 'background',
+            bg: 'white',
             px: 4,
             py: 3,    
             fontSize: 2,
