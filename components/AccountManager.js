@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import React from 'react';
+import React, {useState} from 'react';
 import useMaker from '../hooks/useMaker';
 import {
   Heading,
@@ -13,11 +13,10 @@ import {
   Input,
   Flex
 } from 'theme-ui';
+import { AUCTION_DATA_FETCHER } from '../constants';
 
 export default ({ web3Connected }) => {
   const { maker } = useMaker();
-  const AUCTION_DATA_FETCHER = 'validator'; //TODO update this when we change the name
-  const service = maker.service(AUCTION_DATA_FETCHER);
   const [daiApprovePending, setDaiApprovePending] = useState(false);
   const [proxyDetails, setProxyDetails] = useState({});
 
@@ -37,6 +36,7 @@ export default ({ web3Connected }) => {
     }
     setDaiApprovePending(false);
   };
+
   const giveHope = async address => {
     await maker
       .service('smartContract')
@@ -91,10 +91,20 @@ export default ({ web3Connected }) => {
         <Button onClick={() => giveDaiAllowance(maker.currentAddress())}>
           Unlock Dai in your wallet
         </Button>
-        <Button onClick={() => giveHope(service.flipEthAddress)}>
+        <Button
+          onClick={() => {
+            const service = maker.service(AUCTION_DATA_FETCHER);
+            giveHope(service.flipEthAddress);
+          }}
+        >
           Unlock Dai in the adapter
         </Button>
-        <Button onClick={() => giveHope(service.joinDaiAdapterAddress)}>
+        <Button
+          onClick={() => {
+            const service = maker.service(AUCTION_DATA_FETCHER);
+            service.joinDaiAdapterAddressZ;
+          }}
+        >
           Unlock Dai in the VAT
         </Button>
       </Grid>
