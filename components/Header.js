@@ -74,7 +74,8 @@ export default ({ web3Connected, setWeb3Connected }) => {
             borderWidth: 1,
             borderStyle: 'solid',
             borderColor: 'border',
-            borderRadius: 4
+            borderRadius: 4,
+            color: 'blackThree',
           }}>
               <Flex sx={{
                 flex: '1 1 auto'
