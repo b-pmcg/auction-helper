@@ -15,7 +15,6 @@
     "@makerdao/currency": "^0.9.6",
     "@makerdao/dai": "^0.23.0-rc.5",
     "@makerdao/dai-plugin-mcd": "^1.0.5",
-    "@makerdao/ui-components-core": "^0.3.5-rc.1",
     "bignumber.js": "^9.0.0",
     "dotenv": "^8.2.0",
     "ipfs": "^0.41.2",
@@ -25,7 +24,7 @@
     "ramda": "^0.27.0",
     "react": "16.12.0",
     "react-dom": "16.12.0",
-    "styled-components": "^5.0.1"
+    "theme-ui": "^0.3.1"
   },
   "devDependencies": {
     "eslint": "^6.8.0"
