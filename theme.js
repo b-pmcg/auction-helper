@@ -57,6 +57,11 @@ export default {
         bg: 'lightGreen'
       }
     },
+    disabled: {
+      pointerEvents: 'none',
+      cursor: 'not-allowed',
+      opacity: '.5'
+    }
   },
 
   text: {
@@ -82,6 +87,9 @@ export default {
       letterSpacing: '0.3px'
     },
     small: {
+      fontSize: 1,
+    },
+    smallDanger: {
       fontSize: 1,
       color: 'red'
     }

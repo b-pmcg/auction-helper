@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Heading,
   Text,
@@ -9,9 +9,11 @@ import {
   Grid,
   Box,
   Styled,
+  Label,
   Input,
   Flex
 } from 'theme-ui';
+import BigNumber from 'bignumber.js';
 
 const AuctionEvent = () => {
   const fields = [
@@ -58,7 +60,33 @@ const AuctionEvent = () => {
     </Grid>
   );
 };
-export default ({web3Connected}) => {
+
+
+
+export default ({webConnected}) => {
+
+  const [state, setState] = useState({ amount: undefined, error: undefined});
+
+  const maxBid = new BigNumber(100); // This should be taken from somewhere?
+
+  const handleBidAmountInput = (event) => {
+    const value = event.target.value;
+    const state = {amount: undefined, error: undefined};
+ 
+    if(value){
+      state.amount = new BigNumber(value);
+
+      if(state.amount.gt(maxBid)) {
+        state.error = "Your bid exceeds the max bid, you will need to decrease.";
+      }      
+    }     
+    
+    setState(state);
+  }
+
+
+  const bidDisabled = state.error || !state.amount; // TODO: add !webConnected as well but there was issue with it   
+
   return (
     <Grid
       gap={5}
@@ -89,16 +117,38 @@ export default ({web3Connected}) => {
       </Box>
       <Grid gap={2}>
         <Text variant="boldBody">Enter your bid in MKR for this Auction</Text>
-        <Flex>
-          <Input
-            sx={{
-              maxWidth: 100,
-              borderColor: 'border'
-            }}
-          ></Input>
-          <Button sx={{ ml: 2 }} disabled={!web3Connected}>Bid Now</Button>
+        <Flex sx={{}}>
+          <Flex sx={{
+            maxWidth: '224px',
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            borderColor: 'border',
+            fontSize: 4,
+            lineHeight: '24px',
+            py: 3,
+            px: 5,
+          }}>
+            <Input
+              sx={{
+                border: 'none',
+                outline: 'none',
+                p: 0,
+                marginRight:'2'
+              }}
+              id="big-amount"
+              type="number"
+              step="0.01"
+              placeholder="0"
+              onChange={handleBidAmountInput}
+            />
+            <Label sx={{p: 0, width: 'auto'}} htmlFor="bid-amount">MKR</Label>
+          </Flex>          
+          <Button sx={{ ml: 2 }} variant={bidDisabled && 'disabled'} disabled={bidDisabled}>Bid Now</Button>
         </Flex>
-        <Text variant="small">info / error msgg</Text>
+        {
+          state.error && <Text variant="smallDanger">{ state.error } </Text>
+        }
+        <Text variant="small">Price 1 MKR = 300 DAI</Text>
       </Grid>
     </Grid>
   );
