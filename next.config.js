@@ -1,11 +1,10 @@
 require('dotenv').config()
 
 module.exports = {
-  assetPrefix: './',
+  // assetPrefix: './',
   // exportTrailingSlash: true,
 
   env: {
     IPFS: process.env.IPFS,
   },
-
 }

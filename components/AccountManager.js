@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import React, { useState } from 'react';
+import React from 'react';
 import useMaker from '../hooks/useMaker';
 import {
   Heading,
@@ -14,7 +14,7 @@ import {
   Flex
 } from 'theme-ui';
 
-export default ({ web3Ready }) => {
+export default ({ web3Connected }) => {
   const { maker } = useMaker();
   const AUCTION_DATA_FETCHER = 'validator'; //TODO update this when we change the name
   const service = maker.service(AUCTION_DATA_FETCHER);
@@ -37,26 +37,45 @@ export default ({ web3Ready }) => {
     }
     setDaiApprovePending(false);
   };
-
   const giveHope = async address => {
     await maker
       .service('smartContract')
       .getContract('MCD_VAT')
       .hope(address);
   };
-
+  if (!web3Connected) {
+    return (
+      <Flex
+        sx={{
+          justifyContent: 'center',
+          py: 4
+        }}
+      >
+        <Heading
+          as="h2"
+          variant="h2"
+          sx={{
+            mb: 2
+          }}
+        >
+          To participate in auctions, connect your wallet
+        </Heading>
+      </Flex>
+    );
+  }
   return (
     <Box
       sx={{
         textAlign: 'center',
-        mx: 'auto'
+        mx: 'auto',
+        py: 8
       }}
     >
       <Heading
         as="h2"
         variant="h2"
         sx={{
-          mb: 2
+          mb: 5
         }}
       >
         To participate in auctions you need to sign these 3 approval

@@ -15,6 +15,8 @@ function fromRad(value) {
 
 const Index = ({ web3Connected }) => {
   const { maker } = useMaker();
+  console.log(maker);
+  
   const [auctions, setAuctions] = useState(null);
   const AUCTION_DATA_FETCHER = 'validator'; //TODO update this when we change the name
   const service = maker.service(AUCTION_DATA_FETCHER);
@@ -108,14 +110,15 @@ const Index = ({ web3Connected }) => {
       </Head>
 
       {!maker ? (
-        <div>
+        <Flex sx={{
+          justifyContent: 'center',
+          p: 8
+        }}>
           <Heading as="h3">Loading...</Heading>
-        </div>
-      ) : !web3Connected ? (
-        <Heading>Connect your wallet to continue </Heading>
+        </Flex>
       ) : (
         <>
-          <AccountManager />
+          <AccountManager web3Connected={web3Connected}/>
           <Box
             sx={{
               mt: 5
@@ -124,7 +127,6 @@ const Index = ({ web3Connected }) => {
             <AuctionBlock />
           </Box>
           <div>
-            {!auctions && <span> Loading Auctions...</span>}
             {auctions &&
               Object.keys(auctions)
                 .reverse()
@@ -137,7 +139,7 @@ const Index = ({ web3Connected }) => {
                   );
                   let lot = kickEvent ? kickEvent.lot : firstTend.lot;
                   console.log(auctionId, 'here');
-                  return <AuctionBlock lot={lot} auctionId={auctionId} />;
+                  return <AuctionBlock lot={lot} auctionId={auctionId} web3Connected={web3Connected} />;
                 })}
           </div>
         </>

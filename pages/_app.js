@@ -24,7 +24,8 @@ class MyApp extends App {
     return (
       <ThemeProvider theme={theme}>
         <Styled.root>
-          <MakerProvider network={network}>
+          <MakerProvider network={network} web3Connected={web3Connected}>
+
             <Header
               web3Connected={web3Connected}
               setWeb3Connected={this.setWeb3Connected}

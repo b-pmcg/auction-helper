@@ -11,18 +11,15 @@ export const DAI = MDAI;
 let maker;
 
 export async function instantiateMaker(network) {
+  const mcdPluginConfig = {};
+  if (network === 'kovan') {
+    mcdPluginConfig.addressOverrides = require('./addresses-kovan.json');
+  }
+
   const config = {
     log: true,
-    // autoAuthenticate: false,
-    plugins: [
-      [
-        mcdPlugin,
-        {
-          cdpTypes: [{ currency: ETH, ilk: 'ETH-A' }]
-        }
-      ],
-      validatorPlugin
-    ],
+    autoAuthenticate: false,
+    plugins: [[mcdPlugin, mcdPluginConfig], validatorPlugin],
     web3: {
       transactionSettings: {
         gasLimit: '150000'
@@ -31,6 +28,7 @@ export async function instantiateMaker(network) {
   };
 
   maker = await Maker.create('browser', config);
+
   window.maker = maker; // for debugging
   return maker;
 }

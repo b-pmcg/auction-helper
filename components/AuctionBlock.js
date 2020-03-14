@@ -1,83 +1,17 @@
 /** @jsx jsx */
 
 import React from 'react';
-import { Heading, Text, jsx, Button, Grid, Box, Styled, Input, Flex } from 'theme-ui'
-
-const thStyle = {
-  width: 'calc(100% / 5 )',
-  textAlign: 'left',
-  fontSize: '11px',
-  fontWeight: 'bold',
-  color: '#48495F',
-  textTransform: 'uppercase',
-  letterSpacing: '0.05em'
-};
-
-const tdStyle = {
-  width: 'calc(100% / 5 )',
-  textAlign: 'left',
-  fontSize: '15px',
-  color: '#231536'
-};
-
-const trStyle = {
-  width: '100%',
-  height: '48px',
-  borderBottom: '1px solid #D8E0E3'
-};
-
-const AuctionId = ({ id }) => (
-  <span
-    style={{
-      fontSize: '20px',
-      color: '#231536',
-      letterSpacing: '.3px'
-    }}
-  >
-    Auction ID: {id}
-  </span>
-);
-
-const Bidform = props => {
-  const [amount, setAmount] = useState(undefined);
-  const { auctionId, lot, onClick } = props;
-
-  const bid = () => {
-    onClick(auctionId, lot, amount);
-  };
-
-  return (
-    <div style={{ display: 'flex' }}>
-      <input
-        type="text"
-        placeholder="Bid Amount"
-        onChange={event => {
-          const inputValue = event.target.value;
-
-          if (inputValue === '') {
-            setAmount(undefined);
-          }
-
-          setAmount(inputValue);
-        }}
-        style={{
-          border: '1px solid #546978',
-          boxSizing: 'border-box',
-          height: '48px',
-          borderRadius: '4px',
-          marginRight: '10px',
-          padding: '16px',
-          color: '#231536'
-        }}
-      />
-      <Button disabled={!amount || !lot || !auctionId} onClick={bid}>
-        Bid
-      </Button>
-    </div>
-  );
-};
-
-
+import {
+  Heading,
+  Text,
+  jsx,
+  Button,
+  Grid,
+  Box,
+  Styled,
+  Input,
+  Flex
+} from 'theme-ui';
 
 const AuctionEvent = () => {
   const fields = [
@@ -87,61 +21,88 @@ const AuctionEvent = () => {
     ['Bid Value', 'x'],
     ['Timestamp', 'x'],
     ['Transaction', 'x'],
-    ['Sender', 'x'],
-  ]
+    ['Sender', 'x']
+  ];
   return (
-    <Grid   gap={2}
-    columns={[ 7 ]} sx={{
-      bg: 'background',
-      p: 3,
-    }}>
+    <Grid
+      gap={2}
+      columns={[7]}
+      sx={{
+        bg: 'background',
+        p: 5,
+        borderRadius: 5
+      }}
+    >
       {fields.map(([title, value]) => {
         return (
           <Box>
-            <Text variant="caps" sx={{
-              fontSize: '10px',
-              mb: 1
-            }}>{title}</Text>
-            <Text sx={{
-              fontSize: 1
-            }}>{value}</Text>
+            <Text
+              variant="caps"
+              sx={{
+                fontSize: '10px',
+                mb: 2
+              }}
+            >
+              {title}
+            </Text>
+            <Text
+              sx={{
+                fontSize: 1
+              }}
+            >
+              {value}
+            </Text>
           </Box>
-        )
+        );
       })}
     </Grid>
-  )
-}
- export default ({}) => {
+  );
+};
+export default ({}) => {
   return (
-    <Grid sx={{
-      bg: '#fff',
-      p: 3,
-      borderRadius: 5
-
-    }
-    }>
+    <Grid
+      gap={5}
+      sx={{
+        bg: '#fff',
+        p: 6,
+        borderRadius: 5,
+        border: '1px solid',
+        borderColor: 'border'
+      }}
+    >
       <Flex>
-        <Heading as="h5">Auction ID: 22</Heading>
-        <Heading as="h5" sx={{
-          ml: 'auto'
-        }}>1h 20m 20s</Heading>
+        <Heading as="h5" variant="h2">
+          Auction ID: 22
+        </Heading>
+        <Heading
+          as="h5"
+          variant="h2"
+          sx={{
+            ml: 'auto'
+          }}
+        >
+          Time remaining: 1h 20m 20s
+        </Heading>
       </Flex>
       <Box>
         <AuctionEvent />
       </Box>
       <Grid gap={2}>
-        <Text>Enter your bid in MKR for this Auction</Text>
+        <Text variant="boldBody">Enter your bid in MKR for this Auction</Text>
         <Flex>
-          <Input sx={{
-        maxWidth: 100
-      }}></Input>
-          <Button sx={{ml: 2}}>Bid Now</Button>
+          <Input
+            sx={{
+              maxWidth: 100,
+              borderColor: 'border'
+            }}
+          ></Input>
+          <Button sx={{ ml: 2 }}>Bid Now</Button>
         </Flex>
         <Text variant="small">info / error msgg</Text>
       </Grid>
     </Grid>
-  )
-}
+  );
+};
 
 // export default ({ auctionId, lot }) => {
 //   return (
