@@ -6,7 +6,7 @@ import * as _ from 'lodash';
 import BigNumber from 'bignumber.js';
 import { Heading, Text, jsx, Box, Button, Styled, Input, Flex } from 'theme-ui';
 import AuctionBlock from '../components/AuctionBlock';
-
+import AccountManager from '../components/AccountManager'
 function fromRad(value) {
   return BigNumber(value).shiftedBy(-45);
 }
@@ -123,6 +123,9 @@ const Index = ({ web3Connected }) => {
       ) : !web3Connected ? (
         <Heading>Connect your wallet to continue </Heading>
       ) : (
+        <>
+        <AccountManager />
+
         <div>
           {!auctions && <span> Loading Auctions...</span>}
           {auctions &&
@@ -140,6 +143,7 @@ const Index = ({ web3Connected }) => {
                 return <AuctionBlock lot={lot} auctionId={auctionId} />;
               })}
         </div>
+        </>
       )}
     </Box>
   );
