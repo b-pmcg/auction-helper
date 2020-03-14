@@ -3,9 +3,11 @@ import App from 'next/app';
 import MakerProvider from '../providers/MakerProvider';
 import { ThemeProvider, Styled } from 'theme-ui';
 import theme from '../theme';
-
+import Header from '../components/Header';
 class MyApp extends App {
-  state = {};
+  state = {
+    web3Connected: false
+  };
 
   componentDidMount() {
     this.setState({
@@ -13,14 +15,25 @@ class MyApp extends App {
     });
   }
 
+  setWeb3Connected = state => {
+    this.setState({ web3Connected: state });
+  };
   render() {
     const { Component, pageProps } = this.props;
-    const { network } = this.state;
+    const { network, web3Connected } = this.state;
     return (
       <ThemeProvider theme={theme}>
         <Styled.root>
           <MakerProvider network={network}>
-            <Component {...pageProps} />
+            <Header
+              web3Connected={web3Connected}
+              setWeb3Connected={this.setWeb3Connected}
+            />
+            <Component
+              {...pageProps}
+              web3Connected={web3Connected}
+              setWeb3Connected={this.setWeb3Connected}
+            />
           </MakerProvider>
         </Styled.root>
       </ThemeProvider>
