@@ -3,6 +3,7 @@
 import { Heading, Text, jsx, Button, NavLink, Box, Flex } from 'theme-ui';
 import Link from 'next/link';
 import useMaker from '../hooks/useMaker';
+import GuttedLayout from './GuttedLayout';
 
 export default ({ web3Connected, setWeb3Connected }) => {
   const { maker } = useMaker();
@@ -27,6 +28,7 @@ export default ({ web3Connected, setWeb3Connected }) => {
   autoConnect();
 
   return (
+    <GuttedLayout>
     <Flex sx={{ p: 10, justifyContent: 'flex-start' }}>
       <Link href="/">
         <Heading
@@ -62,5 +64,6 @@ export default ({ web3Connected, setWeb3Connected }) => {
         </Box>
       )}
     </Flex>
+    </GuttedLayout>
   );
 };

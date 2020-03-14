@@ -1,19 +1,28 @@
 
 // example base theme from @theme-ui/presets
 export default {
+  useBorderBox: true,
+  useBodyStyles: true,
+
   breakpoints: ['40em', '52em', '64em'],
+
   space: [0, 4, 8, 16, 32, 64, 128, 256, 512],
+
   fonts: {
     body: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
     heading: 'inherit',
     monospace: 'Menlo, monospace',
   },
+
   fontSizes: [12, 14, 16, 20, 24, 32, 48, 64, 96],
+
   fontWeights: {
     body: 400,
     heading: 700,
     bold: 700,
+    semiBold: 500
   },
+
   lineHeights: {
     body: 1.5,
     heading: 1.125,
@@ -48,6 +57,15 @@ export default {
       lineHeight: 'heading',
       fontWeight: 'heading',
     },
+
+    caps: {
+      textTransform: 'uppercase',
+      fontWeight: 'semiBold',
+    },
+    small: {
+      fontSize: 1,
+      color: 'red'
+    }
   },
   styles: {
 
