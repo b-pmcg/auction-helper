@@ -31,6 +31,7 @@ export default {
     text: '#231536',
     background: '#F6F8F9',
     primary: '#1AAB9B',
+    purple:'#7c4dff',
     blackThree: '#333',
     border: '#D4D9E1',
     white: '#fff'
