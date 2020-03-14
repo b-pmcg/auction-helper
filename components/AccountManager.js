@@ -7,17 +7,17 @@ export default ({ web3Ready }) => {
   return <Box sx={{
     textAlign: 'center',
     mx: 'auto',
-    maxWidth: '500px'
   }}>
 
-    <Text sx={{
+    <Heading as="h2" variant="h2" sx={{
       mb: 2,
-      fontWeight: 'bold'
-    }}>
-    If you would like to participate in auctions you need to sign these 3 approval transactions
-    </Text>
+    }}>To participate in auctions you need to sign these 3 approval transactions</Heading>
     
-    <Grid>
+    <Grid sx={{
+      maxWidth: '200px',
+      mx: 'auto',
+
+    }}>
       <Button>Unlock Dai in your wallet</Button>
       <Button>Unlock Dai in the adaptor</Button>
       <Button>Unlock Dai in the VAT</Button>

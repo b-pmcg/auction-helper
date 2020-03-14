@@ -1,7 +1,7 @@
 import React from 'react';
 import App from 'next/app';
 import MakerProvider from '../providers/MakerProvider';
-import { ThemeProvider, Styled } from 'theme-ui';
+import { ThemeProvider, Styled, Box } from 'theme-ui';
 import theme from '../theme';
 import Header from '../components/Header';
 class MyApp extends App {
@@ -29,11 +29,13 @@ class MyApp extends App {
               web3Connected={web3Connected}
               setWeb3Connected={this.setWeb3Connected}
             />
+            <Box pt={4}>
             <Component
               {...pageProps}
               web3Connected={web3Connected}
               setWeb3Connected={this.setWeb3Connected}
             />
+            </Box>
           </MakerProvider>
         </Styled.root>
       </ThemeProvider>
