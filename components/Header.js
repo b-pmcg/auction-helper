@@ -35,14 +35,15 @@ export default ({ web3Connected, setWeb3Connected }) => {
     <GuttedLayout>
       <Flex sx={{ p: 3, justifyContent: 'flex-start' }}>
         <Link href="/">
-          <Box
+          <Flex
             sx={{
               mr: 'auto',
+              alignItems: 'center',
               p:2
             }}
           >
             <Logo />
-          </Box>
+          </Flex>
         </Link>
         <Flex
           as="nav"
