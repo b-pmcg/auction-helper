@@ -94,7 +94,6 @@ const AuctionEvent = () => {
     columns={[ 7 ]} sx={{
       bg: 'background',
       p: 3,
-      borderRadius: 5
     }}>
       {fields.map(([title, value]) => {
         return (

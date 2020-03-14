@@ -6,8 +6,8 @@ export default {
 
   breakpoints: ['40em', '52em', '64em'],
 
-  space: [0, 4, 8, 16, 32, 64, 128, 256, 512],
-
+  space: [0, 4, 8, 12, 14, 16, 32, 64, 128, 256, 512],
+  
   fonts: {
     body: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
     heading: 'inherit',
@@ -31,7 +31,9 @@ export default {
     text: '#231536',
     background: '#F6F8F9',
     primary: '#1AAB9B',
-    blackThree: '#333'
+    blackThree: '#333',
+    border: '#D4D9E1',
+    background: '#fff'
 
     // text: '#000',
     // background: '#fff',
