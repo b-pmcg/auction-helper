@@ -14,7 +14,7 @@ function MakerProvider({ children, network }) {
 
   return (
     <MakerObjectContext.Provider value={{ maker, network }}>
-      {children}
+      {maker ? children : null}
     </MakerObjectContext.Provider>
   );
 }

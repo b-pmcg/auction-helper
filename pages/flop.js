@@ -16,10 +16,8 @@ function fromRad(value) {
 const Index = ({ web3Connected }) => {
   const { maker } = useMaker();
   const [auctions, setAuctions] = useState(null);
-
-  // const [daiBalance, setDaiBalance] = useState(null);
-
-  // const [joinBalance, setJoinBalance] = useState(null);
+  const AUCTION_DATA_FETCHER = 'validator'; //TODO update this when we change the name
+  const service = maker.service(AUCTION_DATA_FETCHER);
 
   // const [auctionId, setAuctionId] = useState('');
   // const [lotSize, setLotSize] = useState('');
@@ -76,29 +74,22 @@ const Index = ({ web3Connected }) => {
   const [joinAmount, setJoinAmount] = useState('');
   const [exitAmount, setExitAmount] = useState('');
 
-  async function joinDaiToAdapter() {
-    const DaiJoinAdapter = maker
-      .service('smartContract')
-      .getContract('MCD_JOIN_DAI');
+  // Grant approval before using the adapter
+  async function grantAllowance() {
+    await maker.getToken('MDAI').approveUnlimited(service.joinAdapterAddress);
+  }
 
+  async function join() {
     const joinAmountInDai = maker.service('web3')._web3.utils.toWei(joinAmount);
-
-    await maker.getToken('MDAI').approveUnlimited(DaiJoinAdapter.address);
-
-    await DaiJoinAdapter.join(
+    await service.joinDaiToAdapter(
       maker.currentAddress(),
       BigNumber(joinAmountInDai).toString()
     );
   }
 
   async function exit() {
-    const DaiJoinAdapter = maker
-      .service('smartContract')
-      .getContract('MCD_JOIN_DAI');
-
     const exitAmountInDai = maker.service('web3')._web3.utils.toWei(exitAmount);
-
-    await DaiJoinAdapter.exit(
+    await service.exitDaiFromAdapter(
       maker.currentAddress(),
       BigNumber(exitAmountInDai).toString()
     );
