@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import useMaker from '../hooks/useMaker';
+import useBalances from '../hooks/useBalances';
 import * as _ from 'lodash';
 import BigNumber from 'bignumber.js';
 import { Heading, Text, jsx, Box, Button, Styled, Input, Flex } from 'theme-ui';
@@ -43,13 +44,21 @@ const Index = ({ web3Connected }) => {
     }
   }
 
+  const { vatDaiBalance, daiBalance, mkrBalance } = useBalances();
+  console.log(
+    'vatDaiBalance, daiBalance, mkrBalance',
+    vatDaiBalance,
+    daiBalance,
+    mkrBalance
+  );
+
   // seth send “$MCD_VAT” ‘hope(address)’ "$MCD_FLIP_ETH"
-  async function hope(address) {
-    await maker
-      .service('smartContract')
-      .getContract('MCD_VAT')
-      .hope(address);
-  }
+  // async function hope(address) {
+  //   await maker
+  //     .service('smartContract')
+  //     .getContract('MCD_VAT')
+  //     .hope(address);
+  // }
 
   function handleAuctionIdInputChange({ target }) {
     console.log('auctionid', target.value);
@@ -107,9 +116,7 @@ const Index = ({ web3Connected }) => {
   console.log(auctions, 'yo');
 
   return (
-    <GuttedLayout
-     
-    >
+    <GuttedLayout>
       <Head>
         <title>Auction Helper (Beta)</title>
       </Head>

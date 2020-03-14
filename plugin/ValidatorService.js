@@ -10,7 +10,7 @@ export default class ValidatorService extends PublicService {
     this.id = 123;
   }
 
-  async getQueryResponse(serverUrl, query, variables={}) {
+  async getQueryResponse(serverUrl, query, variables = {}) {
     const resp = await fetch(serverUrl, {
       method: 'POST',
       headers: {
@@ -74,19 +74,6 @@ export default class ValidatorService extends PublicService {
   // }
 
   async getAllAuctions() {
-    // const query = `{activePolls {
-    //   nodes {
-    //       creator
-    //       pollId
-    //       blockCreated
-    //       startDate
-    //       endDate
-    //       multiHash
-    //       url
-    //     }
-    //   }
-    // }`;
-
     const queryDate = new Date();
     queryDate.setHours(queryDate.getHours() - 12);
 
@@ -128,10 +115,14 @@ export default class ValidatorService extends PublicService {
 
     const variables = {
       token: 'ETH-A',
-      fromDate: queryDate,
-    }
+      fromDate: queryDate
+    };
 
-    const response = await this.getQueryResponse(this.serverUrl, query, variables);
+    const response = await this.getQueryResponse(
+      this.serverUrl,
+      query,
+      variables
+    );
     console.log('GraphQL response', response);
     return response.allLeveragedEvents.nodes;
   }
@@ -181,9 +172,7 @@ export default class ValidatorService extends PublicService {
     console.log('fetching', id);
     try {
       return await this._flipperContract().bids(id);
-    } catch(err) {
-
-    }
+    } catch (err) {}
   }
 
   _flipperContract({ web3js = false } = {}) {

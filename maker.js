@@ -13,7 +13,7 @@ let maker;
 export async function instantiateMaker(network) {
   const config = {
     log: true,
-    autoAuthenticate: false,
+    // autoAuthenticate: false,
     plugins: [
       [
         mcdPlugin,

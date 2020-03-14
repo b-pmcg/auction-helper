@@ -8,17 +8,13 @@ import Link from 'next/link';
 import { Heading, Text, jsx, Box, Button, Styled, Input, Flex } from 'theme-ui';
 import AuctionBlock from '../components/AuctionBlock';
 
-function fromRad(value) {
+export function fromRad(value) {
   return BigNumber(value).shiftedBy(-45);
 }
 
 const Index = ({ web3Connected }) => {
   const { maker } = useMaker();
   const [auctions, setAuctions] = useState(null);
-
-  // const [daiBalance, setDaiBalance] = useState(null);
-
-  // const [joinBalance, setJoinBalance] = useState(null);
 
   // const [auctionId, setAuctionId] = useState('');
   // const [lotSize, setLotSize] = useState('');
