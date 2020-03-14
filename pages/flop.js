@@ -15,7 +15,6 @@ function fromRad(value) {
 
 const Index = ({ web3Connected }) => {
   const { maker } = useMaker();
-  console.log(maker);
   
   const [auctions, setAuctions] = useState(null);
 
@@ -35,7 +34,6 @@ const Index = ({ web3Connected }) => {
     }
   }, [web3Connected, auctions]);
 
-  console.log(auctions, 'auctionsss');
   async function callTend(auctionId, lotSize, bidAmount) {
     try {
       const t = await maker
@@ -115,7 +113,6 @@ const Index = ({ web3Connected }) => {
     return value ? value : def;
   };
 
-  console.log(auctions, 'yo');
 
   return (
     <GuttedLayout>
