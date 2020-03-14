@@ -20,7 +20,6 @@ const Index = ({ web3Connected }) => {
   
  
   const [auctions, setAuctions] = useState(null);
-  const AUCTION_DATA_FETCHER = 'validator'; //TODO update this when we change the name
 
   // const [auctionId, setAuctionId] = useState('');
   // const [lotSize, setLotSize] = useState('');
@@ -126,7 +125,8 @@ const Index = ({ web3Connected }) => {
           <AccountManager web3Connected={web3Connected}/>
           <Box
             sx={{
-              mt: 5
+              mt: 5,
+              pb: 8
             }}
           >
             <AuctionBlock />

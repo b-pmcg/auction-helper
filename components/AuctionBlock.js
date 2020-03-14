@@ -28,7 +28,7 @@ const AuctionEvent = () => {
   return (
     <Grid
       gap={2}
-      columns={[7]}
+      columns={[2, 4, 7]}
       sx={{
         bg: 'background',
         p: 5,
@@ -98,7 +98,11 @@ export default ({webConnected}) => {
         borderColor: 'border'
       }}
     >
-      <Flex>
+      <Flex sx={{
+        flexDirection: ['column', 'row'],
+        justifyContent: 'space-between'
+        
+      }}>
         <Heading as="h5" variant="h2">
           Auction ID: 22
         </Heading>
@@ -106,8 +110,9 @@ export default ({webConnected}) => {
           as="h5"
           variant="h2"
           sx={{
-            ml: 'auto'
-          }}
+            pt: [2, 0]
+          }
+          }
         >
           Time remaining: 1h 20m 20s
         </Heading>
@@ -117,9 +122,11 @@ export default ({webConnected}) => {
       </Box>
       <Grid gap={2}>
         <Text variant="boldBody">Enter your bid in MKR for this Auction</Text>
-        <Flex sx={{}}>
+        <Flex sx={{
+            flexDirection: ['column', 'row'],
+        }}>
           <Flex sx={{
-            maxWidth: '224px',
+            maxWidth: ['100%', '224px'],
             borderWidth: '1px',
             borderStyle: 'solid',
             borderColor: 'border',
@@ -143,7 +150,7 @@ export default ({webConnected}) => {
             />
             <Label sx={{p: 0, width: 'auto'}} htmlFor="bid-amount">MKR</Label>
           </Flex>          
-          <Button sx={{ ml: 2 }} variant={bidDisabled && 'disabled'} disabled={bidDisabled}>Bid Now</Button>
+          <Button sx={{ ml: [0, 2], mt: [2, 0] }} variant={bidDisabled && 'disabled'} disabled={bidDisabled}>Bid Now</Button>
         </Flex>
         {
           state.error && <Text variant="smallDanger">{ state.error } </Text>

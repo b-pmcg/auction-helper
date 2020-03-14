@@ -9,6 +9,7 @@ export default ({ children }) => {
     >
       <Box
         sx={{
+          px: 5,
           width: '1140px'
         }}
       >
