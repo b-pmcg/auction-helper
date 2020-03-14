@@ -2,6 +2,7 @@
     "version": 2,
     "name": "auction-helper",
     "alias": ["mkr-auction-helper"],
+    "public": false,
     "routes": [{ "src": "/(.*)", "dest": "/$1" }],
     "github": { "enabled": false }
   }
