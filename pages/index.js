@@ -4,6 +4,7 @@ import Head from 'next/head';
 import useMaker from '../hooks/useMaker';
 import * as _ from 'lodash';
 import BigNumber from 'bignumber.js';
+import Link from 'next/link';
 import { Heading, Text, jsx, Box, Button, Styled, Input, Flex } from 'theme-ui';
 import AuctionBlock from '../components/AuctionBlock';
 
@@ -31,8 +32,7 @@ const Index = ({ web3Connected }) => {
     }
   }, [web3Connected, auctions]);
 
-
-  console.log(auctions, 'auctionsss')
+  console.log(auctions, 'auctionsss');
   async function callTend(auctionId, lotSize, bidAmount) {
     try {
       const t = await maker
@@ -113,34 +113,20 @@ const Index = ({ web3Connected }) => {
       }}
     >
       <Head>
-        <title>Auction Helper (Beta)</title>
+        <title>Maker Auctions</title>
       </Head>
 
-      {!maker ? (
-        <div>
-          <Heading as="h3">Loading...</Heading>
-        </div>
-      ) : !web3Connected ? (
-        <Heading>Connect your wallet to continue </Heading>
-      ) : (
-        <div>
-          {!auctions && <span> Loading Auctions...</span>}
-          {auctions &&
-            Object.keys(auctions)
-              .reverse()
-              .map(auctionId => {
-                const kickEvent = auctions[auctionId].find(
-                  event => event.type === 'Kick'
-                );
-                const firstTend = auctions[auctionId].find(
-                  event => event.type === 'Tend'
-                );
-                let lot = kickEvent ? kickEvent.lot : firstTend.lot;
-                console.log(auctionId, 'here');
-                return <AuctionBlock lot={lot} auctionId={auctionId} />;
-              })}
-        </div>
-      )}
+      <Text>Welcome to maker auctions</Text>
+      <Box sx={{ my: 2 }}>
+        <Link href="/flip">
+          <Button p={2}>Flip Auctions</Button>
+        </Link>
+      </Box>
+      <Box>
+        <Link href="/flop">
+          <Button p={2}>Flop Auctions</Button>
+        </Link>
+      </Box>
     </Box>
   );
 };

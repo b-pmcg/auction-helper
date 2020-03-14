@@ -1,14 +1,6 @@
 /** @jsx jsx */
 
-import {
-  Heading,
-  Text,
-  jsx,
-  Button,
-  NavLink,
-  Box,
-  Flex
-} from 'theme-ui';
+import { Heading, Text, jsx, Button, NavLink, Box, Flex } from 'theme-ui';
 import Link from 'next/link';
 import useMaker from '../hooks/useMaker';
 
@@ -36,36 +28,36 @@ export default ({ web3Connected, setWeb3Connected }) => {
 
   return (
     <Flex sx={{ p: 10, justifyContent: 'flex-start' }}>
-      <Heading
-        sx={{
-          mr: 'auto'
-        }}
-      >
-        Maker Auctions
-      </Heading>
+      <Link href="/">
+        <Heading
+          sx={{
+            mr: 'auto'
+          }}
+        >
+          Maker Auctions
+        </Heading>
+      </Link>
       <Flex
         as="nav"
         px={{
           ml: 'auto'
         }}
       >
-        <Link href="/">
-          <NavLink href="#!" p={2}>
-            Flip Auctions
-          </NavLink>
+        <Link href="/flip">
+          <NavLink p={2}>Flip Auctions</NavLink>
         </Link>
-        <Link href="/">
-          <NavLink href="#!" p={2}>
-            Flop Auctions
-          </NavLink>
+        <Link href="/flop">
+          <NavLink p={2}>Flop Auctions</NavLink>
         </Link>
       </Flex>
       {!web3Connected ? (
         <Button onClick={connectBrowserWallet}>Connect Wallet</Button>
       ) : (
-        <Box sx={{
-          p: 2
-        }}>
+        <Box
+          sx={{
+            p: 2
+          }}
+        >
           <Text>{maker.currentAddress()}</Text>
         </Box>
       )}
