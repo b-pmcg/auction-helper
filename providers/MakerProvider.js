@@ -8,12 +8,10 @@ function MakerProvider({ children, network, web3Connected }) {
   useEffect(() => {
     if (!network) return;
     instantiateMaker(network).then(maker => {
-      console.log('maker here', maker)
       setMaker(maker);
     });
   }, [network]);
 
-  console.log(maker, 'here')
 
   return (
     <MakerObjectContext.Provider value={{ maker, network, web3Connected }}>

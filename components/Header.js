@@ -33,13 +33,14 @@ export default ({ web3Connected, setWeb3Connected }) => {
 
   return (
     <GuttedLayout>
-      <Flex sx={{ p: 3, justifyContent: 'flex-start' }}>
+      <Flex sx={{ py: 3, justifyContent: 'flex-start' }}>
         <Link href="/">
           <Flex
             sx={{
               mr: 'auto',
               alignItems: 'center',
-              p:2
+              py:2
+              
             }}
           >
             <Logo />
