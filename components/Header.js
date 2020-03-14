@@ -27,18 +27,23 @@ export default ({ web3Connected, setWeb3Connected }) => {
 
   autoConnect();
 
+ const formatAccountAddress = (address) => 
+  address.slice(0, 7) + '...' + address.slice(-4) 
+ 
+
   return (
     <GuttedLayout>
       <Flex sx={{ p: 3, justifyContent: 'flex-start' }}>
         <Link href="/">
-          <Box
+          <Flex
             sx={{
               mr: 'auto',
+              alignItems: 'center',
               p:2
             }}
           >
             <Logo />
-          </Box>
+          </Flex>
         </Link>
         <Flex
           as="nav"
@@ -58,13 +63,35 @@ export default ({ web3Connected, setWeb3Connected }) => {
         {!web3Connected ? (
           <Button onClick={connectBrowserWallet}>Connect Wallet</Button>
         ) : (
-          <Box 
-            sx={{
-              p: 2
-            }}
-          >
-            <Text>{maker.currentAddress()}</Text>
-          </Box>
+          <Flex sx={{
+            p: 2,
+            bg: 'background',
+            px: 4,
+            py: 3,    
+            fontSize: 2,
+            lineHeight: '20px',                
+            width: '296px',
+            borderWidth: 1,
+            borderStyle: 'solid',
+            borderColor: 'border',
+            borderRadius: 4,
+            color: 'blackThree',
+          }}>
+              <Flex sx={{
+                flex: '1 1 auto'
+              }}>
+                <span  sx={{
+                  color:'primary',
+                  marginRight: 2
+                }}>
+                  ●
+                </span>
+                <Text>Metamask</Text>
+              </Flex>
+              <Text>{
+                formatAccountAddress(maker.currentAddress())}
+              </Text>
+          </Flex>
         )}
       </Flex>
     </GuttedLayout>
