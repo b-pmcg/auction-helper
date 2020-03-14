@@ -175,7 +175,34 @@ export default class ValidatorService extends PublicService {
     } catch (err) {}
   }
 
+  async joinDaiToAdapter(address, amount) {
+    await this._joinDaiAdapter.join(address, amount);
+  }
+  async exitDaiFromAdapter(address, amount) {
+    await this._joinDaiAdapter.join(address, amount);
+  }
+
+  get flipperContractAddress() {
+    return this._flipperContract.address;
+  }
+
+  get flipEthAddress() {
+    return this._flipEthAdapter.address;
+  }
+
+  get joinDaiAdapterAddress() {
+    return this._joinDaiAdapter.address;
+  }
+
   _flipperContract({ web3js = false } = {}) {
     return this.get('smartContract').getContractByName('FLIPPER');
+  }
+
+  _flipEthAdapter({ web3js = false } = {}) {
+    return this.get('smartContract').getContractByName('MCD_FLIP_ETH_A');
+  }
+
+  _joinDaiAdapter({ web3js = false } = {}) {
+    return this.get('smartContract').getContractByName('MCD_JOIN_DAI');
   }
 }
