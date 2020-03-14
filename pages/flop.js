@@ -74,11 +74,6 @@ const Index = ({ web3Connected }) => {
   const [joinAmount, setJoinAmount] = useState('');
   const [exitAmount, setExitAmount] = useState('');
 
-  // Grant approval before using the adapter
-  async function grantAllowance() {
-    await maker.getToken('MDAI').approveUnlimited(service.joinAdapterAddress);
-  }
-
   async function join() {
     const joinAmountInDai = maker.service('web3')._web3.utils.toWei(joinAmount);
     await service.joinDaiToAdapter(
