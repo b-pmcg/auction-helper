@@ -3,7 +3,7 @@ import useMaker from './useMaker';
 import { fromRad } from '../pages/index';
 
 const useBalances = () => {
-  const { maker } = useMaker();
+  const { maker, web3Connected } = useMaker();
   const [vatDaiBalance, setVatDaiBalance] = useState(null);
   const [daiBalance, setDaiBalance] = useState(null);
   const [mkrBalance, setMkrBalance] = useState(null);
@@ -12,7 +12,7 @@ const useBalances = () => {
   const mkrSymbol = 'MKR';
 
   useEffect(() => {
-    if (!maker) return;
+    if (!web3Connected) return;
     (async () => {
       const vatBal = await maker
         .service('smartContract')
@@ -20,10 +20,10 @@ const useBalances = () => {
         .dai(maker.currentAddress());
       setVatDaiBalance(fromRad(vatBal).toFixed());
     })();
-  }, [maker]);
+  }, [maker, web3Connected]);
 
   useEffect(() => {
-    if (!maker) return;
+    if (!web3Connected) return;
     (async () => {
       const daiBal = await maker.getToken(daiSymbol).balance();
       setDaiBalance(daiBal.toNumber());
@@ -31,7 +31,7 @@ const useBalances = () => {
   }, [maker]);
 
   useEffect(() => {
-    if (!maker) return;
+    if (!web3Connected) return;
     (async () => {
       const mkrBal = await maker.getToken(mkrSymbol).balance();
       setMkrBalance(mkrBal.toNumber());

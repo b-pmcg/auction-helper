@@ -18,7 +18,7 @@ export async function instantiateMaker(network) {
 
   const config = {
     log: true,
-    // autoAuthenticate: false,
+    autoAuthenticate: false,
     plugins: [[mcdPlugin, mcdPluginConfig], validatorPlugin],
     web3: {
       transactionSettings: {
@@ -28,6 +28,7 @@ export async function instantiateMaker(network) {
   };
 
   maker = await Maker.create('browser', config);
+
   window.maker = maker; // for debugging
   return maker;
 }

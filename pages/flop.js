@@ -15,6 +15,8 @@ function fromRad(value) {
 
 const Index = ({ web3Connected }) => {
   const { maker } = useMaker();
+  console.log(maker);
+  
   const [auctions, setAuctions] = useState(null);
 
   // const [daiBalance, setDaiBalance] = useState(null);
