@@ -17,6 +17,7 @@ import BigNumber from 'bignumber.js';
 import {getValueOrDefault} from '../utils';
 import useAuctionActions from '../hooks/useAuctionActions';
 import Moment from 'react-moment'
+import { EventsList } from './AuctionBlock'
 
 
 const AuctionEvent = ({type, ilk, lot, currentBid, bid, timestamp}) => {
@@ -64,9 +65,8 @@ const AuctionEvent = ({type, ilk, lot, currentBid, bid, timestamp}) => {
   );
 };
 
-export default ({ webConnected, auction, auctionId, lot }) => {
+export default ({ webConnected, auction: auctionEvents, auctionId, lot }) => {
 
-  console.log(auction, 'auction')
   const [state, setState] = useState({ amount: undefined, error: undefined });
   const {callTend} = useAuctionActions();
 
@@ -93,7 +93,7 @@ export default ({ webConnected, auction, auctionId, lot }) => {
     callTend(auctionId, lot, bidAmount)
   }
 
-  const bidDisabled = state.error || !state.amount; // TODO: add !webConnected as well but there was issue with it
+  const bidDisabled = !webConnected || state.error || !state.amount;
 
   return (
     <Grid
@@ -125,21 +125,21 @@ export default ({ webConnected, auction, auctionId, lot }) => {
           Time remaining: 1h 20m 20s
         </Heading> */}
       </Flex>
-      <Grid gap={2}>
-        {auction.map(({type, lot, bid, timestamp, ilk}) => {
-          return (<AuctionEvent 
-          type={type}
-          ilk={ilk.split('-')[0]}
-          lot={new BigNumber(getValueOrDefault(lot)).toFormat(5,4)}
-          bid={new BigNumber(getValueOrDefault(bid)).toFormat(5,4)}
-          currentBid={`${new BigNumber(getValueOrDefault(bid))
-            .div(new BigNumber(getValueOrDefault(lot)))
-            .toFormat(5,4)} DAI`}
-          timestamp={<Text><Moment fromNow ago>{timestamp}</Moment> ago</Text>}
-        />)
-
-        })}
-      </Grid>
+      <EventsList
+        events={
+          auctionEvents.map(({type, lot, bid, timestamp, ilk}) => {
+            return (<AuctionEvent
+            type={type}
+            ilk={ilk.split('-')[0]}
+            lot={new BigNumber(getValueOrDefault(lot)).toFormat(5,4)}
+            bid={new BigNumber(getValueOrDefault(bid)).toFormat(5,4)}
+            currentBid={`${new BigNumber(getValueOrDefault(bid))
+              .div(new BigNumber(getValueOrDefault(lot)))
+              .toFormat(5,4)} DAI`}
+            timestamp={<Text><Moment fromNow ago>{timestamp}</Moment> ago</Text>}
+          />)})
+        }
+      />
       <Grid gap={2}>
         <Text variant="boldBody">Enter your bid for this Auction</Text>
         <Flex

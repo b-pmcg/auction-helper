@@ -61,6 +61,31 @@ const AuctionEvent = () => {
   );
 };
 
+export const EventsList = ({events}) => {
+  const [shouldSeeAllEvents, toggleEventsList] = useState(false);
+
+  const visibleAuctionEvents = shouldSeeAllEvents ? events : [events[0]];
+
+  return (
+    <>
+     <Grid gap={2}>
+       {visibleAuctionEvents}
+     </Grid>
+     {
+        events.length > 1 && (
+          <Button variant="textual"
+                  sx={{textAlign: 'right'}}
+                  onClick={() => { toggleEventsList(!shouldSeeAllEvents)}}
+          >
+              {shouldSeeAllEvents ? 'Hide' : 'See' } all other events ({events.length - 1})
+          </Button>
+        )
+      }
+    </>
+  )
+
+}
+
 export default ({ webConnected }) => {
   const [state, setState] = useState({ amount: undefined, error: undefined });
 
@@ -82,7 +107,7 @@ export default ({ webConnected }) => {
     setState(state);
   };
 
-  const bidDisabled = state.error || !state.amount; // TODO: add !webConnected as well but there was issue with it
+  const bidDisabled = !webConnected || state.error || !state.amount;
 
   return (
     <Grid
@@ -115,7 +140,7 @@ export default ({ webConnected }) => {
         </Heading>
       </Flex>
       <Box>
-        <AuctionEvent />
+        <EventsList events={[<AuctionEvent />]} />
       </Box>
       <Grid gap={2}>
         <Text variant="boldBody">Enter your bid in MKR for this Auction</Text>

@@ -34,7 +34,7 @@ export default {
     primaryHover: '#139D8D',
     primaryActive: '#098C7D',
     lightGreen: '#B6EDE7',
-    purple: '#7c4dff',
+    purple: '#447AFB',
     blackThree: '#333',
     border: '#D4D9E1',
     white: '#fff'
@@ -65,6 +65,13 @@ export default {
         pointerEvents: 'none',
         cursor: 'not-allowed'
       }
+    },
+    textual: {
+      background: 'transparent',
+      color: 'purple',
+      outline: 'none',
+      cursor: 'pointer',
+      fontSize: 1,
     }
   },
 
