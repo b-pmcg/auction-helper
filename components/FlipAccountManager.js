@@ -66,7 +66,7 @@ const BalanceOf = ({ type, balance, vatBalance, actions, vatActions }) => {
   );
 };
 
-const BalanceFormVat = ({}) => {
+const BalanceFormVat = ({ joinDaiToAdapter, exitDaiFromAdapter }) => {
   const [amount, setAmount] = useState(null);
   return (
     <Grid gap={2} columns={3}>
@@ -114,7 +114,7 @@ export default () => {
         const allowance = await maker
           .getToken('MDAI')
           .allowance(maker.currentAddress(), joinDaiAdapterAddress);
-          
+
         setHasAllowance(allowance.gt(REQUIRED_ALLOWANCE) ? true : false);
       })();
     }
@@ -214,7 +214,12 @@ export default () => {
             type={'Dai'}
             balance={daiBalance}
             vatBalance={vatDaiBalance}
-            vatActions={<BalanceFormVat />}
+            vatActions={
+              <BalanceFormVat
+                joinDaiToAdapter={joinDaiToAdapter}
+                exitDaiFromAdapter={exitDaiFromAdapter}
+              />
+            }
           />
         </Grid>
       ) : null}
