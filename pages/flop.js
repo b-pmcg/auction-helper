@@ -124,6 +124,13 @@ const Index = () => {
           <AccountManager web3Connected={web3Connected} />
           <Box
             sx={{
+              py: 5
+            }}
+          >
+            <Text variant="boldBody">Active Auctions</Text>
+          </Box>
+          <Box
+            sx={{
               mt: 2,
               pb: 5
             }}

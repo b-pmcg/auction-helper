@@ -131,7 +131,7 @@ export default ({ webConnected }) => {
               borderStyle: 'solid',
               borderColor: 'border',
               fontSize: 4,
-              lineHeight: '24px',
+              // lineHeight: '24px',
               py: 3,
               px: 5
             }}

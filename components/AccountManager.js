@@ -23,7 +23,7 @@ const BalanceOf = ({ type, balance, vatBalance, actions }) => {
     <Box
       sx={{
         bg: '#fff',
-        p: 6,
+        p: 4,
         borderRadius: 5,
         border: '1px solid',
         borderColor: 'border'
@@ -31,18 +31,24 @@ const BalanceOf = ({ type, balance, vatBalance, actions }) => {
     >
       <Grid
         gap={2}
-        columns={[1, 2]}
+        columns={[1]}
         sx={{
           flexDirection: ['column', 'row'],
           justifyItems: 'start'
           // alignItems: 'flex-start'
         }}
       >
-        <Box>
+        <Flex
+          sx={{
+            alignItems: 'center',
+            width: '100%'
+          }}
+        >
           <Text variant="boldBody">
             {balance} {type}
           </Text>
-        </Box>
+          <Box ml="auto">{actions}</Box>
+        </Flex>
 
         {vatBalance ? (
           <Box>
@@ -50,7 +56,6 @@ const BalanceOf = ({ type, balance, vatBalance, actions }) => {
           </Box>
         ) : null}
       </Grid>
-      {actions}
     </Box>
   );
 };
@@ -110,21 +115,24 @@ export default () => {
   return (
     <Box
       sx={{
-        textAlign: 'center',
-        mx: 'auto',
-        py: 8
+        bg: '#fff',
+        p: 6,
+        mb: 5,
+        borderRadius: 5,
+        border: '1px solid',
+        borderColor: 'border'
       }}
     >
-      <Heading
+      <Text
         as="h2"
-        variant="h2"
+        variant="boldBody"
         sx={{
           mb: 5
         }}
       >
         To participate in auctions you need to sign these 3 approval
         transactions
-      </Heading>
+      </Text>
 
       <Grid
         gap={4}
@@ -163,7 +171,7 @@ export default () => {
           gap={3}
           columns={2}
           sx={{
-            py: 6
+            pt: 5
           }}
         >
           <BalanceOf
@@ -175,7 +183,7 @@ export default () => {
             type={'MKR'}
             balance={mkrBalance}
             actions={
-              <Box sx={{ p: 2 }}>
+              <Box >
                 <Button>Unlock to withdraw</Button>
               </Box>
             }
