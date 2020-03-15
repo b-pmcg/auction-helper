@@ -31,15 +31,18 @@ export default () => {
     exitDaiFromAdapter
   } = useBalances();
 
+  const {
+    hasDaiAllowance,
+    hasMkrAllowance,
+    hasEthFlipHope,
+    hasJoinDaiHope
+  } = useAllowances();
+
   const [daiApprovePending, setDaiApprovePending] = useState(false);
   const [mkrApprovePending, setMkrApprovePending] = useState(false);
   const [hopeApprovePending, setHopeApprovePending] = useState(false);
   const [joinAddress, setJoinAddress] = useState('');
-  // TODO keep track of allowances with object keys
-  const [hasAllowance, setHasAllowance] = useState(false);
-  const [hasMkrAllowance, setHasMkrAllowance] = useState(false);
 
-  //Get adapter address & check allowances for DAI & MKR
   useEffect(() => {
     if (web3Connected) {
       (async () => {
@@ -47,16 +50,6 @@ export default () => {
           .service('smartContract')
           .getContractByName('MCD_JOIN_DAI').address;
         setJoinAddress(joinDaiAdapterAddress);
-
-        const daiAllowance = await maker
-          .getToken('MDAI')
-          .allowance(maker.currentAddress(), joinDaiAdapterAddress);
-        const mkrAllowance = await maker
-          .getToken('MDAI')
-          .allowance(maker.currentAddress(), joinDaiAdapterAddress);
-
-        setHasAllowance(daiAllowance.gt(REQUIRED_ALLOWANCE) ? true : false);
-        setHasMkrAllowance(mkrAllowance.gt(REQUIRED_ALLOWANCE) ? true : false);
       })();
     }
   }, [maker, web3Connected]);
@@ -65,7 +58,7 @@ export default () => {
     setDaiApprovePending(true);
     try {
       await maker.getToken('MDAI').approveUnlimited(address);
-      setHasAllowance(true);
+      // setHasAllowance(true);
     } catch (err) {
       const message = err.message ? err.message : err;
       const errMsg = `unlock dai tx failed ${message}`;
@@ -78,7 +71,7 @@ export default () => {
     setMkrApprovePending(true);
     try {
       await maker.getToken('MKR').approveUnlimited(address);
-      hasMkrAllowance(true);
+      // hasMkrAllowance(true);
     } catch (err) {
       const message = err.message ? err.message : err;
       const errMsg = `unlock mkr tx failed ${message}`;
@@ -130,9 +123,9 @@ export default () => {
           >
             <Button
               onClick={() => giveDaiAllowance(joinAddress)}
-              disabled={!web3Connected || hasAllowance}
+              disabled={!web3Connected || hasDaiAllowance}
             >
-              {hasAllowance ? 'Dai Unlocked' : 'Unlock Dai in your wallet'}
+              {hasDaiAllowance ? 'Dai Unlocked' : 'Unlock Dai in your wallet'}
             </Button>
             <Button
               onClick={() => {
@@ -141,13 +134,13 @@ export default () => {
                   .getContractByName('MCD_FLIP_ETH_A').address;
                 giveHope(flipEthAddress);
               }}
-              disabled={!web3Connected}
+              disabled={!web3Connected || hasEthFlipHope}
             >
               Unlock Dai in the adapter
             </Button>
             <Button
               onClick={() => giveHope(joinAddress)}
-              disabled={!web3Connected}
+              disabled={!web3Connected || hasJoinDaiHope}
             >
               Unlock Dai in the VAT
             </Button>
@@ -156,17 +149,15 @@ export default () => {
       }
       balances={
         <Box
-          sx={
-            {
-              // bg: '#fff',
-              // p: 6,
-              // mb: 5,
-              // borderRadius: 5,
-              borderTop: '1px solid',
-              borderBottom: '1px solid',
-              borderColor: 'border'
-            }
-          }
+          sx={{
+            // bg: '#fff',
+            // p: 6,
+            // mb: 5,
+            // borderRadius: 5,
+            borderTop: '1px solid',
+            borderBottom: '1px solid',
+            borderColor: 'border'
+          }}
         >
           {web3Connected ? (
             <Grid
@@ -176,7 +167,7 @@ export default () => {
                 pt: 5
               }}
             >
-              <BalanceOf type={'Dai in your Wallet'} balance={daiBalance}  />
+              <BalanceOf type={'Dai in your Wallet'} balance={daiBalance} />
               <BalanceOf
                 type={'Dai in Adaptor'}
                 balance={vatDaiBalance}
@@ -190,7 +181,7 @@ export default () => {
                   borderLeft: '1px solid',
                   borderRight: '1px solid',
                   borderColor: 'border'
-      }}
+                }}
               />
               <BalanceOf
                 type={'MKR'}
