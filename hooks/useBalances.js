@@ -28,7 +28,7 @@ const useBalances = () => {
       const daiBal = await maker.getToken(daiSymbol).balance();
       setDaiBalance(daiBal.toNumber());
     })();
-  }, [maker]);
+  }, [maker, web3Connected]);
 
   useEffect(() => {
     if (!web3Connected) return;
@@ -36,8 +36,7 @@ const useBalances = () => {
       const mkrBal = await maker.getToken(mkrSymbol).balance();
       setMkrBalance(mkrBal.toNumber());
     })();
-  }, [maker]);
-
+  }, [maker, web3Connected]);
 
   async function joinDaiToAdapter(amount) {
     const DaiJoinAdapter = maker
@@ -67,7 +66,13 @@ const useBalances = () => {
     );
   }
 
-  return { vatDaiBalance, daiBalance, mkrBalance, joinDaiToAdapter, exitDaiFromAdapter };
+  return {
+    vatDaiBalance,
+    daiBalance,
+    mkrBalance,
+    joinDaiToAdapter,
+    exitDaiFromAdapter
+  };
 };
 
 export default useBalances;
