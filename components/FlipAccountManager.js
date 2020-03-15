@@ -15,81 +15,11 @@ import {
   Flex
 } from 'theme-ui';
 import { AUCTION_DATA_FETCHER } from '../constants';
+import BalanceFormVat from './BalanceFormVat';
+import BalanceOf from './BalanceOf';
 
 const REQUIRED_ALLOWANCE = 0;
 
-const BalanceOf = ({ type, balance, vatBalance, actions, vatActions }) => {
-  return (
-    <Box
-      sx={{
-        bg: '#fff',
-        p: 4,
-        borderRadius: 5,
-        border: '1px solid',
-        borderColor: 'border'
-      }}
-    >
-      <Grid
-        gap={2}
-        columns={[1]}
-        sx={{
-          flexDirection: ['column', 'row'],
-          justifyItems: 'start'
-          // alignItems: 'flex-start'
-        }}
-      >
-        <Flex
-          sx={{
-            alignItems: 'center',
-            width: '100%'
-          }}
-        >
-          <Text variant="boldBody">
-            {balance} {type}
-          </Text>
-          <Box ml="auto">{actions}</Box>
-        </Flex>
-
-        {vatBalance ? (
-          <Flex
-            sx={{
-              alignItems: 'center',
-              width: '100%'
-            }}
-          >
-            <Text variant="boldBody">{vatBalance} Dai in the VAT</Text>
-            <Box ml="auto">{vatActions}</Box>
-          </Flex>
-        ) : null}
-      </Grid>
-    </Box>
-  );
-};
-
-const BalanceFormVat = ({ joinDaiToAdapter, exitDaiFromAdapter }) => {
-  const [amount, setAmount] = useState(null);
-  return (
-    <Grid gap={2} columns={3}>
-      <Input onChange={ev => setAmount(ev.target.value)}></Input>
-      <Button
-        onClick={() => {
-          joinDaiToAdapter(amount);
-        }}
-        disabled={!amount}
-      >
-        Deposit
-      </Button>
-      <Button
-        onClick={() => {
-          exitDaiFromAdapter(amount);
-        }}
-        disabled={!amount}
-      >
-        Withdraw
-      </Button>
-    </Grid>
-  );
-};
 export default () => {
   const { maker, web3Connected } = useMaker();
   const {
