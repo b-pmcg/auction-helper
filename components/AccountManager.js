@@ -201,6 +201,12 @@ export default () => {
             type={'Dai'}
             balance={daiBalance}
             vatBalance={vatDaiBalance}
+            vatActions={
+              <BalanceFormVat
+                joinDaiToAdapter={joinDaiToAdapter}
+                exitDaiFromAdapter={exitDaiFromAdapter}
+              />
+            }
           />
           <BalanceOf
             type={'MKR'}

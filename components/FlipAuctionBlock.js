@@ -140,7 +140,7 @@ export default ({ webConnected, auction, auctionId, lot }) => {
 
         })}
       </Grid>
-      <Grid gap={2}>
+      <Grid gap={2} >
         <Text variant="boldBody">Enter your bid for this Auction</Text>
         <Flex
           sx={{
@@ -153,6 +153,7 @@ export default ({ webConnected, auction, auctionId, lot }) => {
               borderWidth: '1px',
               borderStyle: 'solid',
               borderColor: 'border',
+              borderRadius: 5,
               fontSize: 4,
               // lineHeight: '24px',
               py: 3,
@@ -164,7 +165,8 @@ export default ({ webConnected, auction, auctionId, lot }) => {
                 border: 'none',
                 outline: 'none',
                 p: 0,
-                marginRight: '2'
+                marginRight: '2',
+                borderRadius: 5
               }}
               id="big-amount"
               type="number"
