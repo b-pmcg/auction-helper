@@ -81,6 +81,7 @@ const Index = () => {
                   console.log(auctionId, 'here');
                   return (
                     <FlipAuctionBlock
+                      key={auctionId}
                       lot={lot}
                       auctionId={auctionId}
                       auction={auctions[auctionId]}

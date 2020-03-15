@@ -41,7 +41,7 @@ const AuctionEvent = ({type, ilk, lot, currentBid, bid, timestamp}) => {
     >
       {fields.map(([title, value]) => {
         return (
-          <Box>
+          <Box key={title}>
             <Text
               variant="caps"
               sx={{
@@ -127,8 +127,9 @@ export default ({ webConnected, auction: auctionEvents, auctionId, lot }) => {
       </Flex>
       <EventsList
         events={
-          auctionEvents.map(({type, lot, bid, timestamp, ilk}) => {
+          auctionEvents.map(({type, lot, bid, timestamp, ilk}, index) => {
             return (<AuctionEvent
+            key={`${timestamp}-${index}`}
             type={type}
             ilk={ilk.split('-')[0]}
             lot={new BigNumber(getValueOrDefault(lot)).toFormat(5,4)}

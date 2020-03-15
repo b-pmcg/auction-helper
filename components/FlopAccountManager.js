@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import useMaker from '../hooks/useMaker';
 import useBalances from '../hooks/useBalances';
+import useAllowances from '../hooks/useAllowances';
 import {
   Heading,
   Text,
