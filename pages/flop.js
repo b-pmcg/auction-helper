@@ -10,88 +10,11 @@ import AuctionBlock from '../components/FlopAuctionBlock';
 import AccountManager from '../components/FlopAccountManager';
 import GuttedLayout from '../components/GuttedLayout';
 import { AUCTION_DATA_FETCHER } from '../constants';
-function fromRad(value) {
-  return BigNumber(value).shiftedBy(-45);
-}
 
 const Index = () => {
   const { maker, web3Connected } = useMaker();
-
   const [auctions, setAuctions] = useState(null);
-
-  // const [auctionId, setAuctionId] = useState('');
-  // const [lotSize, setLotSize] = useState('');
-  // const [bidAmount, setBidAmount] = useState('');
-
-  useEffect(() => {
-    if (web3Connected) {
-      if (!auctions) {
-        fetchAuctions();
-      }
-    }
-  }, [web3Connected, auctions]);
-
-  async function callTend(auctionId, lotSize, bidAmount) {
-    try {
-      const t = await maker
-        .service('validator')
-        .tend(auctionId, lotSize, bidAmount);
-    } catch (err) {
-      window.alert(err);
-    }
-  }
-
   const { vatDaiBalance, daiBalance, mkrBalance } = useBalances();
-  console.log(
-    'vatDaiBalance, daiBalance, mkrBalance',
-    vatDaiBalance,
-    daiBalance,
-    mkrBalance
-  );
-
-  // seth send “$MCD_VAT” ‘hope(address)’ "$MCD_FLIP_ETH"
-  // async function hope(address) {
-  //   await maker
-  //     .service('smartContract')
-  //     .getContract('MCD_VAT')
-  //     .hope(address);
-  // }
-
-  function handleAuctionIdInputChange({ target }) {
-    console.log('auctionid', target.value);
-    setAuctionId(target.value);
-  }
-  function handleLotSizeInputChange({ target }) {
-    console.log('lotSize', target.value);
-    setLotSize(target.value);
-  }
-  function handleBidAmountInputChange({ target }) {
-    console.log('bidAmount', target.value);
-    setBidAmount(target.value);
-  }
-
-  const [joinAmount, setJoinAmount] = useState('');
-  const [exitAmount, setExitAmount] = useState('');
-
-  async function join() {
-    const joinAmountInDai = maker.service('web3')._web3.utils.toWei(joinAmount);
-    const service = maker.service(AUCTION_DATA_FETCHER);
-
-    await service.joinDaiToAdapter(
-      maker.currentAddress(),
-      BigNumber(joinAmountInDai).toString()
-    );
-  }
-
-  async function exit() {
-    const exitAmountInDai = maker.service('web3')._web3.utils.toWei(exitAmount);
-    const service = maker.service(AUCTION_DATA_FETCHER);
-
-    await service.exitDaiFromAdapter(
-      maker.currentAddress(),
-      BigNumber(exitAmountInDai).toString()
-    );
-  }
 
   async function fetchAuctions() {
     const service = maker.service(AUCTION_DATA_FETCHER);
@@ -100,9 +23,13 @@ const Index = () => {
     setAuctions(_.groupBy(auctions, auction => auction.auctionId));
   }
 
-  const getValueOrDefault = (value, def = '-') => {
-    return value ? value : def;
-  };
+  useEffect(() => {
+    if (web3Connected) {
+      if (!auctions) {
+        fetchAuctions();
+      }
+    }
+  }, [web3Connected, auctions]);
 
   return (
     <GuttedLayout>
