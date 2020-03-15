@@ -1,4 +1,3 @@
-
 // example base theme from @theme-ui/presets
 export default {
   useBorderBox: true,
@@ -7,11 +6,12 @@ export default {
   breakpoints: ['40em', '52em', '64em'],
 
   space: [0, 4, 8, 12, 14, 16, 24, 32, 64, 128, 256, 512],
-  
+
   fonts: {
-    body: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
+    body:
+      'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
     heading: 'inherit',
-    monospace: 'Menlo, monospace',
+    monospace: 'Menlo, monospace'
   },
 
   fontSizes: [11, 13, 14, 15, 16, 18, 20, 24, 32, 48, 64, 96],
@@ -25,14 +25,16 @@ export default {
 
   lineHeights: {
     body: 1.5,
-    heading: 1.125,
+    heading: 1.125
   },
   colors: {
     text: '#231536',
     background: '#F6F8F9',
     primary: '#1AAB9B',
+    primaryHover: '#139D8D',
+    primaryActive: '#098C7D',
     lightGreen: '#B6EDE7',
-    purple:'#7c4dff',
+    purple: '#7c4dff',
     blackThree: '#333',
     border: '#D4D9E1',
     white: '#fff'
@@ -46,21 +48,23 @@ export default {
 
   buttons: {
     primary: {
+      outline: 'none',
       fontFamily: 'body',
       fontSize: 4,
-      color: 'background',
+      px: 5,
+      color: 'white',
       bg: 'primary',
       '&:hover': {
-        bg: 'text',
+        bg: 'primaryHover'
+      },
+      '&:active': {
+        bg: 'primaryActive'
       },
       '&:disabled': {
-        bg: 'lightGreen'
+        bg: 'lightGreen',
+        pointerEvents: 'none',
+        cursor: 'not-allowed'
       }
-    },
-    disabled: {
-      pointerEvents: 'none',
-      cursor: 'not-allowed',
-      opacity: '.5'
     }
   },
 
@@ -68,18 +72,17 @@ export default {
     heading: {
       fontFamily: 'heading',
       lineHeight: 'heading',
-      fontWeight: 'heading',
+      fontWeight: 'heading'
     },
 
     caps: {
       textTransform: 'uppercase',
-      fontWeight: 'semiBold',
+      fontWeight: 'semiBold'
     },
     h2: {
       fontSize: 6,
       fontWeight: 'semiBold',
-      letterSpacing: '0.4px',
-      
+      letterSpacing: '0.4px'
     },
     boldBody: {
       fontSize: 4,
@@ -87,7 +90,7 @@ export default {
       letterSpacing: '0.3px'
     },
     small: {
-      fontSize: 1,
+      fontSize: 1
     },
     smallDanger: {
       fontSize: 1,
@@ -96,19 +99,18 @@ export default {
   },
   links: {
     nav: {
-        fontSize: 5,
-        fontWeight: 'body',
-        letterSpacing: '0.4px',
-        color: 'blackThree'
+      fontSize: 5,
+      fontWeight: 'body',
+      letterSpacing: '0.4px',
+      color: 'blackThree'
     }
   },
   styles: {
-
     root: {
       fontFamily: 'body',
       lineHeight: 'body',
-      fontWeight: 'body',
-    },
+      fontWeight: 'body'
+    }
     // h1: {
     //   variant: 'text.heading',
     //   fontSize: 7,
@@ -158,5 +160,5 @@ export default {
     //   textAlign: 'left',
     //   borderBottomStyle: 'solid',
     // },
-  },
-}
+  }
+};

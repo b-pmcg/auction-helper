@@ -11,8 +11,8 @@ function fromRad(value) {
   return BigNumber(value).shiftedBy(-45);
 }
 
-const Index = ({ web3Connected }) => {
-  const { maker } = useMaker();
+const Index = () => {
+  const { maker, web3Connected } = useMaker();
   const [auctions, setAuctions] = useState(null);
 
   // const [daiBalance, setDaiBalance] = useState(null);
@@ -31,8 +31,7 @@ const Index = ({ web3Connected }) => {
     }
   }, [web3Connected, auctions]);
 
-
-  console.log(auctions, 'auctionsss')
+  console.log(auctions, 'auctionsss');
   async function callTend(auctionId, lotSize, bidAmount) {
     try {
       const t = await maker

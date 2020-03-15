@@ -19,11 +19,9 @@ export default {
 
     const makerConfig = {
       ...config,
-      additionalServices: [
-        'validator'
-      ],
+      additionalServices: ['validator'],
       validator: [ValidatorService],
-      smartContract: { addContracts },
+      smartContract: { addContracts }
     };
 
     return makerConfig;

@@ -3,8 +3,10 @@ import { instantiateMaker } from '../maker';
 
 export const MakerObjectContext = createContext();
 
-function MakerProvider({ children, network, web3Connected }) {
+function MakerProvider({ children, network }) {
   const [maker, setMaker] = useState(null);
+  const [web3Connected, setWeb3Connected] = useState(null);
+
   useEffect(() => {
     if (!network) return;
     instantiateMaker(network).then(maker => {
@@ -12,11 +14,11 @@ function MakerProvider({ children, network, web3Connected }) {
     });
   }, [network]);
 
-
   return (
-    <MakerObjectContext.Provider value={{ maker, network, web3Connected }}>
-      {maker ? children : 'LOADING'}
-      {/* {children} */}
+    <MakerObjectContext.Provider
+      value={{ maker, network, web3Connected, setWeb3Connected }}
+    >
+      {children}
     </MakerObjectContext.Provider>
   );
 }

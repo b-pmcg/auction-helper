@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import useMaker from '../hooks/useMaker';
+import useBalances from '../hooks/useBalances';
 import {
   Heading,
   Text,
@@ -17,8 +18,47 @@ import { AUCTION_DATA_FETCHER } from '../constants';
 
 const REQUIRED_ALLOWANCE = 0;
 
-export default ({ web3Connected }) => {
-  const { maker } = useMaker();
+const BalanceOf = ({ type, balance, vatBalance, actions }) => {
+  return (
+    <Box
+      sx={{
+        bg: '#fff',
+        p: 6,
+        borderRadius: 5,
+        border: '1px solid',
+        borderColor: 'border'
+      }}
+    >
+      <Grid
+        gap={2}
+        columns={[1, 2]}
+        sx={{
+          flexDirection: ['column', 'row'],
+          justifyItems: 'start'
+          // alignItems: 'flex-start'
+        }}
+      >
+        <Box>
+          <Text variant="boldBody">
+            {balance} {type}
+          </Text>
+        </Box>
+
+        {vatBalance ? (
+          <Box>
+            <Text variant="boldBody">{vatBalance} Dai in the VAT</Text>
+          </Box>
+        ) : null}
+      </Grid>
+      {actions}
+    </Box>
+  );
+};
+
+export default () => {
+  const { maker, web3Connected } = useMaker();
+  const { vatDaiBalance, daiBalance, mkrBalance } = useBalances();
+
   const [daiApprovePending, setDaiApprovePending] = useState(false);
   const [hopeApprovePending, setHopeApprovePending] = useState(false);
   const [hasAllowance, setHasAllowance] = useState(false);
@@ -87,8 +127,13 @@ export default ({ web3Connected }) => {
       </Heading>
 
       <Grid
+        gap={4}
+        columns={[1, 3]}
         sx={{
-          maxWidth: '200px',
+          // maxWidth: '200px',
+          flexDirection: ['column', 'row'],
+
+          width: 'auto',
           mx: 'auto'
         }}
       >
@@ -113,6 +158,30 @@ export default ({ web3Connected }) => {
           Unlock Dai in the VAT
         </Button>
       </Grid>
+      {web3Connected ? (
+        <Grid
+          gap={3}
+          columns={2}
+          sx={{
+            py: 6
+          }}
+        >
+          <BalanceOf
+            type={'Dai'}
+            balance={daiBalance}
+            vatBalance={vatDaiBalance}
+          />
+          <BalanceOf
+            type={'MKR'}
+            balance={mkrBalance}
+            actions={
+              <Box sx={{ p: 2 }}>
+                <Button>Unlock to withdraw</Button>
+              </Box>
+            }
+          />
+        </Grid>
+      ) : null}
     </Box>
   );
 };

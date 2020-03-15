@@ -5,8 +5,8 @@ import Link from 'next/link';
 import useMaker from '../hooks/useMaker';
 import GuttedLayout from './GuttedLayout';
 import Logo from './Logo';
-export default ({ web3Connected, setWeb3Connected }) => {
-  const { maker, network } = useMaker();
+export default () => {
+  const { maker, network, web3Connected, setWeb3Connected } = useMaker();
 
   async function connectBrowserWallet() {
     try {
@@ -79,6 +79,8 @@ export default ({ web3Connected, setWeb3Connected }) => {
         >
           {!web3Connected ? (
             <Button
+              variant="primary"
+              disabled={!maker}
               onClick={connectBrowserWallet}
               sx={{
                 width: ['100%', 'auto']

@@ -9,16 +9,14 @@ import { Heading, Text, jsx, Box, Button, Styled, Input, Flex } from 'theme-ui';
 import AuctionBlock from '../components/AuctionBlock';
 import AccountManager from '../components/AccountManager';
 import GuttedLayout from '../components/GuttedLayout';
-import {AUCTION_DATA_FETCHER} from '../constants';
+import { AUCTION_DATA_FETCHER } from '../constants';
 function fromRad(value) {
   return BigNumber(value).shiftedBy(-45);
 }
 
+const Index = () => {
+  const { maker, web3Connected } = useMaker();
 
-const Index = ({ web3Connected }) => {
-  const { maker } = useMaker();
-  
- 
   const [auctions, setAuctions] = useState(null);
 
   // const [auctionId, setAuctionId] = useState('');
@@ -77,8 +75,8 @@ const Index = ({ web3Connected }) => {
 
   async function join() {
     const joinAmountInDai = maker.service('web3')._web3.utils.toWei(joinAmount);
-  const service = maker.service(AUCTION_DATA_FETCHER);
-    
+    const service = maker.service(AUCTION_DATA_FETCHER);
+
     await service.joinDaiToAdapter(
       maker.currentAddress(),
       BigNumber(joinAmountInDai).toString()
@@ -87,8 +85,8 @@ const Index = ({ web3Connected }) => {
 
   async function exit() {
     const exitAmountInDai = maker.service('web3')._web3.utils.toWei(exitAmount);
-  const service = maker.service(AUCTION_DATA_FETCHER);
-    
+    const service = maker.service(AUCTION_DATA_FETCHER);
+
     await service.exitDaiFromAdapter(
       maker.currentAddress(),
       BigNumber(exitAmountInDai).toString()
@@ -96,7 +94,7 @@ const Index = ({ web3Connected }) => {
   }
 
   async function fetchAuctions() {
-  const service = maker.service(AUCTION_DATA_FETCHER);
+    const service = maker.service(AUCTION_DATA_FETCHER);
 
     const auctions = await service.getAllAuctions();
     setAuctions(_.groupBy(auctions, auction => auction.auctionId));
@@ -106,7 +104,6 @@ const Index = ({ web3Connected }) => {
     return value ? value : def;
   };
 
-
   return (
     <GuttedLayout>
       <Head>
@@ -114,19 +111,21 @@ const Index = ({ web3Connected }) => {
       </Head>
 
       {!maker ? (
-        <Flex sx={{
-          justifyContent: 'center',
-          p: 8
-        }}>
-          <Heading as="h3">Loading...</Heading>
+        <Flex
+          sx={{
+            justifyContent: 'center',
+            p: 8
+          }}
+        >
+          <Text variant="boldBody">Loading...</Text>
         </Flex>
       ) : (
         <>
-          <AccountManager web3Connected={web3Connected}/>
+          <AccountManager web3Connected={web3Connected} />
           <Box
             sx={{
-              mt: 5,
-              pb: 8
+              mt: 2,
+              pb: 5
             }}
           >
             <AuctionBlock />
@@ -144,7 +143,13 @@ const Index = ({ web3Connected }) => {
                   );
                   let lot = kickEvent ? kickEvent.lot : firstTend.lot;
                   console.log(auctionId, 'here');
-                  return <AuctionBlock lot={lot} auctionId={auctionId} web3Connected={web3Connected} />;
+                  return (
+                    <AuctionBlock
+                      lot={lot}
+                      auctionId={auctionId}
+                      web3Connected={web3Connected}
+                    />
+                  );
                 })}
           </div>
         </>
