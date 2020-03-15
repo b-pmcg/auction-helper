@@ -2,22 +2,22 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import useMaker from '../hooks/useMaker';
+import useBalances from '../hooks/useBalances';
 import * as _ from 'lodash';
 import BigNumber from 'bignumber.js';
-import { Heading, Text, jsx, Box, Button, Styled, Input, Flex } from 'theme-ui';
-import AuctionBlock from '../components/AuctionBlock';
-
+import { Heading, Text, jsx, Box, Button, Styled, Input, Flex, Grid } from 'theme-ui';
+import FlipAuctionBlock from '../components/FlipAuctionBlock';
+import FlipAccountManager from '../components/FlipAccountManager';
+import GuttedLayout from '../components/GuttedLayout';
+import { AUCTION_DATA_FETCHER } from '../constants';
 function fromRad(value) {
   return BigNumber(value).shiftedBy(-45);
 }
 
 const Index = () => {
   const { maker, web3Connected } = useMaker();
+
   const [auctions, setAuctions] = useState(null);
-
-  // const [daiBalance, setDaiBalance] = useState(null);
-
-  // const [joinBalance, setJoinBalance] = useState(null);
 
   // const [auctionId, setAuctionId] = useState('');
   // const [lotSize, setLotSize] = useState('');
@@ -31,7 +31,6 @@ const Index = () => {
     }
   }, [web3Connected, auctions]);
 
-  console.log(auctions, 'auctionsss');
   async function callTend(auctionId, lotSize, bidAmount) {
     try {
       const t = await maker
@@ -42,13 +41,21 @@ const Index = () => {
     }
   }
 
+  const { vatDaiBalance, daiBalance, mkrBalance } = useBalances();
+  console.log(
+    'vatDaiBalance, daiBalance, mkrBalance',
+    vatDaiBalance,
+    daiBalance,
+    mkrBalance
+  );
+
   // seth send “$MCD_VAT” ‘hope(address)’ "$MCD_FLIP_ETH"
-  async function hope(address) {
-    await maker
-      .service('smartContract')
-      .getContract('MCD_VAT')
-      .hope(address);
-  }
+  // async function hope(address) {
+  //   await maker
+  //     .service('smartContract')
+  //     .getContract('MCD_VAT')
+  //     .hope(address);
+  // }
 
   function handleAuctionIdInputChange({ target }) {
     console.log('auctionid', target.value);
@@ -66,81 +73,96 @@ const Index = () => {
   const [joinAmount, setJoinAmount] = useState('');
   const [exitAmount, setExitAmount] = useState('');
 
-  async function joinDaiToAdapter() {
-    const DaiJoinAdapter = maker
-      .service('smartContract')
-      .getContract('MCD_JOIN_DAI');
-
+  async function join() {
     const joinAmountInDai = maker.service('web3')._web3.utils.toWei(joinAmount);
+    const service = maker.service(AUCTION_DATA_FETCHER);
 
-    await maker.getToken('MDAI').approveUnlimited(DaiJoinAdapter.address);
-
-    await DaiJoinAdapter.join(
+    await service.joinDaiToAdapter(
       maker.currentAddress(),
       BigNumber(joinAmountInDai).toString()
     );
   }
 
   async function exit() {
-    const DaiJoinAdapter = maker
-      .service('smartContract')
-      .getContract('MCD_JOIN_DAI');
-
     const exitAmountInDai = maker.service('web3')._web3.utils.toWei(exitAmount);
+    const service = maker.service(AUCTION_DATA_FETCHER);
 
-    await DaiJoinAdapter.exit(
+    await service.exitDaiFromAdapter(
       maker.currentAddress(),
       BigNumber(exitAmountInDai).toString()
     );
   }
 
   async function fetchAuctions() {
-    const auctions = await maker.service('validator').getAllAuctions();
+    const service = maker.service(AUCTION_DATA_FETCHER);
+
+    const auctions = await service.getAllAuctions();
     setAuctions(_.groupBy(auctions, auction => auction.auctionId));
   }
+
 
   const getValueOrDefault = (value, def = '-') => {
     return value ? value : def;
   };
 
-  console.log(auctions, 'yo');
-
   return (
-    <Box
-      sx={{
-        p: 10
-      }}
-    >
+    <GuttedLayout>
       <Head>
         <title>Auction Helper (Beta)</title>
       </Head>
 
       {!maker ? (
-        <div>
-          <Heading as="h3">Loading...</Heading>
-        </div>
-      ) : !web3Connected ? (
-        <Heading>Connect your wallet to continue </Heading>
+        <Flex
+          sx={{
+            justifyContent: 'center',
+            p: 8
+          }}
+        >
+          <Text variant="boldBody">Loading...</Text>
+        </Flex>
       ) : (
-        <div>
-          {!auctions && <span> Loading Auctions...</span>}
-          {auctions &&
-            Object.keys(auctions)
-              .reverse()
-              .map(auctionId => {
-                const kickEvent = auctions[auctionId].find(
-                  event => event.type === 'Kick'
-                );
-                const firstTend = auctions[auctionId].find(
-                  event => event.type === 'Tend'
-                );
-                let lot = kickEvent ? kickEvent.lot : firstTend.lot;
-                console.log(auctionId, 'here');
-                return <AuctionBlock lot={lot} auctionId={auctionId} />;
-              })}
-        </div>
+        <>
+          <FlipAccountManager web3Connected={web3Connected} />
+          <Box
+            sx={{
+              py: 5
+            }}
+          >
+            <Text variant="boldBody">Active Auctions</Text>
+          </Box>
+          <Box
+            sx={{
+              mt: 2,
+              pb: 5
+            }}
+          >
+          </Box>
+          <Grid gap={5}>
+            {auctions &&
+              Object.keys(auctions)
+                .reverse()
+                .map(auctionId => {
+                  const kickEvent = auctions[auctionId].find(
+                    event => event.type === 'Kick'
+                  );
+                  const firstTend = auctions[auctionId].find(
+                    event => event.type === 'Tend'
+                  );
+                  let lot = kickEvent ? kickEvent.lot : firstTend.lot;
+                  console.log(auctionId, 'here');
+                  return (
+                    <FlipAuctionBlock
+                      lot={lot}
+                      auctionId={auctionId}
+                      auction={auctions[auctionId]}
+                      web3Connected={web3Connected}
+                    />
+                  );
+                })}
+          </Grid>
+        </>
       )}
-    </Box>
+    </GuttedLayout>
   );
 };
 
