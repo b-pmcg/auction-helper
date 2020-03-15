@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import useMaker from '../hooks/useMaker';
 import useBalances from '../hooks/useBalances';
+import useAllowances from '../hooks/useAllowances';
+
 import {
   Heading,
   Text,
@@ -68,11 +70,14 @@ export default () => {
   const [mkrApprovePending, setMkrApprovePending] = useState(false);
   const [hopeApprovePending, setHopeApprovePending] = useState(false);
   const [joinAddress, setJoinAddress] = useState('');
-  // TODO keep track of allowances with object keys
-  const [hasAllowance, setHasAllowance] = useState(false);
-  const [hasMkrAllowance, setHasMkrAllowance] = useState(false);
 
-  //Get adapter address & check allowances for DAI & MKR
+  const {
+    hasDaiAllowance,
+    hasMkrAllowance,
+    hasEthFlipHope,
+    hasJoinDaiHope
+  } = useAllowances();
+
   useEffect(() => {
     if (web3Connected) {
       (async () => {
@@ -80,16 +85,6 @@ export default () => {
           .service('smartContract')
           .getContractByName('MCD_JOIN_DAI').address;
         setJoinAddress(joinDaiAdapterAddress);
-
-        const daiAllowance = await maker
-          .getToken('MDAI')
-          .allowance(maker.currentAddress(), joinDaiAdapterAddress);
-        const mkrAllowance = await maker
-          .getToken('MDAI')
-          .allowance(maker.currentAddress(), joinDaiAdapterAddress);
-
-        setHasAllowance(daiAllowance.gt(REQUIRED_ALLOWANCE) ? true : false);
-        setHasMkrAllowance(mkrAllowance.gt(REQUIRED_ALLOWANCE) ? true : false);
       })();
     }
   }, [maker, web3Connected]);
@@ -98,7 +93,7 @@ export default () => {
     setDaiApprovePending(true);
     try {
       await maker.getToken('MDAI').approveUnlimited(address);
-      setHasAllowance(true);
+      // setHasAllowance(true);
     } catch (err) {
       const message = err.message ? err.message : err;
       const errMsg = `unlock dai tx failed ${message}`;
@@ -170,9 +165,9 @@ export default () => {
       >
         <Button
           onClick={() => giveDaiAllowance(joinAddress)}
-          disabled={!web3Connected || hasAllowance}
+          disabled={!web3Connected || hasDaiAllowance}
         >
-          {hasAllowance ? 'Dai Unlocked' : 'Unlock Dai in your wallet'}
+          {hasDaiAllowance ? 'Dai Unlocked' : 'Unlock Dai in your wallet'}
         </Button>
         <Button
           onClick={() => {
