@@ -36,7 +36,7 @@ const Index = (props) => {
     return  filterById ? auctionId.includes(filterById) : auctionId;    
   }
 1
-  useEffect(() => {
+  useEffect(() => {    
     filterAuctionIds(Object.keys(auctions || []).reverse().filter(byId))
   }, [auctions, filterById]);  
 
@@ -125,8 +125,6 @@ const Index = (props) => {
           <Grid gap={5}>
             {
               auctionIds
-                .reverse()
-                .filter(byId)
                 .slice(page.start, page.end)
                 .map(auctionId => {
                   return (
