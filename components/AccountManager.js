@@ -65,10 +65,14 @@ export default () => {
   const { vatDaiBalance, daiBalance, mkrBalance } = useBalances();
 
   const [daiApprovePending, setDaiApprovePending] = useState(false);
+  const [mkrApprovePending, setMkrApprovePending] = useState(false);
   const [hopeApprovePending, setHopeApprovePending] = useState(false);
-  const [hasAllowance, setHasAllowance] = useState(false);
   const [joinAddress, setJoinAddress] = useState('');
+  // TODO keep track of allowances with object keys
+  const [hasAllowance, setHasAllowance] = useState(false);
+  const [hasMkrAllowance, setHasMkrAllowance] = useState(false);
 
+  //Get adapter address & check allowances for DAI & MKR
   useEffect(() => {
     if (web3Connected) {
       (async () => {
@@ -76,10 +80,16 @@ export default () => {
           .service('smartContract')
           .getContractByName('MCD_JOIN_DAI').address;
         setJoinAddress(joinDaiAdapterAddress);
-        const allowance = await maker
+
+        const daiAllowance = await maker
           .getToken('MDAI')
           .allowance(maker.currentAddress(), joinDaiAdapterAddress);
-        setHasAllowance(allowance.gt(REQUIRED_ALLOWANCE) ? true : false);
+        const mkrAllowance = await maker
+          .getToken('MDAI')
+          .allowance(maker.currentAddress(), joinDaiAdapterAddress);
+
+        setHasAllowance(daiAllowance.gt(REQUIRED_ALLOWANCE) ? true : false);
+        setHasMkrAllowance(mkrAllowance.gt(REQUIRED_ALLOWANCE) ? true : false);
       })();
     }
   }, [maker, web3Connected]);
@@ -95,6 +105,19 @@ export default () => {
       console.error(errMsg);
     }
     setDaiApprovePending(false);
+  };
+
+  const giveMkrAllowance = async address => {
+    setMkrApprovePending(true);
+    try {
+      await maker.getToken('MKR').approveUnlimited(address);
+      hasMkrAllowance(true);
+    } catch (err) {
+      const message = err.message ? err.message : err;
+      const errMsg = `unlock mkr tx failed ${message}`;
+      console.error(errMsg);
+    }
+    setMkrApprovePending(false);
   };
 
   const giveHope = async address => {
@@ -183,8 +206,13 @@ export default () => {
             type={'MKR'}
             balance={mkrBalance}
             actions={
-              <Box >
-                <Button>Unlock to withdraw</Button>
+              <Box>
+                <Button
+                  disabled={!web3Connected || hasMkrAllowance}
+                  onClick={() => giveMkrAllowance(joinAddress)}
+                >
+                  Unlock to withdraw
+                </Button>
               </Box>
             }
           />
