@@ -186,7 +186,7 @@ export default ({ webConnected, auction, auctionId, lot }) => {
           </Button>
         </Flex>
         {state.error && <Text variant="smallDanger">{state.error} </Text>}
-        <Text variant="small">Price 1 MKR = 300 DAI</Text>
+        {/* <Text variant="small">Price 1 MKR = 300 DAI</Text> */}
       </Grid>
     </Grid>
   );
