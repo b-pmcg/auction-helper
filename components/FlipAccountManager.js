@@ -15,6 +15,7 @@ import {
   Flex
 } from 'theme-ui';
 import { AUCTION_DATA_FETCHER } from '../constants';
+import BalanceFormVat from './BalanceFormVat';
 
 const REQUIRED_ALLOWANCE = 0;
 
@@ -66,30 +67,6 @@ const BalanceOf = ({ type, balance, vatBalance, actions, vatActions }) => {
   );
 };
 
-const BalanceFormVat = ({ joinDaiToAdapter, exitDaiFromAdapter }) => {
-  const [amount, setAmount] = useState(null);
-  return (
-    <Grid gap={2} columns={3}>
-      <Input onChange={ev => setAmount(ev.target.value)}></Input>
-      <Button
-        onClick={() => {
-          joinDaiToAdapter(amount);
-        }}
-        disabled={!amount}
-      >
-        Deposit
-      </Button>
-      <Button
-        onClick={() => {
-          exitDaiFromAdapter(amount);
-        }}
-        disabled={!amount}
-      >
-        Withdraw
-      </Button>
-    </Grid>
-  );
-};
 export default () => {
   const { maker, web3Connected } = useMaker();
   const {

@@ -15,6 +15,7 @@ import {
   Flex
 } from 'theme-ui';
 import { AUCTION_DATA_FETCHER } from '../constants';
+import BalanceFormVat from './BalanceFormVat';
 
 const REQUIRED_ALLOWANCE = 0;
 
@@ -62,7 +63,13 @@ const BalanceOf = ({ type, balance, vatBalance, actions }) => {
 
 export default () => {
   const { maker, web3Connected } = useMaker();
-  const { vatDaiBalance, daiBalance, mkrBalance } = useBalances();
+  const {
+    vatDaiBalance,
+    daiBalance,
+    mkrBalance,
+    joinDaiToAdapter,
+    exitDaiFromAdapter
+  } = useBalances();
 
   const [daiApprovePending, setDaiApprovePending] = useState(false);
   const [mkrApprovePending, setMkrApprovePending] = useState(false);

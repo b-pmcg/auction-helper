@@ -6,8 +6,8 @@ import useBalances from '../hooks/useBalances';
 import * as _ from 'lodash';
 import BigNumber from 'bignumber.js';
 import { Heading, Text, jsx, Box, Button, Styled, Input, Flex } from 'theme-ui';
-import AuctionBlock from '../components/AuctionBlock';
-import AccountManager from '../components/AccountManager';
+import AuctionBlock from '../components/FlopAuctionBlock';
+import AccountManager from '../components/FlopAccountManager';
 import GuttedLayout from '../components/GuttedLayout';
 import { AUCTION_DATA_FETCHER } from '../constants';
 function fromRad(value) {
