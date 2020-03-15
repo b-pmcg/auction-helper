@@ -14,12 +14,15 @@ function fromRad(value) {
   return BigNumber(value).shiftedBy(-45);
 }
 
-const Index = () => {
+const Index = (props) => {
+  const initialPage = {start: 0, end: 10, step: 10};
   const { maker, web3Connected } = useMaker();
   const [auctions, setAuctions] = useState(null);
+  const [auctionIds , filterAuctionIds] = useState(null);
   const { vatDaiBalance, daiBalance, mkrBalance } = useBalances();
   const [filterById, updateFilterById] = useState(undefined);
-  const [sortBy, updateSortBy] = useState(undefined)
+  const [sortBy, updateSortBy] = useState(undefined);
+  const [ page , updatePage ] = useState(initialPage);
 
   useEffect(() => {
     if (web3Connected) {
@@ -27,11 +30,19 @@ const Index = () => {
         fetchAuctions();
       }
     }
-  }, [web3Connected, auctions]);
+  }, [web3Connected]);
 
   function byId(auctionId){
     return  filterById ? auctionId.includes(filterById) : auctionId;    
   }
+1
+  useEffect(() => {
+    filterAuctionIds(Object.keys(auctions || []).reverse().filter(byId))
+  }, [auctions, filterById]);  
+
+  useEffect(() => {
+    updatePage(initialPage)
+  }, [auctionIds])
 
   async function fetchAuctions() {
     const service = maker.service(AUCTION_DATA_FETCHER);
@@ -40,7 +51,26 @@ const Index = () => {
     setAuctions(_.groupBy(auctions, auction => auction.auctionId));
   }
 
-  return (
+  const next = () => {
+    updatePage({
+      ...page,
+      start: page.start + page.step,
+      end: page.end + page.step
+    });
+  }
+
+  const prev = () => {
+    updatePage({
+      ...page,
+      start: page.start - page.step,
+      end: page.end - page.step
+    });
+  }
+  
+  const hasPrev = page.start - page.step >= 0;
+  const hasNext = page.end - (auctionIds || []).length < 0;
+
+  return (    
     <GuttedLayout>
       <Head>
         <title>Auction Helper (Beta)</title>
@@ -93,29 +123,32 @@ const Index = () => {
             </Select>
           </Flex>
           <Grid gap={5}>
-            {auctions &&
-              Object.keys(auctions)
-                .filter(byId)
+            {
+              auctionIds
                 .reverse()
+                .filter(byId)
+                .slice(page.start, page.end)
                 .map(auctionId => {
-                  const kickEvent = auctions[auctionId].find(
-                    event => event.type === 'Kick'
-                  );
-                  const firstTend = auctions[auctionId].find(
-                    event => event.type === 'Tend'
-                  );
-                  let lot = kickEvent ? kickEvent.lot : firstTend.lot;
                   return (
                     <FlipAuctionBlock
                       key={auctionId}
-                      lot={lot}
+                      lot={auctions[auctionId][0].lot}
                       auctionId={auctionId}
                       auction={auctions[auctionId]}
                       web3Connected={web3Connected}
                     />
                   );
-                })}
+                })
+              }
           </Grid>
+          <Flex sx={{
+            justifyContent:'center',
+            mt: 5,
+            mb: 5
+          }}>
+            <Button variant="primary" sx={{mr: 5}} disabled={!hasPrev} onClick={prev}>PREV</Button>
+            <Button variant="primary" disabled={!hasNext} onClick={next}>NEXT</Button>
+          </Flex>
         </>
       )}
     </GuttedLayout>
