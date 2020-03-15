@@ -5,7 +5,7 @@ import useMaker from '../hooks/useMaker';
 import useBalances from '../hooks/useBalances';
 import * as _ from 'lodash';
 import BigNumber from 'bignumber.js';
-import { Heading, Text, jsx, Box, Button, Styled, Input, Flex, Grid } from 'theme-ui';
+import { Heading, Text, jsx, Box, Button, Styled, Input, Flex, Grid, Select } from 'theme-ui';
 import FlipAuctionBlock from '../components/FlipAuctionBlock';
 import FlipAccountManager from '../components/FlipAccountManager';
 import GuttedLayout from '../components/GuttedLayout';
@@ -18,6 +18,8 @@ const Index = () => {
   const { maker, web3Connected } = useMaker();
   const [auctions, setAuctions] = useState(null);
   const { vatDaiBalance, daiBalance, mkrBalance } = useBalances();
+  const [filterById, updateFilterById] = useState(undefined);
+  const [sortBy, updateSortBy] = useState(undefined)
 
   useEffect(() => {
     if (web3Connected) {
@@ -26,6 +28,10 @@ const Index = () => {
       }
     }
   }, [web3Connected, auctions]);
+
+  function byId(auctionId){
+    return  filterById ? auctionId.includes(filterById) : auctionId;    
+  }
 
   async function fetchAuctions() {
     const service = maker.service(AUCTION_DATA_FETCHER);
@@ -66,9 +72,30 @@ const Index = () => {
             }}
           >
           </Box>
+          <Flex sx={{
+            justifyContent: ['center', 'space-between'],
+            flexDirection: ['column', 'row'],
+            mb:5
+          }}>
+            <Input sx={{
+              bg: 'white',
+              maxWidth:['100%', '180px'],
+            }} placeholder="Filter by ID" onChange={({target: {value}}) => updateFilterById(value)}/>
+            <Select sx={{
+                width: ['100%', '200px'],
+                bg: 'white', 
+              }}
+              defaultValue='Sort By'
+              onChange={({target: {value}}) => console.log(value)}>
+              <option value=''>Sort By</option>
+              <option value="byTime">Time Remaining</option>
+              <option value="byBidPrice">Current Bid Price</option>
+            </Select>
+          </Flex>
           <Grid gap={5}>
             {auctions &&
               Object.keys(auctions)
+                .filter(byId)
                 .reverse()
                 .map(auctionId => {
                   const kickEvent = auctions[auctionId].find(
@@ -78,7 +105,6 @@ const Index = () => {
                     event => event.type === 'Tend'
                   );
                   let lot = kickEvent ? kickEvent.lot : firstTend.lot;
-                  console.log(auctionId, 'here');
                   return (
                     <FlipAuctionBlock
                       key={auctionId}
