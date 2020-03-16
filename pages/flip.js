@@ -109,10 +109,14 @@ const Index = (props) => {
           }}>
             <Input sx={{
               bg: 'white',
+        borderColor: 'border',
+
               maxWidth:['100%', '180px'],
             }} placeholder="Filter by ID" onChange={({target: {value}}) => updateFilterById(value)}/>
             <Select sx={{
                 width: ['100%', '200px'],
+        borderColor: 'border',
+
                 bg: 'white', 
               }}
               defaultValue='Sort By'

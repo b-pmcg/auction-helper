@@ -15,13 +15,14 @@ import {
 
 const BalanceOf = ({ type, balance, vatBalance, actions }) => {
   return (
-    <Box
+    <Flex
       sx={{
         bg: '#fff',
         p: 4,
         borderRadius: 5,
         border: '1px solid',
-        borderColor: 'border'
+        borderColor: 'border',
+        alignItems: 'center'
       }}
     >
       <Grid
@@ -29,8 +30,8 @@ const BalanceOf = ({ type, balance, vatBalance, actions }) => {
         columns={[1]}
         sx={{
           flexDirection: ['column', 'row'],
-          justifyItems: 'start'
-          // alignItems: 'flex-start'
+          justifyItems: 'start',
+          alignItems: 'center'
         }}
       >
         <Flex
@@ -51,7 +52,7 @@ const BalanceOf = ({ type, balance, vatBalance, actions }) => {
           </Box>
         ) : null}
       </Grid>
-    </Box>
+    </Flex>
   );
 };
 

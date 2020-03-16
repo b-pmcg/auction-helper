@@ -17,7 +17,9 @@ const BalanceFormVat = ({ joinDaiToAdapter, exitDaiFromAdapter }) => {
   const [amount, setAmount] = useState(null);
   return (
     <Grid gap={2} columns={3}>
-      <Input onChange={ev => setAmount(ev.target.value)}></Input>
+      <Input onChange={ev => setAmount(ev.target.value)} sx={{
+        borderColor: 'border'
+      }}></Input>
       <Button
         onClick={() => {
           joinDaiToAdapter(amount);

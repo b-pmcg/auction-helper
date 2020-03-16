@@ -135,16 +135,20 @@ export default () => {
       {web3Connected ? (
         <Grid
           gap={3}
-          columns={1}
+          columns={2}
           sx={{
             pt: 5
           }}
         >
           <BalanceOf
-            type={'Dai'}
+            type={'Dai in your wallet'}
             balance={daiBalance}
-            vatBalance={vatDaiBalance}
-            vatActions={
+        
+          />
+          <BalanceOf
+            type={'Dai in the adapter'}
+            balance={vatDaiBalance}
+            actions={
               <BalanceFormVat
                 joinDaiToAdapter={joinDaiToAdapter}
                 exitDaiFromAdapter={exitDaiFromAdapter}
