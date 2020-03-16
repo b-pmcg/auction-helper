@@ -1,7 +1,10 @@
 import { PublicService } from '@makerdao/services-core';
 import BigNumber from 'bignumber.js';
 
-export default class ValidatorService extends PublicService {
+export default class ValidatorService extends PublicService {  
+
+  lastSync = 0;
+
   constructor(name = 'validator') {
     super(name, ['web3', 'smartContract']);
     this.queryPromises = {};
@@ -73,10 +76,23 @@ export default class ValidatorService extends PublicService {
   //   return this.queryPromises[cacheKey];
   // }
 
-  async getAllAuctions() {
-    const queryDate = new Date();
-    queryDate.setHours(queryDate.getHours() - 68);
+  async getAllAuctions(shouldSync = false) {
+    let currentTime = new Date().getTime();
+    const backInTime = 1000 * 60 * 60 * 68; // 68 hours;
+    const timePassed = currentTime - this.lastSync;
+    let queryDate = new Date();
+    console.log(currentTime - timePassed);
+    
 
+    if(shouldSync){
+      queryDate = new Date(currentTime - timePassed);
+    } else {
+      queryDate = new Date(currentTime - backInTime);
+    }
+
+    this.lastSync = currentTime;
+
+    
     const query = `query allLeveragedEvents($token: String, $fromDate: Datetime) {
       allLeveragedEvents(
       filter: { 
