@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import useMaker from './useMaker';
 import { fromRad } from '../pages/index';
+import BigNumber from 'bignumber.js';
 
 const useBalances = () => {
   const { maker, web3Connected } = useMaker();
@@ -45,8 +46,6 @@ const useBalances = () => {
 
     const joinAmountInDai = maker.service('web3')._web3.utils.toWei(amount);
 
-    await maker.getToken('MDAI').approveUnlimited(DaiJoinAdapter.address);
-
     await DaiJoinAdapter.join(
       maker.currentAddress(),
       BigNumber(joinAmountInDai).toString()
@@ -57,8 +56,6 @@ const useBalances = () => {
     const DaiJoinAdapter = maker
       .service('smartContract')
       .getContract('MCD_JOIN_DAI');
-
-    const exitAmountInDai = maker.service('web3')._web3.utils.toWei(amount);
 
     await DaiJoinAdapter.exit(
       maker.currentAddress(),
