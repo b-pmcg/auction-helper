@@ -166,6 +166,11 @@ export default ({ webConnected, auction: auctionEvents, auctionId, lot }) => {
     .map(a => a.tab)
     .filter(Boolean);
 
+
+  const events = auctionEvents.sort(byTimestamp);
+  const hasDeal = events.find(e => e.type === 'Deal');
+  const {lot: latestLot, bid: latestBid, currentBid: latestCurrentBid} = events.filter(e => e.type !== 'Deal')[0];
+
   return (
     <Grid
       gap={5}
@@ -197,17 +202,18 @@ export default ({ webConnected, auction: auctionEvents, auctionId, lot }) => {
         </Heading> */}
       </Flex>
       <EventsList
-        events={auctionEvents
-          .sort(byTimestamp)
+        events={events
           .map(({ type, lot, bid, timestamp, ilk }, index) => {
             return (
               <AuctionEvent
                 key={`${timestamp}-${index}`}
                 type={type}
                 ilk={ilk.split('-')[0]}
-                lot={new BigNumber(getValueOrDefault(lot)).toFormat(5, 4)}
-                bid={new BigNumber(getValueOrDefault(bid)).toFormat(5, 4)}
-                currentBid={`${new BigNumber(getValueOrDefault(bid))
+                lot={type === 'Deal'? new BigNumber(getValueOrDefault(latestLot)).toFormat(5, 4) : new BigNumber(getValueOrDefault(lot)).toFormat(5, 4)}
+                bid={type === 'Deal'?  new BigNumber(getValueOrDefault(latestBid)).toFormat(5, 4) : new BigNumber(getValueOrDefault(bid)).toFormat(5, 4)}
+                currentBid={type === 'Deal'? `${new BigNumber(getValueOrDefault(latestBid))
+                  .div(new BigNumber(getValueOrDefault(latestLot)))
+                  .toFormat(5, 4)} DAI` : `${new BigNumber(getValueOrDefault(bid))
                   .div(new BigNumber(getValueOrDefault(lot)))
                   .toFormat(5, 4)} DAI`}
                 timestamp={
