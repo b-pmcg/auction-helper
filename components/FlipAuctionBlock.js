@@ -105,7 +105,7 @@ const AuctionEvent = ({ type, ilk, lot, currentBid, bid, timestamp }) => {
     ['Event Type', type],
     ['Collateral Type', ilk],
     ['Lot Size', lot],
-    ['Current Bid Value', currentBid],
+    ['Bid Token Price', currentBid],
     ['Bid Value', bid],
     ['Time', timestamp]
   ];
