@@ -105,7 +105,7 @@ const AuctionEvent = ({ type, ilk, lot, currentBid, bid, timestamp, tx, sender }
     ['Event Type', type],
     ['Collateral Type', ilk],
     ['Lot Size', lot],
-    ['Current Bid', currentBid],
+    ['Unit Price', currentBid],
     ['Bid Value', bid],
     ['Time', timestamp],
     ['Tx', <a href={`https://etherscan.io/tx/${tx}`} target="_blank"> {tx.slice(0, 7) + '...' + tx.slice(-4)}</a>],
