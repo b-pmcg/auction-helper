@@ -1,16 +1,6 @@
 import { PublicService } from '@makerdao/services-core';
 import BigNumber from 'bignumber.js';
 
-//KOVAN
-// const flopAddress = '0xcc2c9de81a29dc01a6d348c5ebb7572e5a92840d';
-// const flipEthContract = '0x816383cfe95e14a962b521c953ab15acbca16dbb';
-// const flipBatContract = '0x9fe8947687fba82e183db18bd9c676fa0b9135e6';
-
-// PROD
-const flopAddress = '0x4d95a049d5b0b7d32058cd3f2163015747522e99';
-const flipEthContract = '0xd8a04f5412223f513dc55f839574430f5ec15531';
-const flipBatContract= '0xaa745404d55f88c108a28c86abe7b5a1e7817c07';
-
 export default class ValidatorService extends PublicService {
 
   flipAuctionsLastSynced = 0;
@@ -21,9 +11,7 @@ export default class ValidatorService extends PublicService {
     super(name, ['web3', 'smartContract']);
     this.queryPromises = {};
     this.staging = false;
-    this.serverUrl = 'https://auctions.oasis.app/api/v1';
 
-    // this.serverUrl = 'https://staging-cache.eth2dai.com/api/v1';
     this.id = 123;
   }
 
@@ -104,8 +92,10 @@ export default class ValidatorService extends PublicService {
 
     this.flipAuctionsLastSynced = currentTime;
 
+    console.log(this.flipEthAddress, this.flipBatAddress);
+    
     return this.getAllAuctions({
-      sources: [flipEthContract, flipBatContract],
+      sources: [this.flipEthAddress, this.flipBatAddress],
       fromDate: queryDate
     })
   }
@@ -123,7 +113,7 @@ export default class ValidatorService extends PublicService {
 
     this.flopAuctionsLastSynced = currentTime;
     return this.getAllAuctions({
-      sources: [flopAddress],
+      sources: [this.flopAddress],
       fromDate: queryDate
     })
   }
@@ -172,7 +162,7 @@ export default class ValidatorService extends PublicService {
     }`;
 
     const response = await this.getQueryResponse(
-      this.serverUrl,
+      this._cacheAPI,
       query,
       variables
     );
@@ -185,9 +175,15 @@ export default class ValidatorService extends PublicService {
     this._url = 'https://api.prylabs.net';
   }
 
+  connect(){
+    this._cacheAPI = this.get('web3').networkName === 'kovan'
+    ? 'https://kovan-auctions.oasis.app/api/v1'
+    : 'https://auctions.oasis.app/api/v1';
+  }
+
   async getLots(id) {
     // const bidId = 2590;
-    const bids = await this._flipperContract().bids(id);
+    const bids = await this._flipEthAdapter().bids(id);
     console.log('bids', bids);
     const lotSize = bids[0];
     return lotSize;
@@ -213,7 +209,7 @@ export default class ValidatorService extends PublicService {
 
     // const collateralAmount = '50000000000000000000';
     // const highestBid = '1000000000000000000000000000000000000000000000';
-    const tend = await this._flipperContract().tend(
+    const tend = await this._flipEthAdapter().tend(
       id,
       lotSizeInWei,
       bidAmountRad.toFixed()
@@ -223,7 +219,7 @@ export default class ValidatorService extends PublicService {
 
   async getLots(id) {
     // const bidId = 2590;
-    const bids = await this._flipperContract().bids(id);
+    const bids = await this._flipEthAdapter().bids(id);
     console.log('bids', bids);
     const lotSize = bids[0];
     return lotSize;
@@ -250,7 +246,7 @@ export default class ValidatorService extends PublicService {
 
     // const collateralAmount = '50000000000000000000';
     // const highestBid = '1000000000000000000000000000000000000000000000';
-    const tend = await this._flipperContract().dent(
+    const tend = await this._flipEthAdapter().dent(
       id,
       lotSizeInWei,
       bidAmountRad.toFixed()
@@ -261,7 +257,7 @@ export default class ValidatorService extends PublicService {
   async getAuction(id) {
     console.log('fetching', id);
     try {
-      return await this._flipperContract().bids(id);
+      return await this._flipEthAdapter().bids(id);
     } catch (err) { }
   }
 
@@ -272,24 +268,32 @@ export default class ValidatorService extends PublicService {
     await this._joinDaiAdapter.join(address, amount);
   }
 
-  get flipperContractAddress() {
-    return this._flipperContract.address;
+  get flipEthAddress() {
+    return this._flipEthAdapter().address;
   }
 
-  get flipEthAddress() {
-    return this._flipEthAdapter.address;
+  get flipBatAddress() {
+    return this._flipBatAdapter().address;
+  }
+
+  get flopAddress() {
+    return this._flop().address
   }
 
   get joinDaiAdapterAddress() {
     return this._joinDaiAdapter.address;
   }
 
-  _flipperContract({ web3js = false } = {}) {
-    return this.get('smartContract').getContractByName('FLIPPER');
-  }
-
   _flipEthAdapter({ web3js = false } = {}) {
     return this.get('smartContract').getContractByName('MCD_FLIP_ETH_A');
+  }
+
+  _flipBatAdapter(){
+    return this.get('smartContract').getContractByName('MCD_FLIP_BAT_A');
+  }
+
+  _flop(){
+    return this.get('smartContract').getContractByName('MCD_FLOP');
   }
 
   _joinDaiAdapter({ web3js = false } = {}) {
