@@ -1,9 +1,15 @@
 import { PublicService } from '@makerdao/services-core';
 import BigNumber from 'bignumber.js';
 
-const flopAddress = '0xcc2c9de81a29dc01a6d348c5ebb7572e5a92840d';
-const flipEthContract = '0x816383cfe95e14a962b521c953ab15acbca16dbb';
-const flipBatContract = '0x9fe8947687fba82e183db18bd9c676fa0b9135e6';
+//KOVAN
+// const flopAddress = '0xcc2c9de81a29dc01a6d348c5ebb7572e5a92840d';
+// const flipEthContract = '0x816383cfe95e14a962b521c953ab15acbca16dbb';
+// const flipBatContract = '0x9fe8947687fba82e183db18bd9c676fa0b9135e6';
+
+// PROD
+const flopAddress = '0x4d95a049d5b0b7d32058cd3f2163015747522e99';
+const flipEthContract = '0xd8a04f5412223f513dc55f839574430f5ec15531';
+const flipBatContract= '0xaa745404d55f88c108a28c86abe7b5a1e7817c07';
 
 export default class ValidatorService extends PublicService {
 
@@ -15,7 +21,7 @@ export default class ValidatorService extends PublicService {
     super(name, ['web3', 'smartContract']);
     this.queryPromises = {};
     this.staging = false;
-    this.serverUrl = 'https://kovan-auctions.oasis.app/api/v1';
+    this.serverUrl = 'https://auctions.oasis.app/api/v1';
 
     // this.serverUrl = 'https://staging-cache.eth2dai.com/api/v1';
     this.id = 123;
