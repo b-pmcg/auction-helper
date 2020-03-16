@@ -36,7 +36,11 @@ export default () => {
     hasDaiAllowance,
     hasMkrAllowance,
     hasEthFlipHope,
-    hasJoinDaiHope
+    hasJoinDaiHope,
+    giveDaiAllowance,
+    giveMkrAllowance,
+    giveFlipEthHope,
+    giveJoinDaiHope
   } = useAllowances();
 
   const [daiApprovePending, setDaiApprovePending] = useState(false);
@@ -54,47 +58,6 @@ export default () => {
       })();
     }
   }, [maker, web3Connected]);
-
-  const giveDaiAllowance = async address => {
-    setDaiApprovePending(true);
-    try {
-      await maker.getToken('MDAI').approveUnlimited(address);
-      // setHasAllowance(true);
-    } catch (err) {
-      const message = err.message ? err.message : err;
-      const errMsg = `unlock dai tx failed ${message}`;
-      console.error(errMsg);
-    }
-    setDaiApprovePending(false);
-  };
-
-  const giveMkrAllowance = async address => {
-    setMkrApprovePending(true);
-    try {
-      await maker.getToken('MKR').approveUnlimited(address);
-      // hasMkrAllowance(true);
-    } catch (err) {
-      const message = err.message ? err.message : err;
-      const errMsg = `unlock mkr tx failed ${message}`;
-      console.error(errMsg);
-    }
-    setMkrApprovePending(false);
-  };
-
-  const giveHope = async address => {
-    setHopePending(true);
-    try {
-      await maker
-        .service('smartContract')
-        .getContract('MCD_VAT')
-        .hope(address);
-    } catch (err) {
-      const message = err.message ? err.message : err;
-      const errMsg = `hope tx failed ${message}`;
-      console.error(errMsg);
-    }
-    setHopeApprovePending(false);
-  };
 
   return (
     <AccountManagerLayout
@@ -133,14 +96,14 @@ export default () => {
                 const flipEthAddress = maker
                   .service('smartContract')
                   .getContractByName('MCD_FLIP_ETH_A').address;
-                giveHope(flipEthAddress);
+                giveFlipEthHope(flipEthAddress);
               }}
               disabled={!web3Connected || hasEthFlipHope}
             >
               Unlock Dai in the adapter
             </Button>
             <Button
-              onClick={() => giveHope(joinAddress)}
+              onClick={() => giveJoinDaiHope(joinAddress)}
               disabled={!web3Connected || hasJoinDaiHope}
             >
               Unlock Dai in the VAT

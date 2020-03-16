@@ -49,7 +49,6 @@ const useAllowances = () => {
         .service('smartContract')
         .getContract('MCD_VAT')
         .can(maker.currentAddress(), flipEthAddress);
-      console.log('flipEth CAN', can.toNumber());
       setHasFlipEthHope(can.toNumber() === 1 ? true : false);
     })();
   }, [maker, web3Connected]);
@@ -70,11 +69,72 @@ const useAllowances = () => {
     })();
   }, [maker, web3Connected]);
 
+  const giveDaiAllowance = async address => {
+    // setDaiApprovePending(true);
+    try {
+      await maker.getToken('MDAI').approveUnlimited(address);
+      setHasDaiAllowance(true);
+    } catch (err) {
+      const message = err.message ? err.message : err;
+      const errMsg = `unlock dai tx failed ${message}`;
+      console.error(errMsg);
+    }
+    // setDaiApprovePending(false);
+  };
+
+  const giveMkrAllowance = async address => {
+    // setMkrApprovePending(true);
+    try {
+      await maker.getToken('MKR').approveUnlimited(address);
+      setHasMkrAllowance(true);
+    } catch (err) {
+      const message = err.message ? err.message : err;
+      const errMsg = `unlock mkr tx failed ${message}`;
+      console.error(errMsg);
+    }
+    // setMkrApprovePending(false);
+  };
+
+  const giveFlipEthHope = async address => {
+    // setHopePending(true);
+    try {
+      await maker
+        .service('smartContract')
+        .getContract('MCD_VAT')
+        .hope(address);
+      setHasFlipEthHope(true);
+    } catch (err) {
+      const message = err.message ? err.message : err;
+      const errMsg = `hope tx failed ${message}`;
+      console.error(errMsg);
+    }
+    // setHopeApprovePending(false);
+  };
+  const giveJoinDaiHope = async address => {
+    // setHopePending(true);
+    try {
+      await maker
+        .service('smartContract')
+        .getContract('MCD_VAT')
+        .hope(address);
+      setHasJoinDaiHope(true);
+    } catch (err) {
+      const message = err.message ? err.message : err;
+      const errMsg = `hope tx failed ${message}`;
+      console.error(errMsg);
+    }
+    // setHopeApprovePending(false);
+  };
+
   return {
     hasDaiAllowance,
     hasMkrAllowance,
     hasEthFlipHope,
-    hasJoinDaiHope
+    hasJoinDaiHope,
+    giveDaiAllowance,
+    giveMkrAllowance,
+    giveFlipEthHope,
+    giveJoinDaiHope
   };
 };
 
