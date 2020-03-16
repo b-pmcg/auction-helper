@@ -220,7 +220,6 @@ export default ({ webConnected, auction: auctionEvents, auctionId, lot }) => {
           <Button
             sx={{ ml: [0, 2], mt: [2, 0] }}
             variant="primary"
-            disabled={bidDisabled}
             onClick={handleTendTabCTA}
           >
             Bid Tab Amount
