@@ -9,7 +9,9 @@ export default class ValidatorService extends PublicService {
     super(name, ['web3', 'smartContract']);
     this.queryPromises = {};
     this.staging = false;
-    this.serverUrl = 'https://staging-cache.eth2dai.com/api/v1';
+    this.serverUrl = 'https://auctions.oasis.app/api/v1';
+
+    // this.serverUrl = 'https://staging-cache.eth2dai.com/api/v1';
     this.id = 123;
   }
 
