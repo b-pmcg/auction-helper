@@ -65,6 +65,19 @@ const AuctionEvent = ({type, ilk, lot, currentBid, bid, timestamp}) => {
   );
 };
 
+const byTimestamp = (prev, next) => {
+  const nextTs = new Date(next.timestamp).getTime();
+  const prevTs = new Date(prev.timestamp).getTime();
+
+  if (nextTs > prevTs) return 1;
+  if (nextTs < prevTs  ) return -1;
+  if (nextTs === prevTs ){
+    if(next.type === "Tend") return 1;
+    if(next.type === "Kick") return -1;
+  };   
+  return 0;
+}
+
 export default ({ webConnected, auction: auctionEvents, auctionId, lot }) => {
 
   const [state, setState] = useState({ amount: undefined, error: undefined });
@@ -93,7 +106,7 @@ export default ({ webConnected, auction: auctionEvents, auctionId, lot }) => {
     callTend(auctionId, lot, bidAmount)
   }
 
-  const bidDisabled = !webConnected || state.error || !state.amount;
+  const bidDisabled = state.error || !state.amount;
 
   return (
     <Grid
@@ -127,7 +140,7 @@ export default ({ webConnected, auction: auctionEvents, auctionId, lot }) => {
       </Flex>
       <EventsList
         events={
-          auctionEvents.map(({type, lot, bid, timestamp, ilk}, index) => {
+          auctionEvents.sort(byTimestamp).map(({type, lot, bid, timestamp, ilk}, index) => {
             return (<AuctionEvent
             key={`${timestamp}-${index}`}
             type={type}
@@ -137,7 +150,7 @@ export default ({ webConnected, auction: auctionEvents, auctionId, lot }) => {
             currentBid={`${new BigNumber(getValueOrDefault(bid))
               .div(new BigNumber(getValueOrDefault(lot)))
               .toFormat(5,4)} DAI`}
-            timestamp={<Text><Moment fromNow ago>{timestamp}</Moment> ago</Text>}
+            timestamp={<Text title={new Date(timestamp)}><Moment fromNow ago>{timestamp}</Moment> ago</Text>}
           />)})
         }
       />
