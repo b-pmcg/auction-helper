@@ -68,7 +68,7 @@ const AuctionEvent = ({type, ilk, lot, currentBid, bid, timestamp}) => {
 const byTimestamp = (prev, next) => {
   const nextTs = new Date(next.timestamp).getTime();
   const prevTs = new Date(prev.timestamp).getTime();
-  
+
   if (nextTs > prevTs) return 1;
   if (nextTs < prevTs  ) return -1;
   if (nextTs === prevTs ){
@@ -106,7 +106,7 @@ export default ({ webConnected, auction: auctionEvents, auctionId, lot }) => {
     callTend(auctionId, lot, bidAmount)
   }
 
-  const bidDisabled = !webConnected || state.error || !state.amount;
+  const bidDisabled = state.error || !state.amount;
 
   return (
     <Grid
