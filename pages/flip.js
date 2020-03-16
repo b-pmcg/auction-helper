@@ -165,8 +165,8 @@ const Index = (props) => {
             mt: 5,
             mb: 5
           }}>
-            <Button variant="primary" sx={{mr: 5}} disabled={!hasPrev} onClick={prev}>PREV</Button>
-            <Button variant="primary" disabled={!hasNext} onClick={next}>NEXT</Button>
+            <Button variant="primary" sx={{mr: 5}} disabled={!hasPrev} onClick={prev}>Prev</Button>
+            <Button variant="primary" disabled={!hasNext} onClick={next}>Next</Button>
           </Flex>
         </>
       )}

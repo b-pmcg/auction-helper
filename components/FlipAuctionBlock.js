@@ -19,6 +19,87 @@ import useAuctionActions from '../hooks/useAuctionActions';
 import Moment from 'react-moment';
 import EventsList from './AuctionEventsList';
 
+const DentForm = ({ auctionId, lot }) => {
+  const [state, setState] = useState({ amount: undefined, error: undefined });
+  const { callTend } = useAuctionActions();
+
+  const handleTendCTA = event => {
+    const bidAmount = state.amount;
+    callTend(auctionId, lot, bidAmount);
+  };
+
+  const bidDisabled = state.error || !state.amount;
+
+  const maxBid = new BigNumber(0); // This should be taken from somewhere?
+
+  const handleBidAmountInput = event => {
+    const value = event.target.value;
+    const state = { amount: undefined, error: undefined };
+
+    if (value) {
+      state.amount = new BigNumber(value);
+
+      if (state.amount.lt(maxBid)) {
+        state.error = 'Your bid is too low, you will need to increase.';
+      }
+    }
+
+    setState(state);
+  };
+
+  return (
+    <Grid gap={2}>
+      <Text variant="boldBody">Enter your bid for this Auction</Text>
+      <Flex
+        sx={{
+          flexDirection: ['column', 'row']
+        }}
+      >
+        <Flex
+          sx={{
+            maxWidth: ['100%', '224px'],
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            borderColor: 'border',
+            borderRadius: 5,
+            fontSize: 4,
+            // lineHeight: '24px',
+            py: 3,
+            px: 5
+          }}
+        >
+          <Input
+            sx={{
+              border: 'none',
+              outline: 'none',
+              p: 0,
+              marginRight: '2',
+              borderRadius: 5
+            }}
+            id="big-amount"
+            type="number"
+            step="0.01"
+            placeholder="0"
+            onChange={handleBidAmountInput}
+          />
+          <Label sx={{ p: 0, width: 'auto' }} htmlFor="bid-amount">
+            DAI
+          </Label>
+        </Flex>
+        <Button
+          sx={{ ml: [0, 2], mt: [2, 0] }}
+          variant="primary"
+          disabled={bidDisabled}
+          onClick={handleTendCTA}
+        >
+          Bid Now
+        </Button>
+      </Flex>
+      {state.error && <Text variant="smallDanger">{state.error} </Text>}
+      {/* <Text variant="small">Price 1 MKR = 300 DAI</Text> */}
+    </Grid>
+  );
+};
 const AuctionEvent = ({ type, ilk, lot, currentBid, bid, timestamp }) => {
   const fields = [
     ['Event Type', type],
@@ -80,43 +161,11 @@ const byTimestamp = (prev, next) => {
 };
 
 export default ({ webConnected, auction: auctionEvents, auctionId, lot }) => {
-  const [state, setState] = useState({ amount: undefined, error: undefined });
-  const { callTend } = useAuctionActions();
-
-  const maxBid = new BigNumber(0); // This should be taken from somewhere?
-
-  const handleBidAmountInput = event => {
-    const value = event.target.value;
-    const state = { amount: undefined, error: undefined };
-
-    if (value) {
-      state.amount = new BigNumber(value);
-
-      if (state.amount.lt(maxBid)) {
-        state.error = 'Your bid is too low, you will need to increase.';
-      }
-    }
-
-    setState(state);
-  };
-
-  const handleTendCTA = event => {
-    const bidAmount = state.amount;
-    callTend(auctionId, lot, bidAmount);
-  };
-
-  const bidDisabled = state.error || !state.amount;
-
-  console.log(auctionEvents, 'here')
   const tab = auctionEvents
-    .sort(byTimestamp).map(a => a.tab).filter(Boolean);
+    .sort(byTimestamp)
+    .map(a => a.tab)
+    .filter(Boolean);
 
-
-    const handleTendTabCTA = event => {
-      const bidAmount = state.amount;
-      callTend(auctionId, lot, ParseFloat(tab[0]));
-    };
-  
   return (
     <Grid
       gap={5}
@@ -173,56 +222,7 @@ export default ({ webConnected, auction: auctionEvents, auctionId, lot }) => {
             );
           })}
       />
-      <Grid gap={2}>
-        <Text variant="boldBody">Enter your bid for this Auction</Text>
-        <Flex
-          sx={{
-            flexDirection: ['column', 'row']
-          }}
-        >
-          <Flex
-            sx={{
-              maxWidth: ['100%', '224px'],
-              borderWidth: '1px',
-              borderStyle: 'solid',
-              borderColor: 'border',
-              borderRadius: 5,
-              fontSize: 4,
-              // lineHeight: '24px',
-              py: 3,
-              px: 5
-            }}
-          >
-            <Input
-              sx={{
-                border: 'none',
-                outline: 'none',
-                p: 0,
-                marginRight: '2',
-                borderRadius: 5
-              }}
-              id="big-amount"
-              type="number"
-              step="0.01"
-              placeholder="0"
-              onChange={handleBidAmountInput}
-            />
-            <Label sx={{ p: 0, width: 'auto' }} htmlFor="bid-amount">
-              DAI
-            </Label>
-          </Flex>
-          <Button
-            sx={{ ml: [0, 2], mt: [2, 0] }}
-            variant="primary"
-            disabled={bidDisabled}
-            onClick={handleTendCTA}
-          >
-            Bid Now
-          </Button>
-        </Flex>
-        {state.error && <Text variant="smallDanger">{state.error} </Text>}
-        {/* <Text variant="small">Price 1 MKR = 300 DAI</Text> */}
-      </Grid>
+      {true && <DentForm auctionId={auctionId} lot={lot} />}
     </Grid>
   );
 };
