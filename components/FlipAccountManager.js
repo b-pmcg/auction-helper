@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import useMaker from '../hooks/useMaker';
 import useBalances from '../hooks/useBalances';
+import useAllowances from '../hooks/useAllowances';
 import {
   Heading,
   Text,
@@ -25,13 +26,25 @@ export default () => {
   const {
     vatDaiBalance,
     daiBalance,
+    mkrBalance,
     joinDaiToAdapter,
     exitDaiFromAdapter
   } = useBalances();
 
+  const {
+    hasDaiAllowance,
+    hasMkrAllowance,
+    hasEthFlipHope,
+    hasJoinDaiHope,
+    giveDaiAllowance,
+    giveMkrAllowance,
+    giveFlipEthHope,
+    giveJoinDaiHope
+  } = useAllowances();
+
   const [daiApprovePending, setDaiApprovePending] = useState(false);
+  const [mkrApprovePending, setMkrApprovePending] = useState(false);
   const [hopeApprovePending, setHopeApprovePending] = useState(false);
-  const [hasAllowance, setHasAllowance] = useState(false);
   const [joinAddress, setJoinAddress] = useState('');
 
   useEffect(() => {
@@ -41,42 +54,9 @@ export default () => {
           .service('smartContract')
           .getContractByName('MCD_JOIN_DAI').address;
         setJoinAddress(joinDaiAdapterAddress);
-        const allowance = await maker
-          .getToken('MDAI')
-          .allowance(maker.currentAddress(), joinDaiAdapterAddress);
-
-        setHasAllowance(allowance.gt(REQUIRED_ALLOWANCE) ? true : false);
       })();
     }
   }, [maker, web3Connected]);
-
-  const giveDaiAllowance = async address => {
-    setDaiApprovePending(true);
-    try {
-      await maker.getToken('MDAI').approveUnlimited(address);
-      setHasAllowance(true);
-    } catch (err) {
-      const message = err.message ? err.message : err;
-      const errMsg = `unlock dai tx failed ${message}`;
-      console.error(errMsg);
-    }
-    setDaiApprovePending(false);
-  };
-
-  const giveHope = async address => {
-    setHopeApprovePending(true);
-    try {
-      await maker
-        .service('smartContract')
-        .getContract('MCD_VAT')
-        .hope(address);
-    } catch (err) {
-      const message = err.message ? err.message : err;
-      const errMsg = `hope tx failed ${message}`;
-      console.error(errMsg);
-    }
-    setHopeApprovePending(false);
-  };
 
   return (
     <Box
@@ -113,22 +93,25 @@ export default () => {
       >
         <Button
           onClick={() => giveDaiAllowance(joinAddress)}
-          disabled={!web3Connected || hasAllowance}
+          disabled={!web3Connected || hasDaiAllowance}
         >
-          {hasAllowance ? 'Dai Unlocked' : 'Unlock Dai in your wallet'}
+          {hasDaiAllowance ? 'Dai Unlocked' : 'Unlock Dai in your wallet'}
         </Button>
         <Button
           onClick={() => {
             const flipEthAddress = maker
               .service('smartContract')
               .getContractByName('MCD_FLIP_ETH_A').address;
-            giveHope(flipEthAddress);
+            giveFlipEthHope(flipEthAddress);
           }}
-          disabled={!web3Connected}
+          disabled={!web3Connected || hasEthFlipHope}
         >
           Unlock Dai in the adapter
         </Button>
-        <Button onClick={() => giveHope(joinAddress)} disabled={!web3Connected}>
+        <Button
+          onClick={() => giveJoinDaiHope(joinAddress)}
+          disabled={!web3Connected || hasJoinDaiHope}
+        >
           Unlock Dai in the VAT
         </Button>
       </Grid>

@@ -85,7 +85,7 @@ export default ({ webConnected }) => {
     setState(state);
   };
 
-  const bidDisabled = !webConnected || state.error || !state.amount;
+  const bidDisabled = state.error || !state.amount;
 
   return (
     <Grid
