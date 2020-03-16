@@ -160,8 +160,14 @@ const byTimestamp = (prev, next) => {
   return 0;
 };
 
-export default ({ webConnected, auction: auctionEvents, auctionId, lot }) => {
-  const tab = auctionEvents
+export default ({ events, id: auctionId }) => {
+  const lot = events
+    .sort(byTimestamp)
+    .map(a => a.lot)
+    [0];
+
+  
+  const tab = events
     .sort(byTimestamp)
     .map(a => a.tab)
     .filter(Boolean);
@@ -197,19 +203,20 @@ export default ({ webConnected, auction: auctionEvents, auctionId, lot }) => {
         </Heading> */}
       </Flex>
       <EventsList
-        events={auctionEvents
+        events={events
           .sort(byTimestamp)
           .map(({ type, lot, bid, timestamp, ilk }, index) => {
+            const currentBid = new BigNumber(lot).eq(new BigNumber(0))
+              ? new BigNumber(lot)
+              : new BigNumber(bid).div(new BigNumber(lot));
             return (
               <AuctionEvent
                 key={`${timestamp}-${index}`}
                 type={type}
                 ilk={ilk.split('-')[0]}
-                lot={new BigNumber(getValueOrDefault(lot)).toFormat(5, 4)}
-                bid={new BigNumber(getValueOrDefault(bid)).toFormat(5, 4)}
-                currentBid={`${new BigNumber(getValueOrDefault(bid))
-                  .div(new BigNumber(getValueOrDefault(lot)))
-                  .toFormat(5, 4)} DAI`}
+                lot={new BigNumber(lot).toFormat(5, 4)}
+                bid={new BigNumber(bid).toFormat(5, 4)}
+                currentBid={`${currentBid.toFormat(5, 4)} DAI`}
                 timestamp={
                   <Text title={new Date(timestamp)}>
                     <Moment fromNow ago>

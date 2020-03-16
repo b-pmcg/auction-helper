@@ -1,15 +1,21 @@
 import { PublicService } from '@makerdao/services-core';
 import BigNumber from 'bignumber.js';
 
-export default class ValidatorService extends PublicService {  
+const flopAddress = '0xcc2c9de81a29dc01a6d348c5ebb7572e5a92840d';
+const flipEthContract = '0x816383cfe95e14a962b521c953ab15acbca16dbb';
+const flipBatContract = '0x9fe8947687fba82e183db18bd9c676fa0b9135e6';
 
-  lastSync = 0;
+export default class ValidatorService extends PublicService {
+
+  flipAuctionsLastSynced = 0;
+  flopAuctionsLastSynced = 0;
+  backInTime = 1000 * 60 * 60 * 68; // 68 hours;
 
   constructor(name = 'validator') {
     super(name, ['web3', 'smartContract']);
     this.queryPromises = {};
     this.staging = false;
-    this.serverUrl = 'https://auctions.oasis.app/api/v1';
+    this.serverUrl = 'https://kovan-auctions.oasis.app/api/v1';
 
     // this.serverUrl = 'https://staging-cache.eth2dai.com/api/v1';
     this.id = 123;
@@ -78,28 +84,51 @@ export default class ValidatorService extends PublicService {
   //   return this.queryPromises[cacheKey];
   // }
 
-  async getAllAuctions(shouldSync = false) {
+  async fetchFlipAuctions(shouldSync = false) {
     let currentTime = new Date().getTime();
-    const backInTime = 1000 * 60 * 60 * 68; // 68 hours;
-    const timePassed = currentTime - this.lastSync;
+    const timePassed = currentTime - this.flipAuctionsLastSynced;
     let queryDate = new Date();
-    console.log(currentTime - timePassed);
     
 
     if(shouldSync){
       queryDate = new Date(currentTime - timePassed);
     } else {
-      queryDate = new Date(currentTime - backInTime);
+      queryDate = new Date(currentTime - this.backInTime);
     }
 
-    this.lastSync = currentTime;
+    this.flipAuctionsLastSynced = currentTime;
 
-    
-    const query = `query allLeveragedEvents($token: String, $fromDate: Datetime) {
+    return this.getAllAuctions({
+      sources: [flipEthContract, flipBatContract],
+      fromDate: queryDate
+    })
+  }
+
+  async fetchFlopAuctions(shouldSync = false) {
+    let currentTime = new Date().getTime();
+    const timePassed = currentTime - this.flopAuctionsLastSynced;
+    let queryDate = new Date();
+
+    if(shouldSync){
+      queryDate = new Date(currentTime - timePassed);
+    } else {
+      queryDate = new Date(currentTime - this.backInTime);
+    }
+
+    this.flopAuctionsLastSynced = currentTime;
+    return this.getAllAuctions({
+      sources: [flopAddress],
+      fromDate: queryDate
+    })
+  }
+
+  async getAllAuctions(variables) {
+
+    const query = `query allLeveragedEvents($sources: [String!], $fromDate: Datetime) {
       allLeveragedEvents(
       filter: { 
       and:[ 
-      {ilk: {equalTo: $token}},
+      {address: {in: $sources}},
       {timestamp: {greaterThan: $fromDate}},
         {
           or: [
@@ -117,6 +146,8 @@ export default class ValidatorService extends PublicService {
         id
         type
         ilk
+        hash
+        fromAddress
         amount
         payAmount
         minPayAmount
@@ -133,11 +164,6 @@ export default class ValidatorService extends PublicService {
       }
       }
     }`;
-
-    const variables = {
-      token: 'ETH-A',
-      fromDate: queryDate
-    };
 
     const response = await this.getQueryResponse(
       this.serverUrl,
@@ -230,7 +256,7 @@ export default class ValidatorService extends PublicService {
     console.log('fetching', id);
     try {
       return await this._flipperContract().bids(id);
-    } catch (err) {}
+    } catch (err) { }
   }
 
   async joinDaiToAdapter(address, amount) {

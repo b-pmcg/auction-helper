@@ -14,16 +14,17 @@ import {
   Flex
 } from 'theme-ui';
 import BigNumber from 'bignumber.js';
+import Moment from 'react-moment'
 import EventsList from './AuctionEventsList';
 
 
-const AuctionEvent = () => {
+const AuctionEvent = ({ type, ilk, lot, bid, currentBid, timestamp }) => {
   const fields = [
-    ['Event Type', 'Dent'],
-    ['Lot Size', 'x'],
-    ['Current Bid Price', 'x'],
-    ['Bid Value', 'x'],
-    ['Timestamp', 'x'],
+    ['Event Type', type],
+    ['Lot Size', lot],
+    ['Current Bid Price', currentBid],
+    ['Bid Value', bid],
+    ['Timestamp', timestamp],
     ['Transaction', 'x'],
     ['Sender', 'x']
   ];
@@ -39,7 +40,7 @@ const AuctionEvent = () => {
     >
       {fields.map(([title, value]) => {
         return (
-          <Box>
+          <Box key={title}>
             <Text
               variant="caps"
               sx={{
@@ -64,7 +65,7 @@ const AuctionEvent = () => {
 };
 
 
-export default ({ webConnected }) => {
+export default ({ events, id: auctionId }) => {
   const [state, setState] = useState({ amount: undefined, error: undefined });
 
   const maxBid = new BigNumber(100); // This should be taken from somewhere?
@@ -105,7 +106,7 @@ export default ({ webConnected }) => {
         }}
       >
         <Heading as="h5" variant="h2">
-          Auction ID: 22
+          Auction ID: {auctionId}
         </Heading>
         <Heading
           as="h5"
@@ -118,7 +119,32 @@ export default ({ webConnected }) => {
         </Heading>
       </Flex>
       <Box>
-        <EventsList events={[<AuctionEvent />]} />
+        <EventsList events={events.map(
+          ({ type, ilk, lot, bid, timestamp }, index) => {
+            const currentBid = new BigNumber(lot).eq(new BigNumber(0))
+              ? new BigNumber(lot)
+              : new BigNumber(bid).div(new BigNumber(lot))
+
+            return (
+              <AuctionEvent
+                key={`${timestamp}-${index}`}
+                type={type}
+                ilk={ilk}
+                lot={new BigNumber(lot).toFormat(5, 4)}
+                bid={new BigNumber(bid).toFormat(5, 4)}
+                currentBid={`${currentBid.toFormat(5, 4)} MKR`}
+                timestamp={
+                  <Text title={new Date(timestamp)}>
+                    <Moment fromNow ago>
+                      {timestamp}
+                    </Moment>{' '}
+                    ago
+                  </Text>
+                }
+              />
+            )
+          }
+        )} />
       </Box>
       <Grid gap={2}>
         <Text variant="boldBody">Enter your bid in MKR for this Auction</Text>
