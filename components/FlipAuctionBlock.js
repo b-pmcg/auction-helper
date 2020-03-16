@@ -100,14 +100,16 @@ const DentForm = ({ auctionId, lot }) => {
     </Grid>
   );
 };
-const AuctionEvent = ({ type, ilk, lot, currentBid, bid, timestamp }) => {
+const AuctionEvent = ({ type, ilk, lot, currentBid, bid, timestamp, tx, sender }) => {
   const fields = [
     ['Event Type', type],
     ['Collateral Type', ilk],
     ['Lot Size', lot],
     ['Current Bid Value', currentBid],
     ['Bid Value', bid],
-    ['Time', timestamp]
+    ['Time', timestamp],
+    ['Tx', <a href={`https://etherscan.io/tx/${tx}`} target="_blank"> {tx.slice(0, 7) + '...' + tx.slice(-4)}</a>],
+    ['Sender', <a href={`https://etherscan.io/address/${sender}`} target="_blank"> {sender.slice(0, 7) + '...' + sender.slice(-4)}</a>],
   ];
   return (
     <Grid
@@ -126,7 +128,7 @@ const AuctionEvent = ({ type, ilk, lot, currentBid, bid, timestamp }) => {
               variant="caps"
               sx={{
                 fontSize: '10px',
-                mb: 2
+                mb: 1
               }}
             >
               {title}
@@ -164,7 +166,7 @@ export default ({ events, id: auctionId }) => {
   const lot = events
     .sort(byTimestamp)
     .map(a => a.lot)
-    [0];
+    [0]; 
 
   
   const tab = events
@@ -205,7 +207,9 @@ export default ({ events, id: auctionId }) => {
       <EventsList
         events={events
           .sort(byTimestamp)
-          .map(({ type, lot, bid, timestamp, ilk }, index) => {
+          .map(({ type, lot, bid, timestamp, ilk, hash, fromAddress }, index) => {
+            console.log(hash, fromAddress);
+            
             const currentBid = new BigNumber(lot).eq(new BigNumber(0))
               ? new BigNumber(lot)
               : new BigNumber(bid).div(new BigNumber(lot));
@@ -213,6 +217,8 @@ export default ({ events, id: auctionId }) => {
               <AuctionEvent
                 key={`${timestamp}-${index}`}
                 type={type}
+                tx={hash}
+                sender={fromAddress}
                 ilk={ilk.split('-')[0]}
                 lot={new BigNumber(lot).toFormat(5, 4)}
                 bid={new BigNumber(bid).toFormat(5, 4)}
