@@ -105,6 +105,15 @@ export default ({ webConnected, auction: auctionEvents, auctionId, lot }) => {
 
   const bidDisabled = state.error || !state.amount;
 
+  const tab = auctionEvents
+    .sort(byTimestamp).map(a => a.tab).filter(Boolean);
+
+
+    const handleTendTabCTA = event => {
+      const bidAmount = state.amount;
+      callTend(auctionId, lot, ParseFloat(tab[0]));
+    };
+  
   return (
     <Grid
       gap={5}
@@ -207,6 +216,16 @@ export default ({ webConnected, auction: auctionEvents, auctionId, lot }) => {
           >
             Bid Now
           </Button>
+          {tab ?
+          <Button
+            sx={{ ml: [0, 2], mt: [2, 0] }}
+            variant="primary"
+            disabled={bidDisabled}
+            onClick={handleTendTabCTA}
+          >
+            Bid Tab Amount
+          </Button>
+: null}
         </Flex>
         {state.error && <Text variant="smallDanger">{state.error} </Text>}
         {/* <Text variant="small">Price 1 MKR = 300 DAI</Text> */}
