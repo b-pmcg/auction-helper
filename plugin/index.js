@@ -7,7 +7,8 @@ import ValidatorService from './ValidatorService';
 export default {
   addConfig: function(config, { network = 'mainnet', staging = false }) {
     const contractAddresses = {
-      mainnet: require('../contracts/addresses/mainnet.json')
+      mainnet: require('../contracts/addresses/mainnet.json'),
+      kovan: require('../contracts/addresses/kovan.json')
     };
 
     const addContracts = {
