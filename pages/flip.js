@@ -60,6 +60,7 @@ const Index = () => {
       ) : (
           <>
             <FlipAccountManager web3Connected={web3Connected} />
+            {/* TODO: Extract as separate components */}
             <Flex
               sx={{
                 py: 5,
