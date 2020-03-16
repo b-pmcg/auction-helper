@@ -75,7 +75,7 @@ export default class ValidatorService extends PublicService {
 
   async getAllAuctions() {
     const queryDate = new Date();
-    queryDate.setHours(queryDate.getHours() - 12);
+    queryDate.setHours(queryDate.getHours() - 68);
 
     const query = `query allLeveragedEvents($token: String, $fromDate: Datetime) {
       allLeveragedEvents(
