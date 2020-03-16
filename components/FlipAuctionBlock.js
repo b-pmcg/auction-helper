@@ -105,7 +105,7 @@ const AuctionEvent = ({ type, ilk, lot, currentBid, bid, timestamp, tx, sender }
     ['Event Type', type],
     ['Collateral Type', ilk],
     ['Lot Size', lot],
-    ['Current Bid Value', currentBid],
+    ['Bid Token Price', currentBid],
     ['Bid Value', bid],
     ['Time', timestamp],
     ['Tx', <a href={`https://etherscan.io/tx/${tx}`} target="_blank"> {tx.slice(0, 7) + '...' + tx.slice(-4)}</a>],
@@ -114,7 +114,7 @@ const AuctionEvent = ({ type, ilk, lot, currentBid, bid, timestamp, tx, sender }
   return (
     <Grid
       gap={2}
-      columns={[2, 4, 6]}
+      columns={[2, 4, 8]}
       sx={{
         bg: 'background',
         p: 5,
@@ -162,17 +162,25 @@ const byTimestamp = (prev, next) => {
   return 0;
 };
 
-export default ({ events, id: auctionId }) => {
-  const lot = events
-    .sort(byTimestamp)
-    .map(a => a.lot)
-    [0]; 
+export default ({ events:auctionEvents, id: auctionId }) => {
 
-  
-  const tab = events
-    .sort(byTimestamp)
-    .map(a => a.tab)
-    .filter(Boolean);
+
+  const events = auctionEvents.sort(byTimestamp);
+
+  const lot = events
+  .sort(byTimestamp)
+  .map(a => a.lot)
+  [0]; 
+
+
+const tab = events
+  .sort(byTimestamp)
+  .map(a => a.tab)
+  .filter(Boolean);
+
+
+  const hasDeal = events.find(e => e.type === 'Deal');
+  const {lot: latestLot, bid: latestBid, currentBid: latestCurrentBid} = events.filter(e => e.type !== 'Deal')[0];
 
   return (
     <Grid
@@ -206,13 +214,12 @@ export default ({ events, id: auctionId }) => {
       </Flex>
       <EventsList
         events={events
-          .sort(byTimestamp)
           .map(({ type, lot, bid, timestamp, ilk, hash, fromAddress }, index) => {
-            console.log(hash, fromAddress);
-            
-            const currentBid = new BigNumber(lot).eq(new BigNumber(0))
-              ? new BigNumber(lot)
-              : new BigNumber(bid).div(new BigNumber(lot));
+// const currentBid = new BigNumber(lot).eq(new BigNumber(0))
+// ? new BigNumber(lot)
+// : new BigNumber(bid).div(new BigNumber(lot));
+
+
             return (
               <AuctionEvent
                 key={`${timestamp}-${index}`}
@@ -220,9 +227,13 @@ export default ({ events, id: auctionId }) => {
                 tx={hash}
                 sender={fromAddress}
                 ilk={ilk.split('-')[0]}
-                lot={new BigNumber(lot).toFormat(5, 4)}
-                bid={new BigNumber(bid).toFormat(5, 4)}
-                currentBid={`${currentBid.toFormat(5, 4)} DAI`}
+                lot={type === 'Deal'? new BigNumber(getValueOrDefault(latestLot)).toFormat(5, 4) : new BigNumber(getValueOrDefault(lot)).toFormat(5, 4)}
+                bid={type === 'Deal'?  new BigNumber(getValueOrDefault(latestBid)).toFormat(5, 4) : new BigNumber(getValueOrDefault(bid)).toFormat(5, 4)}
+                currentBid={type === 'Deal'? `${new BigNumber(getValueOrDefault(latestBid))
+                  .div(new BigNumber(getValueOrDefault(latestLot)))
+                  .toFormat(5, 4)} DAI` : `${new BigNumber(getValueOrDefault(bid))
+                  .div(new BigNumber(getValueOrDefault(lot)))
+                  .toFormat(5, 4)} DAI`}
                 timestamp={
                   <Text title={new Date(timestamp)}>
                     <Moment fromNow ago>
