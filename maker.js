@@ -13,7 +13,7 @@ let maker;
 export async function instantiateMaker(network) {
   const mcdPluginConfig = {};
   if (network === 'kovan') {
-    mcdPluginConfig.addressOverrides = require('./addresses-kovan.json');
+    mcdPluginConfig.addressOverrides = require('./contracts/addresses/kovan.json');
   }
 
   const config = {

@@ -1,6 +1,6 @@
 import { map, prop } from 'ramda';
 
-const FLIPPER = 'FLIPPER';
+const FLIPPER = 'MCD_FLIP_ETH_A';
 
 import ValidatorService from './ValidatorService';
 
@@ -13,14 +13,14 @@ export default {
 
     const addContracts = {
       [FLIPPER]: {
-        address: map(prop('FLIPPER'), contractAddresses),
+        address: map(prop('MCD_FLIP_ETH_A'), contractAddresses),
         abi: require('../contracts/abis/Flipper.json')
       }
     };
 
     const makerConfig = {
       ...config,
-      additionalServices: ['validator'],
+      additionalServices: ['validator', {network}],
       validator: [ValidatorService],
       smartContract: { addContracts }
     };
