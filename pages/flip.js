@@ -124,7 +124,7 @@ const Index = (props) => {
           </Flex>
           <Grid gap={5}>
             {
-              auctionIds
+              auctionIds && auctionIds
                 .slice(page.start, page.end)
                 .map(auctionId => {
                   return (
