@@ -14,20 +14,19 @@ import {
   Flex
 } from 'theme-ui';
 import BigNumber from 'bignumber.js';
-import {getValueOrDefault} from '../utils';
+import { getValueOrDefault } from '../utils';
 import useAuctionActions from '../hooks/useAuctionActions';
-import Moment from 'react-moment'
+import Moment from 'react-moment';
 import EventsList from './AuctionEventsList';
 
-
-const AuctionEvent = ({type, ilk, lot, currentBid, bid, timestamp}) => {
+const AuctionEvent = ({ type, ilk, lot, currentBid, bid, timestamp }) => {
   const fields = [
     ['Event Type', type],
     ['Collateral Type', ilk],
     ['Lot Size', lot],
     ['Current Bid Value', currentBid],
     ['Bid Value', bid],
-    ['Time', timestamp],
+    ['Time', timestamp]
   ];
   return (
     <Grid
@@ -70,22 +69,21 @@ const byTimestamp = (prev, next) => {
   const prevTs = new Date(prev.timestamp).getTime();
 
   if (nextTs > prevTs) return 1;
-  if (nextTs < prevTs  ) return -1;
-  if (nextTs === prevTs ){
-    if(next.type === "Tend") return 1;
-    if(next.type === "Kick") return -1;
-  };   
+  if (nextTs < prevTs) return -1;
+  if (nextTs === prevTs) {
+    if (next.type === 'Tend') return 1;
+    if (next.type === 'Kick') return -1;
+  }
   return 0;
-}
+};
 
 export default ({ webConnected, auction: auctionEvents, auctionId, lot }) => {
-
   const [state, setState] = useState({ amount: undefined, error: undefined });
-  const {callTend} = useAuctionActions();
+  const { callTend } = useAuctionActions();
 
-  const maxBid = new BigNumber(100); // This should be taken from somewhere?
+  const maxBid = new BigNumber(0); // This should be taken from somewhere?
 
-  const handleBidAmountInput = event => { 
+  const handleBidAmountInput = event => {
     const value = event.target.value;
     const state = { amount: undefined, error: undefined };
 
@@ -93,8 +91,7 @@ export default ({ webConnected, auction: auctionEvents, auctionId, lot }) => {
       state.amount = new BigNumber(value);
 
       if (state.amount.lt(maxBid)) {
-        state.error =
-          'Your bid is too low, you will need to increate.';
+        state.error = 'Your bid is too low, you will need to increase.';
       }
     }
 
@@ -103,8 +100,8 @@ export default ({ webConnected, auction: auctionEvents, auctionId, lot }) => {
 
   const handleTendCTA = event => {
     const bidAmount = state.amount;
-    callTend(auctionId, lot, bidAmount)
-  }
+    callTend(auctionId, lot, bidAmount);
+  };
 
   const bidDisabled = state.error || !state.amount;
 
@@ -139,20 +136,30 @@ export default ({ webConnected, auction: auctionEvents, auctionId, lot }) => {
         </Heading> */}
       </Flex>
       <EventsList
-        events={
-          auctionEvents.sort(byTimestamp).map(({type, lot, bid, timestamp, ilk}, index) => {
-            return (<AuctionEvent
-            key={`${timestamp}-${index}`}
-            type={type}
-            ilk={ilk.split('-')[0]}
-            lot={new BigNumber(getValueOrDefault(lot)).toFormat(5,4)}
-            bid={new BigNumber(getValueOrDefault(bid)).toFormat(5,4)}
-            currentBid={`${new BigNumber(getValueOrDefault(bid))
-              .div(new BigNumber(getValueOrDefault(lot)))
-              .toFormat(5,4)} DAI`}
-            timestamp={<Text title={new Date(timestamp)}><Moment fromNow ago>{timestamp}</Moment> ago</Text>}
-          />)})
-        }
+        events={auctionEvents
+          .sort(byTimestamp)
+          .map(({ type, lot, bid, timestamp, ilk }, index) => {
+            return (
+              <AuctionEvent
+                key={`${timestamp}-${index}`}
+                type={type}
+                ilk={ilk.split('-')[0]}
+                lot={new BigNumber(getValueOrDefault(lot)).toFormat(5, 4)}
+                bid={new BigNumber(getValueOrDefault(bid)).toFormat(5, 4)}
+                currentBid={`${new BigNumber(getValueOrDefault(bid))
+                  .div(new BigNumber(getValueOrDefault(lot)))
+                  .toFormat(5, 4)} DAI`}
+                timestamp={
+                  <Text title={new Date(timestamp)}>
+                    <Moment fromNow ago>
+                      {timestamp}
+                    </Moment>{' '}
+                    ago
+                  </Text>
+                }
+              />
+            );
+          })}
       />
       <Grid gap={2}>
         <Text variant="boldBody">Enter your bid for this Auction</Text>
