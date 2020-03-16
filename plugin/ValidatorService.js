@@ -106,6 +106,8 @@ export default class ValidatorService extends PublicService {
             {type: {equalTo: "Tend"}},
             {type: {equalTo: "Dent"}},
             {type: {equalTo: "Kick"}},
+            {type: {equalTo: "Deal"}},
+
           ]
         }
         ]

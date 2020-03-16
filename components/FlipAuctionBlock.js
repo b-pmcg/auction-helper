@@ -72,6 +72,8 @@ const byTimestamp = (prev, next) => {
   if (nextTs < prevTs) return -1;
   if (nextTs === prevTs) {
     if (next.type === 'Tend') return 1;
+    if (next.type === 'Dent') return 2;
+    if (next.type === 'Deal') return 3;
     if (next.type === 'Kick') return -1;
   }
   return 0;
