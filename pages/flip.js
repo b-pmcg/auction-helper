@@ -10,6 +10,7 @@ import FlipAuctionBlock from '../components/FlipAuctionBlock';
 import FlipAccountManager from '../components/FlipAccountManager';
 import GuttedLayout from '../components/GuttedLayout';
 import { AUCTION_DATA_FETCHER } from '../constants';
+import Moment from 'react-moment';
 function fromRad(value) {
   return BigNumber(value).shiftedBy(-45);
 }
@@ -18,6 +19,7 @@ const Index = (props) => {
   const initialPage = {start: 0, end: 10, step: 10};
   const { maker, web3Connected } = useMaker();
   const [ rawAuctionData, updateRawAuctionData ] = useState([]);
+  const [ lastSynced , updateLastSynced ] =  useState(undefined);
   const [auctions, setAuctions] = useState(null);
   const [auctionIds , filterAuctionIds] = useState(null);
   const { vatDaiBalance, daiBalance, mkrBalance } = useBalances();
@@ -47,6 +49,8 @@ const Index = (props) => {
 
   async function fetchAuctions(shouldSync = false) {
     const service = maker.service(AUCTION_DATA_FETCHER);
+
+    updateLastSynced(new Date());
 
     let currentAuctions = await service.getAllAuctions(shouldSync);
     if(shouldSync){
@@ -101,6 +105,12 @@ const Index = (props) => {
           >
             <Text variant="boldBody">Active Auctions</Text>
             <Button variant="primary" sx={{ml: 5}} disabled={!web3Connected}onClick={() => fetchAuctions(true)}> Sync </Button>
+          { lastSynced && (
+            <Text title={lastSynced} sx={{ml: 5, fontSize: 2}}>
+                (Last synced: <Moment local>{lastSynced.getTime()}</Moment>)
+             </Text>
+            )
+          }
           </Flex>
           <Box
             sx={{
