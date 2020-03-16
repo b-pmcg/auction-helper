@@ -105,6 +105,7 @@ export default ({ webConnected, auction: auctionEvents, auctionId, lot }) => {
 
   const bidDisabled = state.error || !state.amount;
 
+  console.log(auctionEvents, 'here')
   const tab = auctionEvents
     .sort(byTimestamp).map(a => a.tab).filter(Boolean);
 
@@ -216,15 +217,6 @@ export default ({ webConnected, auction: auctionEvents, auctionId, lot }) => {
           >
             Bid Now
           </Button>
-          {tab ?
-          <Button
-            sx={{ ml: [0, 2], mt: [2, 0] }}
-            variant="primary"
-            onClick={handleTendTabCTA}
-          >
-            Bid Tab Amount
-          </Button>
-: null}
         </Flex>
         {state.error && <Text variant="smallDanger">{state.error} </Text>}
         {/* <Text variant="small">Price 1 MKR = 300 DAI</Text> */}

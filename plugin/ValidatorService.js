@@ -86,6 +86,7 @@ export default class ValidatorService extends PublicService {
         {
           or: [
             {type: {equalTo: "Tend"}},
+            {type: {equalTo: "Dent"}},
             {type: {equalTo: "Kick"}},
           ]
         }
@@ -161,6 +162,43 @@ export default class ValidatorService extends PublicService {
     // const collateralAmount = '50000000000000000000';
     // const highestBid = '1000000000000000000000000000000000000000000000';
     const tend = await this._flipperContract().tend(
+      id,
+      lotSizeInWei,
+      bidAmountRad.toFixed()
+    );
+    console.log('tend in service', tend);
+  }
+
+  async getLots(id) {
+    // const bidId = 2590;
+    const bids = await this._flipperContract().bids(id);
+    console.log('bids', bids);
+    const lotSize = bids[0];
+    return lotSize;
+    // console.log('bid in service', bid);
+  }
+  //tend(uint id, uint lot, uint bid)
+  async dent(id, size, amount) {
+
+    function toRad(amount) {
+      return BigNumber(amount.toString()).shiftedBy(45);
+    }
+    // console.log('id in tend', id);
+    //auctionId, collateralAmount, highestBid
+    // const lotSize = await this.getLots(id);
+    // console.log('lotSize', lotSize);
+    const lotSizeInWei = this.get('web3')._web3.utils.toWei(size.toString());
+    const bidAmountRad = toRad(amount);
+
+    console.log('id', id);
+    console.log('lotSizeInWei', lotSizeInWei);
+    console.log('bidAmountRad', bidAmountRad.toFixed());
+
+    //convert amount to 10^45;
+
+    // const collateralAmount = '50000000000000000000';
+    // const highestBid = '1000000000000000000000000000000000000000000000';
+    const tend = await this._flipperContract().dent(
       id,
       lotSizeInWei,
       bidAmountRad.toFixed()
