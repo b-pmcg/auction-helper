@@ -36,7 +36,22 @@ const Index = () => {
       currentAuctions = [...rawAuctionData, ...currentAuctions];
     }
     updateRawAuctionData(currentAuctions);
-    setAuctions(_.groupBy(currentAuctions, auction => auction.auctionId));
+
+    const groupedEvents = _.groupBy(currentAuctions, auction => auction.auctionId);
+
+    const auctionsData = {};
+
+    Promise.all(Object.keys(groupedEvents).map(async (id) => {
+      const {end, tic} = await service.getFlipDuration(id);
+
+      auctionsData[id.toString()] = {
+        end,
+        tic,
+        events: groupedEvents[id]
+      }
+    })).then(
+      () => setAuctions(auctionsData)
+    );
   }
 
   return (

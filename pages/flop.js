@@ -23,7 +23,21 @@ const Index = () => {
     const service = maker.service(AUCTION_DATA_FETCHER);
 
     const auctions = await service.fetchFlopAuctions();
-    setAuctions(_.groupBy(auctions, auction => auction.auctionId));
+    const groupedEvents = _.groupBy(auctions, auction => auction.auctionId);
+
+    const auctionsData = {};
+
+    Promise.all(Object.keys(groupedEvents).map(async (id) => {
+      const {end, tic} = await service.getFlopDuration(id);
+
+      auctionsData[id.toString()] = {
+        end,
+        tic,
+        events: groupedEvents[id]
+      }
+    })).then(
+      () => setAuctions(auctionsData)
+    );
   }
 
   useEffect(() => {
@@ -34,7 +48,6 @@ const Index = () => {
     }
   }, [web3Connected, auctions]);
 
-  console.log(TOCAccepted, 'accet');
   return (
     <GuttedLayout>
       <Head>
@@ -118,8 +131,6 @@ const Index = () => {
             </Flex>
           ) : (
             <AuctionsLayout auctions={auctions} type="flop" />
-
-            // <AuctionsLayout auctions={auctions} type="flip" />
           )}
         </Box>
 

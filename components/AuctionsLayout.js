@@ -7,7 +7,7 @@ import { Button, Grid, Input, Flex, Select } from 'theme-ui';
 const sortByBidPrice = (auctions) => {  
   return Object.keys(auctions || [])
   .map(auctionId => {
-    return auctions[auctionId].find(event => event.type !== "Deal");
+    return auctions[auctionId].events.find(event => event.type !== "Deal");
   })
   .map(event => {    
     const bid = new BigNumber(event.bid);
@@ -56,14 +56,11 @@ const AuctionsLayout = ({ auctions, type }) => {
   
 
   // effects
- 
   useEffect(() => {
     updatePage(initialPage);
   }, [auctionIds]);
 
   useEffect(() => {
-    console.log("CALLED");
-    
     switch(sortCriteria){
       case 'byBidPrice': {
         console.log("Sorted by Bid Price")
@@ -125,22 +122,27 @@ const AuctionsLayout = ({ auctions, type }) => {
             borderColor: 'border',
             bg: 'white'
           }}
-          defaultValue="Sort By"
+          defaultValue="Sort By Id (Desc)"
           onChange={({ target: { value } }) => sortBy(value)}
         >
-          <option value="">Sort By</option>
+          <option value="byIdDescending">Sort By Id (Desc)</option>
           <option value="byTime">Time Remaining</option>
           <option value="byBidPrice">Current Bid Price</option>
         </Select>
       </Flex>
       <Grid gap={5}>
-        {auctionIds.slice(page.start, page.end).map(auctionId => (
-          <AuctionBlockLayout
-            key={auctionId}
-            events={auctions[auctionId]}
-            id={auctionId}
-          />
-        ))}
+        {auctionIds.slice(page.start, page.end).map(auctionId => {
+          const {events, end, tic} = auctions[auctionId];
+          return (
+            <AuctionBlockLayout
+              key={auctionId}
+              events={events}
+              id={auctionId}
+              end={end}
+              tic={tic}
+            />
+          )
+        })}
       </Grid>
       <Flex
         sx={{
