@@ -90,8 +90,6 @@ export default class ValidatorService extends PublicService {
 
     this.flipAuctionsLastSynced = currentTime;
 
-    console.log(this.flipEthAddress, this.flipBatAddress);
-
     return this.getAllAuctions({
       sources: [this.flipEthAddress, this.flipBatAddress],
       fromDate: queryDate

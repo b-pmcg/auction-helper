@@ -25,6 +25,7 @@ const ActionTabs = ({ actions }) => {
       <Flex>
         {tabs.map((t, i) => (
           <Button
+            key={`${t}-${i}`}
             variant={i !== activeTabIndex ? 'pillInactive' : 'pill'}
             sx={{
               mr: 2
