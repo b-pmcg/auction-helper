@@ -13,8 +13,10 @@ import {
   Input,
   Flex
 } from 'theme-ui';
+import CollapseToggle from './CollapseToggle';
 
 const IntroInfoCard = ({ title, text, action }) => {
+  const [collapsed, setCollapsed] = useState(false);
   return (
     <Box
       sx={{
@@ -23,19 +25,31 @@ const IntroInfoCard = ({ title, text, action }) => {
         mb: 6
       }}
     >
-      <Box
+      <Flex
         p="6"
         sx={{
-          borderBottom: '1px solid',
-          borderColor: 'border'
+          borderBottom: collapsed ? null : '1px solid',
+          borderColor: 'border',
+          alignItems: 'center'
         }}
       >
         <Heading variant="h2">{title}</Heading>
-      </Box>
-      <Box px="6" pb="4">
-        {text}
-      </Box>
-      {action}
+        <Box
+          sx={{
+            ml: 'auto'
+          }}
+        >
+          <CollapseToggle onClick={() => setCollapsed(!collapsed) } active={!collapsed} />
+        </Box>
+      </Flex>
+      {collapsed ? null : (
+        <>
+          <Box px="6" pb="4">
+            {text}
+          </Box>
+          {action}
+        </>
+      )}
     </Box>
   );
 };

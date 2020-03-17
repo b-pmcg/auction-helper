@@ -91,6 +91,11 @@ export default {
       border: '1px solid',
       borderColor: 'border'
     },
+    clear: {
+      bg: 'transparent',
+      p: 1
+      // p: 0
+    },
     textual: {
       background: 'transparent',
       color: 'purple',
@@ -123,6 +128,7 @@ export default {
 
     h2: {
       fontSize: 6,
+      lineHeight: '20px',
       fontWeight: 'semiBold',
       letterSpacing: '0.4px'
     },
