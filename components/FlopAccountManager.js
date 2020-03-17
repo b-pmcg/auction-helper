@@ -145,16 +145,11 @@ export default () => {
                       }}
                       disabled={!web3Connected}
                     >
-                      Unlock Dai in the adapter
+                      Give flop hope
                     </Button>
                   </Grid>
                 }
-                vatActions={
-                  <BalanceFormVat
-                    joinDaiToAdapter={joinDaiToAdapter}
-                    exitDaiFromAdapter={exitDaiFromAdapter}
-                  />
-                }
+               
                 sx={{
                   borderLeft: '1px solid',
                   borderRight: '1px solid',
@@ -253,28 +248,28 @@ export default () => {
                         />
                       </Box>
                     </Grid>
-                  ],
-                  hasMkrAllowance && [
-                    'Withdraw MKR',
-                    <Grid>
-                      <Box
-                        sx={{
-                          bg: 'background',
-                          p: 4,
-                          borderRadius: 6
-                        }}
-                      >
-                        <MiniFormLayout
-                          text={'Withdraw MKR from the Adapter'}
-                          disabled={false}
-                          inputUnit="MKR"
-                          onSubmit={() => {}}
-                          small={''}
-                          actionText={'Withdraw'}
-                        />
-                      </Box>
-                    </Grid>
                   ]
+                  // hasMkrAllowance && [
+                  //   'Withdraw MKR',
+                  //   <Grid>
+                  //     <Box
+                  //       sx={{
+                  //         bg: 'background',
+                  //         p: 4,
+                  //         borderRadius: 6
+                  //       }}
+                  //     >
+                  //       <MiniFormLayout
+                  //         text={'Withdraw MKR from the Adapter'}
+                  //         disabled={false}
+                  //         inputUnit="MKR"
+                  //         onSubmit={() => {}}
+                  //         small={''}
+                  //         actionText={'Withdraw'}
+                  //       />
+                  //     </Box>
+                  //   </Grid>
+                  // ]
                 ]}
               />
             </Grid>

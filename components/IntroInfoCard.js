@@ -15,7 +15,7 @@ import {
 } from 'theme-ui';
 import CollapseToggle from './CollapseToggle';
 
-const IntroInfoCard = ({ title, text, action }) => {
+const IntroInfoCard = ({ title, text, action, forceExpanded }) => {
   const [collapsed, setCollapsed] = useState(false);
   return (
     <Box
@@ -39,7 +39,7 @@ const IntroInfoCard = ({ title, text, action }) => {
             ml: 'auto'
           }}
         >
-          <CollapseToggle onClick={() => setCollapsed(!collapsed) } active={!collapsed} />
+          <CollapseToggle onClick={() => forceExpanded ? null : setCollapsed(!collapsed) } active={!collapsed} />
         </Box>
       </Flex>
       {collapsed ? null : (

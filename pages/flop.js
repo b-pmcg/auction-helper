@@ -63,6 +63,7 @@ const Index = () => {
           <IntroInfoCard
             title={'How do debt auctions work?'}
             text={<IntroMDX />}
+            forceExpanded={!TOCAccepted}
             action={
               TOCAccepted ? null : (
                 <TermsConfirm
