@@ -5,7 +5,7 @@ import useMaker from '../hooks/useMaker';
 import useBalances from '../hooks/useBalances';
 import * as _ from 'lodash';
 import BigNumber from 'bignumber.js';
-import { Text, jsx, Flex, Button, Grid, Spinner } from 'theme-ui';
+import { Text, jsx, Flex, Button, Heading, Spinner } from 'theme-ui';
 import FlipAccountManager from '../components/FlipAccountManager';
 import GuttedLayout from '../components/GuttedLayout';
 import { AUCTION_DATA_FETCHER } from '../constants';
@@ -58,16 +58,25 @@ const Index = () => {
           <Spinner />
         </Flex>
       ) : (
-        <Grid>
+        <>
+          <Heading
+            variant="h1"
+            sx={{
+              py: 7
+            }}
+          >
+            Collateral Auctions
+          </Heading>
+
           <FlipAccountManager web3Connected={web3Connected} />
           {!web3Connected ? null : (
             <Flex
               sx={{
-                py: 5,
+                py: 6,
                 alignItems: 'center'
               }}
             >
-              <Text variant="boxldBody">Active Auctions</Text>
+              <Text variant="h2">Active Auctions</Text>
               <Button
                 variant="pill"
                 sx={{ ml: 5 }}
@@ -100,7 +109,7 @@ const Index = () => {
           ) : (
             <AuctionsLayout auctions={auctions} type="flip" />
           )}
-        </Grid>
+        </>
       )}
     </GuttedLayout>
   );

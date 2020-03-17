@@ -30,6 +30,10 @@ const ActionTabs = ({ actions }) => {
               mr: 2
             }}
             onClick={() => {
+              if (i === activeTabIndex) {
+                setActive(null);
+                return;
+              }
               setActive(i);
             }}
           >
@@ -37,13 +41,12 @@ const ActionTabs = ({ actions }) => {
           </Button>
         ))}
       </Flex>
-      <Box>
-        {activeTabIndex >= 0 &&
-        activeTabIndex < contents.length &&
-        contents[activeTabIndex]
-          ? contents[activeTabIndex]
-          : null}
-      </Box>
+
+      {activeTabIndex >= 0 &&
+      activeTabIndex < contents.length &&
+      contents[activeTabIndex] ? (
+        <Box>{contents[activeTabIndex]}</Box>
+      ) : null}
     </Grid>
   );
 };

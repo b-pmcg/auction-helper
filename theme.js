@@ -115,11 +115,18 @@ export default {
       fontWeight: 'bold'
     },
 
+    h1: {
+      fontSize: 8,
+      letterSpacing: '0.3px',
+      fontWeight: 'body'
+    },
+
     h2: {
       fontSize: 6,
       fontWeight: 'semiBold',
       letterSpacing: '0.4px'
     },
+
     bigText: {
       fontSize: 8
     },

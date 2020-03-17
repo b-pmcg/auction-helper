@@ -58,11 +58,7 @@ export default () => {
   return (
     <AccountManagerLayout
       topActions={
-        <Grid
-          sx={{
-            mt: 4
-          }}
-        >
+        <Grid>
           {!web3Connected ? (
             <Text as="h2" variant="boldBody">
               Connect your wallet to get started.
@@ -194,16 +190,23 @@ export default () => {
                   [
                     'Deposit DAI to Adapter',
                     <Grid>
-                      <MiniFormLayout
-                        text={'Deposit DAI to the Adapter'}
-                        disabled={false}
-                        inputUnit="DAI"
-                        onSubmit={() => {}}
-                        small={''}
-                        actionText={'Deposit'}
-                      />
-                    </Grid>,
-                    true
+                      <Box
+                        sx={{
+                          bg: 'background',
+                          p: 4,
+                          borderRadius: 6
+                        }}
+                      >
+                        <MiniFormLayout
+                          text={'Deposit DAI to the Adapter'}
+                          disabled={false}
+                          inputUnit="DAI"
+                          onSubmit={() => {}}
+                          small={''}
+                          actionText={'Deposit'}
+                        />
+                      </Box>
+                    </Grid>
                   ],
                   [
                     'Withdraw DAI From Adapter',
@@ -211,7 +214,8 @@ export default () => {
                       <Box
                         sx={{
                           bg: 'background',
-                          p: 4
+                          p: 4,
+                          borderRadius: 6
                         }}
                       >
                         <MiniFormLayout

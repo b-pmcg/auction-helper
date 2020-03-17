@@ -58,11 +58,7 @@ export default () => {
   return (
     <AccountManagerLayout
       topActions={
-        <Grid
-          sx={{
-            mt: 4
-          }}
-        >
+        <Grid>
           {!web3Connected ? (
             <Text as="h2" variant="boldBody">
               Connect your wallet to get started.
@@ -233,8 +229,7 @@ export default () => {
                           actionText={'Deposit'}
                         />
                       </Box>
-                    </Grid>,
-                    true
+                    </Grid>
                   ],
                   [
                     'Withdraw DAI From Adapter',

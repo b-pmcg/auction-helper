@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import useMaker from '../hooks/useMaker';
 import * as _ from 'lodash';
-import { Text, jsx, Flex, Box, Grid, Spinner, Button } from 'theme-ui';
+import { Text, jsx, Flex, Heading, Grid, Spinner, Button } from 'theme-ui';
 import AccountManager from '../components/FlopAccountManager';
 import GuttedLayout from '../components/GuttedLayout';
 import { AUCTION_DATA_FETCHER } from '../constants';
@@ -32,7 +32,7 @@ const Index = () => {
   return (
     <GuttedLayout>
       <Head>
-        <title>Auction Helper (Beta)</title>
+        <title>Debt Auctions - Maker Auctions</title>
       </Head>
       {!maker ? (
         <Flex
@@ -44,17 +44,26 @@ const Index = () => {
           <Spinner />
         </Flex>
       ) : (
-        <Grid>
+        <>
+          <Heading
+            variant="h1"
+            sx={{
+              py: 7
+            }}
+          >
+            Debt Auctions
+          </Heading>
+
           <AccountManager web3Connected={web3Connected} />
 
           {!web3Connected ? null : (
             <Flex
               sx={{
-                py: 5,
+                py: 4,
                 alignItems: 'center'
               }}
             >
-              <Text variant="boxldBody">Active Auctions</Text>
+              <Text variant="h2">Active Auctions</Text>
               <Button
                 variant="pill"
                 sx={{ ml: 5 }}
@@ -89,7 +98,7 @@ const Index = () => {
 
             // <AuctionsLayout auctions={auctions} type="flip" />
           )}
-        </Grid>
+        </>
       )}
     </GuttedLayout>
   );
