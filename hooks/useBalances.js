@@ -53,7 +53,7 @@ const useBalances = () => {
 
     await DaiJoinAdapter.join(
       maker.currentAddress(),
-      BigNumber(joinAmountInDai).toString()
+      BigNumber(joinAmountInDai).toFixed()
     );
   }
 
@@ -68,7 +68,7 @@ const useBalances = () => {
 
     await DaiJoinAdapter.exit(
       maker.currentAddress(),
-      BigNumber(exitAmountInDai).toString()
+      BigNumber(exitAmountInDai).toFixed()
     );
   }
 
