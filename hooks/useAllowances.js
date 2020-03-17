@@ -9,6 +9,7 @@ const useAllowances = () => {
   const [hasMkrAllowance, setHasMkrAllowance] = useState(false);
   const [hasEthFlipHope, setHasFlipEthHope] = useState(false);
   const [hasJoinDaiHope, setHasJoinDaiHope] = useState(false);
+  const [hasFlopHope, setHasFlopHope] = useState(false);
 
   // DAI Allowance
   useEffect(() => {
@@ -69,6 +70,21 @@ const useAllowances = () => {
     })();
   }, [maker, web3Connected]);
 
+  // Flop has Hope
+  useEffect(() => {
+    if (!web3Connected) return;
+    (async () => {
+      const flopAddress = maker
+        .service('smartContract')
+        .getContractByName('MCD_FLOP').address;
+      const can = await maker
+        .service('smartContract')
+        .getContract('MCD_VAT')
+        .can(maker.currentAddress(), flopAddress);
+      setHasFlopHope(can.toNumber() === 1 ? true : false);
+    })();
+  }, [maker, web3Connected]);
+
   const giveDaiAllowance = async address => {
     // setDaiApprovePending(true);
     try {
@@ -125,16 +141,33 @@ const useAllowances = () => {
     }
     // setHopeApprovePending(false);
   };
+  const giveFlopHope = async address => {
+    // setHopePending(true);
+    try {
+      await maker
+        .service('smartContract')
+        .getContract('MCD_VAT')
+        .hope(address);
+      setHasFlopHope(true);
+    } catch (err) {
+      const message = err.message ? err.message : err;
+      const errMsg = `hope tx failed ${message}`;
+      console.error(errMsg);
+    }
+    // setHopeApprovePending(false);
+  };
 
   return {
     hasDaiAllowance,
     hasMkrAllowance,
     hasEthFlipHope,
     hasJoinDaiHope,
+    hasFlopHope,
     giveDaiAllowance,
     giveMkrAllowance,
     giveFlipEthHope,
-    giveJoinDaiHope
+    giveJoinDaiHope,
+    giveFlopHope
   };
 };
 

@@ -1,6 +1,7 @@
 /** @jsx jsx */
 
 import React, { useState } from 'react';
+import BigNumber from 'bignumber.js';
 import {
   Heading,
   Text,
@@ -31,6 +32,21 @@ const MiniFormLayout = ({
     onSubmit(inputState);
   };
 
+  const handleInputChange = event => {
+    const value = event.target.value;
+    // const state = { amount: undefined, error: undefined };
+
+    setInputState(BigNumber(value));
+    // if (value) {
+    // state.amount = new BigNumber(value);
+
+    // if (state.amount.lt(maxBid)) {
+    //   state.error = 'Your bid is too low, you will need to increase.';
+    // }
+    // }
+
+    // setState(state);
+  };
   return (
     <Grid gap={2}>
       <Text variant="boldBody">{text}</Text>
@@ -64,7 +80,7 @@ const MiniFormLayout = ({
             type={inputType}
             step="0.01"
             placeholder="0"
-            onChange={setInputState}
+            onChange={handleInputChange}
           />
           {inputUnit ? (
             <Label sx={{ p: 0, width: 'auto' }} htmlFor="bid-amount">

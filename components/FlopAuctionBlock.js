@@ -17,8 +17,18 @@ import BigNumber from 'bignumber.js';
 import Moment from 'react-moment';
 import EventsList from './AuctionEventsList';
 import MiniFormLayout from './MiniFormLayout';
+import useAuctionActions from '../hooks/useAuctionActions';
 
-const AuctionEvent = ({ type, ilk, lot, bid, currentBid, timestamp, tx, sender }) => {
+const AuctionEvent = ({
+  type,
+  ilk,
+  lot,
+  bid,
+  currentBid,
+  timestamp,
+  tx,
+  sender
+}) => {
   const fields = [
     ['Event Type', type],
     ['Lot Size', lot],
@@ -91,31 +101,38 @@ const byTimestamp = (prev, next) => {
 };
 
 export default ({ events, id: auctionId }) => {
-  const [state, setState] = useState({ amount: undefined, error: undefined });
-  const sortedEvents = events.sort(byTimestamp); // DEAL , [...DENT] , KICK -> 
+  const [state, setState] = useState({
+    amount: undefined,
+    error: undefined
+  });
+  const { callFlopDent } = useAuctionActions();
+  const sortedEvents = events.sort(byTimestamp); // DEAL , [...DENT] , KICK ->
 
-  const {bid: latestBid, lot: latestLot} = sortedEvents.find(event => event.type != 'Deal');
+  const { bid: latestBid, lot: latestLot } = sortedEvents.find(
+    event => event.type != 'Deal'
+  );
   const hasAuctionCompleted = sortedEvents[0].type === 'Deal';
-  
+
   const maxBid = new BigNumber(100); // This should be taken from somewhere?
 
-  const handleBidAmountInput = event => {
-    const value = event.target.value;
-    const state = { amount: undefined, error: undefined };
+  console.log('***state', latestBid, latestLot);
 
-    if (value) {
-      state.amount = new BigNumber(value);
-
-      if (state.amount.gt(maxBid)) {
-        state.error =
-          'Your bid exceeds the max bid, you will need to decrease.';
-      }
-    }
-
-    setState(state);
+  const handleTendCTA = value => {
+    console.log('value', value);
+    callFlopDent(auctionId, latestLot, value);
   };
 
-  const bidDisabled = state.error || !state.amount;
+  /**
+   * disabled when:
+   * - allowances & hopes not set
+   * - 'deal' has been called (if deal event exists for auctionId)
+   * - 'end' has passed
+   * - MKR 'bid' is gt DAI 'lot' size
+   * - MKR 'bid' is gte the current 'bid' (must be smaller by a certain % [3?])
+   * - when the latest bid duration (ttl) has passed
+   * - OR when the auction duration (tau) has passed.
+   */
+  const bidDisabled = state.error;
 
   return (
     <Grid
@@ -143,50 +160,54 @@ export default ({ events, id: auctionId }) => {
           sx={{
             pt: [2, 0],
             fontSize: 4,
-            color: hasAuctionCompleted ? 'primaryHover' : 'text',
+            color: hasAuctionCompleted ? 'primaryHover' : 'text'
           }}
         >
-          {hasAuctionCompleted ? 'Auction Completed' : 'Time remaining: 1h 20m 20s'}
+          {hasAuctionCompleted
+            ? 'Auction Completed'
+            : 'Time remaining: 1h 20m 20s'}
         </Heading>
       </Flex>
       <Box>
         <EventsList
-          events={events.map(({ type, ilk, lot, bid, timestamp, hash, fromAddress }, index) => {
-            const eventBid = type === 'Deal' ? latestBid : bid;
-            const eventLot = type === 'Deal' ? latestLot : lot;
+          events={events.map(
+            ({ type, ilk, lot, bid, timestamp, hash, fromAddress }, index) => {
+              const eventBid = type === 'Deal' ? latestBid : bid;
+              const eventLot = type === 'Deal' ? latestLot : lot;
 
-            const currentBid = new BigNumber(eventLot).eq(new BigNumber(0))
-              ? new BigNumber(eventLot)
-              : new BigNumber(eventBid).div(new BigNumber(eventLot));
+              const currentBid = new BigNumber(eventLot).eq(new BigNumber(0))
+                ? new BigNumber(eventLot)
+                : new BigNumber(eventBid).div(new BigNumber(eventLot));
 
-            return (
-              <AuctionEvent
-                key={`${timestamp}-${index}`}
-                type={type}
-                ilk={ilk}
-                tx={hash}
-                sender={fromAddress}
-                lot={new BigNumber(eventLot).toFormat(5, 4)}
-                bid={new BigNumber(eventBid).toFormat(5, 4)}
-                currentBid={`${currentBid.toFormat(5, 4)} MKR`}
-                timestamp={
-                  <Text title={new Date(timestamp)}>
-                    <Moment fromNow ago>
-                      {timestamp}
-                    </Moment>{' '}
-                    ago
-                  </Text>
-                }
-              />
-            );
-          })}
+              return (
+                <AuctionEvent
+                  key={`${timestamp}-${index}`}
+                  type={type}
+                  ilk={ilk}
+                  tx={hash}
+                  sender={fromAddress}
+                  lot={new BigNumber(eventLot).toFormat(5, 4)}
+                  bid={new BigNumber(eventBid).toFormat(5, 4)}
+                  currentBid={`${currentBid.toFormat(5, 4)} MKR`}
+                  timestamp={
+                    <Text title={new Date(timestamp)}>
+                      <Moment fromNow ago>
+                        {timestamp}
+                      </Moment>{' '}
+                      ago
+                    </Text>
+                  }
+                />
+              );
+            }
+          )}
         />
       </Box>
       <MiniFormLayout
         text={'Enter your bid in MKR for this Auction'}
         disabled={bidDisabled}
         inputUnit="MKR"
-        onSubmit={() => {}}
+        onSubmit={handleTendCTA}
         small={'Price 1 MKR = 300 DAI'}
         actionText={'Bid Now'}
       />

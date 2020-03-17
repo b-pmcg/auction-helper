@@ -39,12 +39,17 @@ const useBalances = () => {
     })();
   }, [maker, web3Connected]);
 
+  //TODO update state to display amount in adapter after join & exit
   async function joinDaiToAdapter(amount) {
     const DaiJoinAdapter = maker
       .service('smartContract')
       .getContract('MCD_JOIN_DAI');
 
-    const joinAmountInDai = maker.service('web3')._web3.utils.toWei(amount);
+    //amount set in MiniFormLayout is cast a BigNumber
+    const joinAmountInDai = maker
+      .service('web3')
+      ._web3.utils.toWei(amount.toFixed());
+    console.log('joinamountInDai', joinAmountInDai);
 
     await DaiJoinAdapter.join(
       maker.currentAddress(),

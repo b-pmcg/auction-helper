@@ -26,10 +26,12 @@ export default () => {
     hasMkrAllowance,
     hasEthFlipHope,
     hasJoinDaiHope,
+    hasFlopHope,
     giveDaiAllowance,
     giveMkrAllowance,
     giveFlipEthHope,
-    giveJoinDaiHope
+    giveJoinDaiHope,
+    giveFlopHope
   } = useAllowances();
 
   const [daiApprovePending, setDaiApprovePending] = useState(false);
@@ -121,7 +123,7 @@ export default () => {
               <BalanceOf
                 type={'Dai in Adaptor'}
                 balance={vatDaiBalance}
-                shouldUnlock={!hasEthFlipHope}
+                shouldUnlock={!hasFlopHope}
                 unlock={
                   <Grid
                     gap={2}
@@ -136,10 +138,10 @@ export default () => {
                     <Button
                       variant="pill"
                       onClick={() => {
-                        const flipEthAddress = maker
+                        const flopAddress = maker
                           .service('smartContract')
-                          .getContractByName('MCD_FLIP_ETH_A').address;
-                        giveFlipEthHope(flipEthAddress);
+                          .getContractByName('MCD_FLOP').address;
+                        giveFlopHope(flopAddress);
                       }}
                       disabled={!web3Connected}
                     >
@@ -224,7 +226,7 @@ export default () => {
                           text={'Deposit DAI to the Adapter'}
                           disabled={false}
                           inputUnit="DAI"
-                          onSubmit={() => {}}
+                          onSubmit={joinDaiToAdapter}
                           small={''}
                           actionText={'Deposit'}
                         />

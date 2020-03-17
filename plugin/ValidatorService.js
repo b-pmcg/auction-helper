@@ -226,10 +226,7 @@ export default class ValidatorService extends PublicService {
     function toRad(amount) {
       return BigNumber(amount.toString()).shiftedBy(45);
     }
-    // console.log('id in tend', id);
-    //auctionId, collateralAmount, highestBid
-    // const lotSize = await this.getLots(id);
-    // console.log('lotSize', lotSize);
+
     const lotSizeInWei = this.get('web3')._web3.utils.toWei(size.toString());
     const bidAmountRad = toRad(amount);
 
@@ -237,16 +234,32 @@ export default class ValidatorService extends PublicService {
     console.log('lotSizeInWei', lotSizeInWei);
     console.log('bidAmountRad', bidAmountRad.toFixed());
 
-    //convert amount to 10^45;
-
-    // const collateralAmount = '50000000000000000000';
-    // const highestBid = '1000000000000000000000000000000000000000000000';
     const tend = await this._flipEthAdapter().dent(
       id,
       lotSizeInWei,
       bidAmountRad.toFixed()
     );
     console.log('tend in service', tend);
+  }
+
+  async flopDent(id, size, amount) {
+    function toRad(amount) {
+      return BigNumber(amount.toString()).shiftedBy(45);
+    }
+
+    const lotSizeInWei = this.get('web3')._web3.utils.toWei(size.toString());
+    const bidAmountRad = toRad(amount);
+
+    console.log('id', id);
+    console.log('lotSizeInWei', lotSizeInWei);
+    console.log('bidAmountRad', bidAmountRad.toFixed());
+
+    const dent = await this._flop().dent(
+      id,
+      lotSizeInWei,
+      bidAmountRad.toFixed()
+    );
+    console.log('^^^dent in service', dent);
   }
 
   async getAuction(id) {

@@ -16,7 +16,18 @@ const useAuctionActions = () => {
     }
   }
 
-  return { callTend };
+  async function callFlopDent(auctionId, lotSize, bidAmount) {
+    console.log('auctionId, lotSize, bidAmount', auctionId, lotSize, bidAmount);
+    try {
+      const t = await maker
+        .service('validator')
+        .flopDent(auctionId, lotSize, bidAmount.toNumber());
+    } catch (err) {
+      window.alert(err);
+    }
+  }
+
+  return { callTend, callFlopDent };
 };
 
 export default useAuctionActions;
