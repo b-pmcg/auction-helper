@@ -138,6 +138,10 @@ export default {
     small: {
       fontSize: 1
     },
+    inputText: {
+      fontSize: 3,
+      fontWeight: 'normal'
+    },
     smallDanger: {
       fontSize: 1,
       color: 'red'
@@ -147,6 +151,13 @@ export default {
     nav: {
       fontSize: 5,
       fontWeight: 'body',
+      letterSpacing: '0.4px',
+      color: 'blackThree'
+    },
+
+    footer: {
+      fontSize: 4,
+      fontWeight: 'semiBold',
       letterSpacing: '0.4px',
       color: 'blackThree'
     }
@@ -163,28 +174,31 @@ export default {
       p: 6,
       borderRadius: 6,
       bg: 'white'
-    }
-    // h1: {
-    //   variant: 'text.heading',
-    //   fontSize: 7,
-    // },
-    // h2: {
-    //   variant: 'text.heading',
-    //   fontSize: 6,
-    //   fontWeight: 'body'
-    // },
-    // h3: {
-    //   variant: 'text.heading',
-    //   fontSize: 5,
-    // },
-    // h4: {
-    //   variant: 'text.heading',
-    //   fontSize: 4,
-    // },
-    // h5: {
-    //   variant: 'text.heading',
-    //   fontSize: 3,
-    // },
+    },
+    h1: {
+      variant: 'text.heading',
+      fontSize: 7,
+    },
+    h2: {
+      variant: 'text.heading',
+      fontSize: 6,
+      fontWeight: 'body'
+    },
+    h3: {
+      variant: 'text.heading',
+      fontSize: 4,
+      py: 4,
+      pb: 3,
+      fontWeight: 600
+    },
+    h4: {
+      variant: 'text.heading',
+      fontSize: 4,
+    },
+    h5: {
+      variant: 'text.heading',
+      fontSize: 3,
+    },
     // h6: {
     //   variant: 'text.heading',
     //   fontSize: 2,

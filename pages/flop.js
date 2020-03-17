@@ -3,17 +3,22 @@ import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import useMaker from '../hooks/useMaker';
 import * as _ from 'lodash';
-import { Text, jsx, Flex, Heading, Grid, Spinner, Button } from 'theme-ui';
+import { Text, jsx, Flex, Heading, Grid, Box, Spinner, Button } from 'theme-ui';
 import AccountManager from '../components/FlopAccountManager';
 import GuttedLayout from '../components/GuttedLayout';
 import { AUCTION_DATA_FETCHER } from '../constants';
 import AuctionsLayout from '../components/AuctionsLayout';
+import IntroInfoCard from '../components/IntroInfoCard';
+import IntroMDX from '../text/flopIntro.mdx';
+import Footer from '../components/Footer';
+import TermsConfirm from '../components/TermsConfirm';
 
 const Index = () => {
   const { maker, web3Connected } = useMaker();
   const [auctions, setAuctions] = useState(null);
   const [lastSynced, updateLastSynced] = useState(undefined);
-
+  const [TOCAccepted, setTOCAccepted] = useState(false);
+  // console.log('mcd', IntroMDX)
   async function fetchAuctions() {
     const service = maker.service(AUCTION_DATA_FETCHER);
 
@@ -29,6 +34,7 @@ const Index = () => {
     }
   }, [web3Connected, auctions]);
 
+  console.log(TOCAccepted, 'accet');
   return (
     <GuttedLayout>
       <Head>
@@ -54,6 +60,22 @@ const Index = () => {
             Debt Auctions
           </Heading>
 
+          <IntroInfoCard
+            title={'How do debt auctions work?'}
+            text={<IntroMDX />}
+            action={
+              TOCAccepted ? null : (
+                <TermsConfirm
+                  onConfirm={() => { setTOCAccepted(true);
+                  }}
+                />
+              )
+            }
+          />
+          <Box sx={{
+            opacity: TOCAccepted ? 1 : 0.2,
+            pointerEvents: TOCAccepted ? 'auto' : 'none'
+          }}>
           <AccountManager web3Connected={web3Connected} />
 
           {!web3Connected ? null : (
@@ -98,8 +120,12 @@ const Index = () => {
 
             // <AuctionsLayout auctions={auctions} type="flip" />
           )}
+        </Box>
+
         </>
       )}
+      {/* </Box> */}
+      <Footer />
     </GuttedLayout>
   );
 };
