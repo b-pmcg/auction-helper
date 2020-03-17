@@ -18,15 +18,27 @@ import Moment from 'react-moment';
 import EventsList from './AuctionEventsList';
 import MiniFormLayout from './MiniFormLayout';
 
-const AuctionEvent = ({ type, ilk, lot, bid, currentBid, timestamp }) => {
+const AuctionEvent = ({ type, ilk, lot, bid, currentBid, timestamp, tx, sender }) => {
   const fields = [
     ['Event Type', type],
     ['Lot Size', lot],
     ['Current Bid Price', currentBid],
     ['Bid Value', bid],
     ['Timestamp', timestamp],
-    ['Transaction', 'x'],
-    ['Sender', 'x']
+    [
+      'Tx',
+      <a href={`https://etherscan.io/tx/${tx}`} target="_blank">
+        {' '}
+        {tx.slice(0, 7) + '...' + tx.slice(-4)}
+      </a>
+    ],
+    [
+      'Sender',
+      <a href={`https://etherscan.io/address/${sender}`} target="_blank">
+        {' '}
+        {sender.slice(0, 7) + '...' + sender.slice(-4)}
+      </a>
+    ]
   ];
   return (
     <Grid
@@ -119,7 +131,7 @@ export default ({ events, id: auctionId }) => {
       </Flex>
       <Box>
         <EventsList
-          events={events.map(({ type, ilk, lot, bid, timestamp }, index) => {
+          events={events.map(({ type, ilk, lot, bid, timestamp, hash, fromAddress }, index) => {
             const currentBid = new BigNumber(lot).eq(new BigNumber(0))
               ? new BigNumber(lot)
               : new BigNumber(bid).div(new BigNumber(lot));
@@ -129,6 +141,8 @@ export default ({ events, id: auctionId }) => {
                 key={`${timestamp}-${index}`}
                 type={type}
                 ilk={ilk}
+                tx={hash}
+                sender={fromAddress}
                 lot={new BigNumber(lot).toFormat(5, 4)}
                 bid={new BigNumber(bid).toFormat(5, 4)}
                 currentBid={`${currentBid.toFormat(5, 4)} MKR`}
