@@ -1,16 +1,27 @@
-import { useEffect, useState } from 'react';
 import useMaker from './useMaker';
-import { fromRad } from '../pages/index';
 
 const useAuctionActions = () => {
   const { maker, web3Connected } = useMaker();
 
+  //ETH tend
   async function callTend(auctionId, lotSize, bidAmount) {
     console.log('auctionId, lotSize, bidAmount', auctionId, lotSize, bidAmount);
     try {
       const tend = await maker
         .service('validator')
-        .tend(auctionId, lotSize, bidAmount.toNumber());
+        .flipEthTend(auctionId, lotSize, bidAmount.toNumber());
+    } catch (err) {
+      window.alert(err);
+    }
+  }
+
+  //ETH dent
+  async function callEthDent(auctionId, lotSize, bidAmount) {
+    console.log('auctionId, lotSize, bidAmount', auctionId, lotSize, bidAmount);
+    try {
+      const tend = await maker
+        .service('validator')
+        .flipEthDent(auctionId, lotSize.toNumber(), bidAmount);
     } catch (err) {
       window.alert(err);
     }
@@ -36,7 +47,7 @@ const useAuctionActions = () => {
     }
   }
 
-  return { callTend, callFlopDent, callFlopDeal };
+  return { callTend, callFlopDent, callFlopDeal, callEthDent };
 };
 
 export default useAuctionActions;

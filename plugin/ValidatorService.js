@@ -1,5 +1,5 @@
 import { PublicService } from '@makerdao/services-core';
-import BigNumber from 'bignumber.js';
+import { toRad } from './utils';
 
 export default class ValidatorService extends PublicService {
   flipAuctionsLastSynced = 0;
@@ -69,13 +69,6 @@ export default class ValidatorService extends PublicService {
       }
     }).catch(err => console.error(err));
   }
-
-  // async getQueryResponseMemoized(serverUrl, query) {
-  //   let cacheKey = `${serverUrl};${query}`;
-  //   if (this.queryPromises[cacheKey]) return this.queryPromises[cacheKey];
-  //   this.queryPromises[cacheKey] = this.getQueryResponse(serverUrl, query);
-  //   return this.queryPromises[cacheKey];
-  // }
 
   async fetchFlipAuctions(shouldSync = false) {
     let currentTime = new Date().getTime();
@@ -178,33 +171,19 @@ export default class ValidatorService extends PublicService {
   }
 
   async getLots(id) {
-    // const bidId = 2590;
     const bids = await this._flipEthAdapter().bids(id);
     console.log('bids', bids);
     const lotSize = bids[0];
     return lotSize;
-    // console.log('bid in service', bid);
   }
-  //tend(uint id, uint lot, uint bid)
-  async tend(id, size, amount) {
-    function toRad(amount) {
-      return BigNumber(amount.toString()).shiftedBy(45);
-    }
-    // console.log('id in tend', id);
-    //auctionId, collateralAmount, highestBid
-    // const lotSize = await this.getLots(id);
-    // console.log('lotSize', lotSize);
+
+  async flipEthTend(id, size, amount) {
     const lotSizeInWei = this.get('web3')._web3.utils.toWei(size.toString());
     const bidAmountRad = toRad(amount);
 
     console.log('id', id);
     console.log('lotSizeInWei', lotSizeInWei);
     console.log('bidAmountRad', bidAmountRad.toFixed());
-
-    //convert amount to 10^45;
-
-    // const collateralAmount = '50000000000000000000';
-    // const highestBid = '1000000000000000000000000000000000000000000000';
     const tend = await this._flipEthAdapter().tend(
       id,
       lotSizeInWei,
@@ -213,20 +192,7 @@ export default class ValidatorService extends PublicService {
     console.log('tend in service', tend);
   }
 
-  async getLots(id) {
-    // const bidId = 2590;
-    const bids = await this._flipEthAdapter().bids(id);
-    console.log('bids', bids);
-    const lotSize = bids[0];
-    return lotSize;
-    // console.log('bid in service', bid);
-  }
-  //tend(uint id, uint lot, uint bid)
-  async dent(id, size, amount) {
-    function toRad(amount) {
-      return BigNumber(amount.toString()).shiftedBy(45);
-    }
-
+  async flipEthDent(id, size, amount) {
     const lotSizeInWei = this.get('web3')._web3.utils.toWei(size.toString());
     const bidAmountRad = toRad(amount);
 
@@ -234,19 +200,15 @@ export default class ValidatorService extends PublicService {
     console.log('lotSizeInWei', lotSizeInWei);
     console.log('bidAmountRad', bidAmountRad.toFixed());
 
-    const tend = await this._flipEthAdapter().dent(
+    const dent = await this._flipEthAdapter().dent(
       id,
       lotSizeInWei,
       bidAmountRad.toFixed()
     );
-    console.log('tend in service', tend);
+    console.log('dent in service', dent);
   }
 
   async flopDent(id, size, amount) {
-    function toRad(amount) {
-      return BigNumber(amount.toString()).shiftedBy(45);
-    }
-
     const lotSizeInWei = this.get('web3')._web3.utils.toWei(size.toString());
     const bidAmountRad = toRad(amount);
 
@@ -265,7 +227,19 @@ export default class ValidatorService extends PublicService {
   async flopDeal(id) {
     console.log('id', id);
     const deal = await this._flop().deal(id);
-    console.log('^^^deal in service', deal);
+    console.log('^^^flop deal in service', deal);
+  }
+
+  async flipEthDeal(id) {
+    console.log('id', id);
+    const deal = await this._flipEthAdapter().deal(id);
+    console.log('^^^eth deal in service', deal);
+  }
+
+  async flipBatDeal(id) {
+    console.log('id', id);
+    const deal = await this._flipBatAdapter().deal(id);
+    console.log('^^^bat deal in service', deal);
   }
 
   async getAuction(id) {
