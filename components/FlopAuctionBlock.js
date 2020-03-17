@@ -76,9 +76,26 @@ const AuctionEvent = ({ type, ilk, lot, bid, currentBid, timestamp, tx, sender }
   );
 };
 
+const byTimestamp = (prev, next) => {
+  const nextTs = new Date(next.timestamp).getTime();
+  const prevTs = new Date(prev.timestamp).getTime();
+
+  if (nextTs > prevTs) return 1;
+  if (nextTs < prevTs) return -1;
+  if (nextTs === prevTs) {
+    if (next.type === 'Dent') return 1;
+    if (next.type === 'Deal') return 2;
+    if (next.type === 'Kick') return -1;
+  }
+  return 0;
+};
+
 export default ({ events, id: auctionId }) => {
   const [state, setState] = useState({ amount: undefined, error: undefined });
+  const sortedEvents = events.sort(byTimestamp); // DEAL , [...DENT] , KICK -> 
 
+  const {bid: latestBid, lot: latestLot} = sortedEvents.find(event => event.type != 'Deal');
+  
   const maxBid = new BigNumber(100); // This should be taken from somewhere?
 
   const handleBidAmountInput = event => {
@@ -132,9 +149,12 @@ export default ({ events, id: auctionId }) => {
       <Box>
         <EventsList
           events={events.map(({ type, ilk, lot, bid, timestamp, hash, fromAddress }, index) => {
-            const currentBid = new BigNumber(lot).eq(new BigNumber(0))
-              ? new BigNumber(lot)
-              : new BigNumber(bid).div(new BigNumber(lot));
+            const eventBid = type === 'Deal' ? latestBid : bid;
+            const eventLot = type === 'Deal' ? latestLot : lot;
+
+            const currentBid = new BigNumber(eventLot).eq(new BigNumber(0))
+              ? new BigNumber(eventLot)
+              : new BigNumber(eventBid).div(new BigNumber(eventLot));
 
             return (
               <AuctionEvent
@@ -143,8 +163,8 @@ export default ({ events, id: auctionId }) => {
                 ilk={ilk}
                 tx={hash}
                 sender={fromAddress}
-                lot={new BigNumber(lot).toFormat(5, 4)}
-                bid={new BigNumber(bid).toFormat(5, 4)}
+                lot={new BigNumber(eventLot).toFormat(5, 4)}
+                bid={new BigNumber(eventBid).toFormat(5, 4)}
                 currentBid={`${currentBid.toFormat(5, 4)} MKR`}
                 timestamp={
                   <Text title={new Date(timestamp)}>
