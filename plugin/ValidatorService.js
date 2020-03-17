@@ -170,7 +170,14 @@ export default class ValidatorService extends PublicService {
         : 'https://auctions.oasis.app/api/v1';
   }
 
-  async tend(id, size, amount) {
+  async getLots(id) {
+    const bids = await this._flipEthAdapter().bids(id);
+    console.log('bids', bids);
+    const lotSize = bids[0];
+    return lotSize;
+  }
+
+  async flipEthTend(id, size, amount) {
     const lotSizeInWei = this.get('web3')._web3.utils.toWei(size.toString());
     const bidAmountRad = toRad(amount);
 
@@ -185,13 +192,7 @@ export default class ValidatorService extends PublicService {
     console.log('tend in service', tend);
   }
 
-  async getLots(id) {
-    const bids = await this._flipEthAdapter().bids(id);
-    console.log('bids', bids);
-    const lotSize = bids[0];
-    return lotSize;
-  }
-  async dent(id, size, amount) {
+  async flipEthDent(id, size, amount) {
     const lotSizeInWei = this.get('web3')._web3.utils.toWei(size.toString());
     const bidAmountRad = toRad(amount);
 
@@ -199,12 +200,12 @@ export default class ValidatorService extends PublicService {
     console.log('lotSizeInWei', lotSizeInWei);
     console.log('bidAmountRad', bidAmountRad.toFixed());
 
-    const tend = await this._flipEthAdapter().dent(
+    const dent = await this._flipEthAdapter().dent(
       id,
       lotSizeInWei,
       bidAmountRad.toFixed()
     );
-    console.log('tend in service', tend);
+    console.log('dent in service', dent);
   }
 
   async flopDent(id, size, amount) {
@@ -226,7 +227,19 @@ export default class ValidatorService extends PublicService {
   async flopDeal(id) {
     console.log('id', id);
     const deal = await this._flop().deal(id);
-    console.log('^^^deal in service', deal);
+    console.log('^^^flop deal in service', deal);
+  }
+
+  async flipEthDeal(id) {
+    console.log('id', id);
+    const deal = await this._flipEthAdapter().deal(id);
+    console.log('^^^eth deal in service', deal);
+  }
+
+  async flipBatDeal(id) {
+    console.log('id', id);
+    const deal = await this._flipBatAdapter().deal(id);
+    console.log('^^^bat deal in service', deal);
   }
 
   async getAuction(id) {

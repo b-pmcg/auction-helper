@@ -201,7 +201,7 @@ export default () => {
                           text={'Deposit DAI to the Adapter'}
                           disabled={false}
                           inputUnit="DAI"
-                          onSubmit={() => {}}
+                          onSubmit={joinDaiToAdapter}
                           small={''}
                           actionText={'Deposit'}
                         />
@@ -222,7 +222,7 @@ export default () => {
                           text={'Withdraw DAI from the Adapter'}
                           disabled={false}
                           inputUnit="DAI"
-                          onSubmit={() => {}}
+                          onSubmit={exitDaiFromAdapter}
                           small={''}
                           actionText={'Withdraw'}
                         />

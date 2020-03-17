@@ -11,9 +11,6 @@ import GuttedLayout from '../components/GuttedLayout';
 import { AUCTION_DATA_FETCHER } from '../constants';
 import Moment from 'react-moment';
 import AuctionsLayout from '../components/AuctionsLayout';
-function fromRad(value) {
-  return BigNumber(value).shiftedBy(-45);
-}
 
 const Index = () => {
   const { maker, web3Connected } = useMaker();

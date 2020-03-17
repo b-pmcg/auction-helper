@@ -19,13 +19,18 @@ import useAuctionActions from '../hooks/useAuctionActions';
 import Moment from 'react-moment';
 import EventsList from './AuctionEventsList';
 
-const DentForm = ({ auctionId, lot }) => {
+const DentForm = ({ auctionId, lot, bid }) => {
   const [state, setState] = useState({ amount: undefined, error: undefined });
-  const { callTend } = useAuctionActions();
+  const { callEthTend, callEthDent } = useAuctionActions();
 
   const handleTendCTA = event => {
     const bidAmount = state.amount;
-    callTend(auctionId, lot, bidAmount);
+    callEthTend(auctionId, lot, bidAmount);
+  };
+
+  const handleDentCTA = event => {
+    const lotAmount = state.amount;
+    callEthDent(auctionId, lotAmount, bid);
   };
 
   const bidDisabled = state.error || !state.amount;
@@ -187,6 +192,7 @@ export default ({ events: auctionEvents, id: auctionId }) => {
   const events = auctionEvents.sort(byTimestamp);
 
   const lot = events.sort(byTimestamp).map(a => a.lot)[0];
+  const bid = events.sort(byTimestamp).map(a => a.bid)[0];
 
   const tab = events
     .sort(byTimestamp)
@@ -232,7 +238,10 @@ export default ({ events: auctionEvents, id: auctionId }) => {
       </Flex>
       <EventsList
         events={events.map(
-          ({ type, lot, bid, timestamp, ilk, hash, fromAddress }, index) => {
+          (
+            { type, lot, bid, tab, timestamp, ilk, hash, fromAddress },
+            index
+          ) => {
             // const currentBid = new BigNumber(lot).eq(new BigNumber(0))
             // ? new BigNumber(lot)
             // : new BigNumber(bid).div(new BigNumber(lot));
@@ -276,7 +285,7 @@ export default ({ events: auctionEvents, id: auctionId }) => {
           }
         )}
       />
-      {true && <DentForm auctionId={auctionId} lot={lot} />}
+      {true && <DentForm auctionId={auctionId} lot={lot} bid={bid} />}
     </Grid>
   );
 };
