@@ -1,7 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import FlipAuctionBlock from './FlipAuctionBlock';
 import FlopAuctionBlock from './FlopAuctionBlock';
-import { Text, Button, Grid, Box, Input, Flex, Select } from 'theme-ui';
+import BigNumber from "bignumber.js";
+import { Button, Grid, Input, Flex, Select } from 'theme-ui';
+
+const sortByBidPrice = (auctions) => {  
+  return Object.keys(auctions || [])
+  .map(auctionId => {
+    return auctions[auctionId].find(event => event.type !== "Deal");
+  })
+  .map(event => {    
+    const bid = new BigNumber(event.bid);
+    const lot = new BigNumber(event.lot);
+    const bidPrice = lot.eq(new BigNumber(0)) ? lot : bid.div(lot)
+    return {
+      ...event,
+      bid,
+      lot,
+      bidPrice
+    }
+  })
+  .sort((prev, next) => {
+    if ( next.bidPrice.gt(prev.bidPrice) ) return 1;
+    if ( next.bidPrice.lt(prev.bidPrice) ) return -1;
+    return 0;
+  })
+  .map(event => {
+    return event.auctionId;
+  });
+}
+
+const sortByTime = (auctions) => {
+  return [];
+}
+
+const sortByLatest = (auctions) => {
+  return Object.keys(auctions || [])
+    .reverse();
+}
+
+const filterById = (ids, id) => {
+  return ids.filter(auctionId => id ? auctionId.includes(id) : auctionId);
+}
 
 const AuctionsLayout = ({ auctions, type }) => {
   const AuctionBlockLayout =
@@ -9,27 +49,38 @@ const AuctionsLayout = ({ auctions, type }) => {
   const initialPage = { start: 0, end: 10, step: 10 };
 
   // hooks
-  const [filterById, updateFilterById] = useState(undefined);
+  const [idFilter, updateFilterById] = useState(undefined);
   const [auctionIds, filterAuctionIds] = useState([]);
-  const [sortBy, updateSortBy] = useState(undefined);
+  const [sortCriteria, sortBy] = useState(undefined);
   const [page, updatePage] = useState(initialPage);
+  
 
   // effects
-  useEffect(() => {
-    filterAuctionIds(
-      Object.keys(auctions || [])
-        .reverse()
-        .filter(byId)
-    );
-  }, [auctions, filterById]);
-
+ 
   useEffect(() => {
     updatePage(initialPage);
   }, [auctionIds]);
 
-  function byId(auctionId) {
-    return filterById ? auctionId.includes(filterById) : auctionId;
-  }
+  useEffect(() => {
+    console.log("CALLED");
+    
+    switch(sortCriteria){
+      case 'byBidPrice': {
+        console.log("Sorted by Bid Price")
+        filterAuctionIds(filterById(sortByBidPrice(auctions), idFilter));
+        break;
+      };
+      case 'byTime': {
+        console.log("Sorted by Time Remaining")
+        filterAuctionIds(filterById(sortByTime(auctions), idFilter));
+        break;
+      };
+      default: {
+        console.log("Sorted by Latest")
+        filterAuctionIds(filterById(sortByLatest(auctions), idFilter));
+      }
+    }
+  }, [sortCriteria, idFilter]);
 
   const next = () => {
     updatePage({
@@ -52,20 +103,6 @@ const AuctionsLayout = ({ auctions, type }) => {
 
   return (
     <>
-      <Box
-        sx={{
-          py: 5
-        }}
-      >
-        <Text variant="boldBody">Active Auctions</Text>
-      </Box>
-      <Box
-        sx={{
-          mt: 2,
-          pb: 5
-        }}
-      ></Box>
-
       <Flex
         sx={{
           justifyContent: ['center', 'space-between'],
@@ -89,7 +126,7 @@ const AuctionsLayout = ({ auctions, type }) => {
             bg: 'white'
           }}
           defaultValue="Sort By"
-          onChange={({ target: { value } }) => console.log(value)}
+          onChange={({ target: { value } }) => sortBy(value)}
         >
           <option value="">Sort By</option>
           <option value="byTime">Time Remaining</option>
