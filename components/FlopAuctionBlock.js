@@ -95,6 +95,7 @@ export default ({ events, id: auctionId }) => {
   const sortedEvents = events.sort(byTimestamp); // DEAL , [...DENT] , KICK -> 
 
   const {bid: latestBid, lot: latestLot} = sortedEvents.find(event => event.type != 'Deal');
+  const hasAuctionCompleted = sortedEvents[0].type === 'Deal';
   
   const maxBid = new BigNumber(100); // This should be taken from somewhere?
 
@@ -140,10 +141,12 @@ export default ({ events, id: auctionId }) => {
           as="h5"
           variant="h2"
           sx={{
-            pt: [2, 0]
+            pt: [2, 0],
+            fontSize: 4,
+            color: hasAuctionCompleted ? 'primaryHover' : 'text',
           }}
         >
-          Time remaining: 1h 20m 20s
+          {hasAuctionCompleted ? 'Auction Completed' : 'Time remaining: 1h 20m 20s'}
         </Heading>
       </Flex>
       <Box>
