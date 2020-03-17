@@ -139,8 +139,15 @@ export default ({ events, id: auctionId, end, tic }) => {
       actions={
         <ActionTabs
           actions={[
-            [
-              'Bid on MKR lot',
+            ['Instant Bid', 
+            <MiniFormLayout
+            text={'Bid for the next minimum increment'}
+            buttonOnly
+            onSubmit={handleTendCTA}
+            small={'Price 1 MKR = 300 DAI'}
+            actionText={'Bid Now'}
+          />],[
+              'Custom Bid',
               <MiniFormLayout
                 text={'Enter your bid in MKR for this Auction'}
                 inputUnit="MKR"

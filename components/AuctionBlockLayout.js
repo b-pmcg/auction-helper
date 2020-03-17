@@ -14,7 +14,7 @@ import {
 
 import EventsList from './AuctionEventsList';
 
-export default ({ id: auctionId, end, tic, auctionStatus, auctionEvents, actions, hasDent}) => {
+export default ({ auctionId, end, tic, auctionStatus, auctionEvents, actions, hasDent}) => {
   
   const [timer, setTimer] = useState([]);
 

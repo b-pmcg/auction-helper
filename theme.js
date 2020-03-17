@@ -8,8 +8,9 @@ export default {
   space: [0, 4, 8, 12, 14, 16, 24, 32, 64, 128, 256, 512],
 
   fonts: {
-    body: '"SF Pro Text", sans-serif',
-    heading: '"SF Pro Display", sans-serif',
+    body: '-apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu',
+    // body: '-apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu',
+    heading: '-apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu',
     // body:
     // 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
     // heading: 'inherit',
@@ -63,6 +64,8 @@ export default {
       px: 6,
       py: 3,
       color: 'white',
+      fontWeight: 'semiBold',
+      letterSpacing: '0.03em',
       bg: 'primary',
       '&:hover': {
         bg: 'primaryHover'
@@ -79,6 +82,7 @@ export default {
     pill: {
       outline: 'none',
       variant: 'text.caps',
+      letterSpacing: '0.05em',
       py: 2,
       px: 4,
       color: 'white',
@@ -96,6 +100,7 @@ export default {
       p: 1
       // p: 0
     },
+
     textual: {
       background: 'transparent',
       color: 'purple',
@@ -123,7 +128,7 @@ export default {
     h1: {
       fontSize: 8,
       letterSpacing: '0.3px',
-      fontWeight: 'body'
+      fontWeight: 'semiBold'
     },
 
     h2: {
@@ -195,7 +200,7 @@ export default {
       fontSize: 4,
       py: 4,
       pb: 3,
-      fontWeight: 600
+      fontWeight: 500
     },
     h4: {
       variant: 'text.heading',
