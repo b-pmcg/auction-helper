@@ -123,7 +123,7 @@ export default ({ events, id: auctionId, end, tic }) => {
         const _val = new BigNumber(val);
         const max = new BigNumber(latestLot);
         console.log(_val, max, _val.gt(max));
-        return _val.gt(max);
+        return _val.gte(max);
       },
       'Bid too high'
     ]
