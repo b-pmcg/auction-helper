@@ -27,7 +27,16 @@ const useAuctionActions = () => {
     }
   }
 
-  return { callTend, callFlopDent };
+  async function callFlopDeal(auctionId) {
+    console.log('auctionId', auctionId);
+    try {
+      const flopDeal = await maker.service('validator').flopDeal(auctionId);
+    } catch (err) {
+      window.alert(err);
+    }
+  }
+
+  return { callTend, callFlopDent, callFlopDeal };
 };
 
 export default useAuctionActions;
