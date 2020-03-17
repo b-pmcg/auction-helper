@@ -5,7 +5,6 @@ import useMaker from '../hooks/useMaker';
 import useBalances from '../hooks/useBalances';
 import useAllowances from '../hooks/useAllowances';
 import { Text, jsx, Box, Button, Grid } from 'theme-ui';
-import BalanceFormVat from './BalanceFormVat';
 import BalanceOf from './BalanceOf';
 import AccountManagerLayout from '../components/AccountManagerLayout';
 import ActionTabs from './ActionTabs';
@@ -149,7 +148,6 @@ export default () => {
                     </Button>
                   </Grid>
                 }
-               
                 sx={{
                   borderLeft: '1px solid',
                   borderRight: '1px solid',

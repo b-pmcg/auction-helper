@@ -22,11 +22,22 @@ const MiniFormLayout = ({
   inputUnit,
   inputType = 'number',
   onSubmit,
+  inputValidation,
   error,
   small
 }) => {
   const [inputState, setInputState] = useState(undefined);
-  const _disabled = disabled || !inputState;
+
+  const errors = !inputState
+    ? []
+    : inputValidation
+        .map(([test, ...rest]) => {
+          return [test(inputState), ...rest];
+        })
+        .filter(([res]) => res);
+  const errorMessages = errors.map(([res, text]) => text).filter(Boolean);
+
+  const _disabled = disabled || !inputState || !!errors.length;
 
   const _onSubmit = () => {
     onSubmit(inputState);
@@ -97,7 +108,9 @@ const MiniFormLayout = ({
           {actionText}
         </Button>
       </Flex>
-      {error && <Text variant="smallDanger">{error}</Text>}
+      {!errorMessages
+        ? null
+        : errorMessages.map(err => <Text variant="smallDanger">{err}</Text>)}
       <Text variant="small">{small}</Text>
     </Grid>
   );
