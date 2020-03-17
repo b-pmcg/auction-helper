@@ -66,8 +66,8 @@ export default () => {
             </Text>
           ) : allowanceMissing ? (
             <Text as="h2" variant="boldBody">
-              To participate in auctions you need to sign these 3 approval
-              transactions
+              To participate in auctions you need to first sign the approval
+              transactions below.
             </Text>
           ) : null}
           <Grid
@@ -122,7 +122,7 @@ export default () => {
               <BalanceOf
                 type={'Dai locked in the adapter'}
                 balance={`${vatDaiBalance} DAI`}
-                shouldUnlock={!hasFlopHope}
+                shouldUnlock={!hasJoinDaiHope}
                 unlock={
                   <Grid
                     gap={2}
@@ -131,8 +131,35 @@ export default () => {
                     }}
                   >
                     <Text variant="caps">
-                      DAI wallet balance - {vatDaiBalance}
+                      DAI Adapter Balance - {vatDaiBalance}
                     </Text>
+                    <Button
+                      variant="pill"
+                      onClick={() => giveJoinDaiHope(joinAddress)}
+                      disabled={!web3Connected || hasJoinDaiHope}
+                    >
+                      Unlock Dai in the VAT
+                    </Button>
+                  </Grid>
+                }
+                sx={{
+                  borderLeft: '1px solid',
+                  borderRight: '1px solid',
+                  borderColor: 'border'
+                }}
+              />
+              <BalanceOf
+                type={'MKR in your wallet'}
+                balance={`${mkrBalance} MKR`}
+                shouldUnlock={!hasFlopHope}
+                unlock={
+                  <Grid
+                    gap={2}
+                    sx={{
+                      variant: 'styles.roundedCard'
+                    }}
+                  >
+                    <Text variant="caps">Enable Debt Auctions</Text>
 
                     <Button
                       variant="pill"
@@ -147,52 +174,6 @@ export default () => {
                       Give flop hope
                     </Button>
                   </Grid>
-                }
-                sx={{
-                  borderLeft: '1px solid',
-                  borderRight: '1px solid',
-                  borderColor: 'border'
-                }}
-              />
-              <BalanceOf
-                type={'MKR in your wallet'}
-                balance={`${mkrBalance} MKR`}
-                shouldUnlock={!hasMkrAllowance}
-                unlock={
-                  !hasJoinDaiHope ? (
-                    <Grid
-                      gap={2}
-                      sx={{
-                        variant: 'styles.roundedCard'
-                      }}
-                    >
-                      <Text variant="caps">DAI wallet balance</Text>
-                      <Button
-                        variant="pill"
-                        onClick={() => giveJoinDaiHope(joinAddress)}
-                        disabled={!web3Connected || hasJoinDaiHope}
-                      >
-                        Unlock Dai in the VAT
-                      </Button>
-                    </Grid>
-                  ) : (
-                    <Grid
-                      gap={2}
-                      sx={{
-                        variant: 'styles.roundedCard'
-                      }}
-                    >
-                      <Text variant="caps">Withdraw MKR - {mkrBalance}</Text>
-
-                      <Button
-                        variant="pill"
-                        onClick={() => giveMkrAllowance(joinAddress)}
-                        disabled={!web3Connected}
-                      >
-                        Unlock to withdraw MKR
-                      </Button>
-                    </Grid>
-                  )
                 }
               />
             </Grid>

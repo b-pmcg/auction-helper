@@ -8,9 +8,11 @@ export default {
   space: [0, 4, 8, 12, 14, 16, 24, 32, 64, 128, 256, 512],
 
   fonts: {
-    body: '-apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu',
+    body:
+      '-apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu',
     // body: '-apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu',
-    heading: '-apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu',
+    heading:
+      '-apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu',
     // body:
     // 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
     // heading: 'inherit',
@@ -188,7 +190,7 @@ export default {
     },
     h1: {
       variant: 'text.heading',
-      fontSize: 7,
+      fontSize: 7
     },
     h2: {
       variant: 'text.heading',
@@ -204,12 +206,12 @@ export default {
     },
     h4: {
       variant: 'text.heading',
-      fontSize: 4,
+      fontSize: 4
     },
     h5: {
       variant: 'text.heading',
-      fontSize: 3,
-    },
+      fontSize: 3
+    }
     // h6: {
     //   variant: 'text.heading',
     //   fontSize: 2,
