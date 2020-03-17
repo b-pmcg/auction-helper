@@ -60,7 +60,7 @@ const Index = () => {
             Debt Auctions
           </Heading>
 
-          <IntroInfoCard
+          {/* <IntroInfoCard
             title={'How do debt auctions work?'}
             text={<IntroMDX />}
             action={
@@ -71,10 +71,10 @@ const Index = () => {
                 />
               )
             }
-          />
+          /> */}
           <Box sx={{
-            opacity: TOCAccepted ? 1 : 0.2,
-            pointerEvents: TOCAccepted ? 'auto' : 'none'
+            // opacity: TOCAccepted ? 1 : 0.2,
+            // pointerEvents: TOCAccepted ? 'auto' : 'none'
           }}>
           <AccountManager web3Connected={web3Connected} />
 
