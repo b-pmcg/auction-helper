@@ -14,9 +14,9 @@ import {
   Flex
 } from 'theme-ui';
 import BigNumber from 'bignumber.js';
-import Moment from 'react-moment'
+import Moment from 'react-moment';
 import EventsList from './AuctionEventsList';
-
+import MiniFormLayout from './MiniFormLayout';
 
 const AuctionEvent = ({ type, ilk, lot, bid, currentBid, timestamp }) => {
   const fields = [
@@ -63,7 +63,6 @@ const AuctionEvent = ({ type, ilk, lot, bid, currentBid, timestamp }) => {
     </Grid>
   );
 };
-
 
 export default ({ events, id: auctionId }) => {
   const [state, setState] = useState({ amount: undefined, error: undefined });
@@ -119,11 +118,11 @@ export default ({ events, id: auctionId }) => {
         </Heading>
       </Flex>
       <Box>
-        <EventsList events={events.map(
-          ({ type, ilk, lot, bid, timestamp }, index) => {
+        <EventsList
+          events={events.map(({ type, ilk, lot, bid, timestamp }, index) => {
             const currentBid = new BigNumber(lot).eq(new BigNumber(0))
               ? new BigNumber(lot)
-              : new BigNumber(bid).div(new BigNumber(lot))
+              : new BigNumber(bid).div(new BigNumber(lot));
 
             return (
               <AuctionEvent
@@ -142,12 +141,20 @@ export default ({ events, id: auctionId }) => {
                   </Text>
                 }
               />
-            )
-          }
-        )} />
+            );
+          })}
+        />
       </Box>
-      <Grid gap={2}>
-        <Text variant="boldBody">Enter your bid in MKR for this Auction</Text>
+      <MiniFormLayout
+        text={'Enter your bid in MKR for this Auction'}
+        disabled={bidDisabled}
+        inputUnit="MKR"
+        onSubmit={() => {}}
+        small={'Price 1 MKR = 300 DAI'}
+        actionText={'Bid Now'}
+      />
+      {/* <Grid gap={2}>
+        <Text variant="boldBody"></Text>
         <Flex
           sx={{
             flexDirection: ['column', 'row']
@@ -191,8 +198,8 @@ export default ({ events, id: auctionId }) => {
           </Button>
         </Flex>
         {state.error && <Text variant="smallDanger">{state.error} </Text>}
-        <Text variant="small">Price 1 MKR = 300 DAI</Text>
-      </Grid>
+        <Text variant="small"></Text>
+      </Grid> */}
     </Grid>
   );
 };

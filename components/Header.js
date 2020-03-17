@@ -52,18 +52,26 @@ export default () => {
         </Link>
         <Flex
           as="nav"
-          px={{
-            ml: [0, 'auto']
+          sx={{
+            ml: [0, 'auto'],
+            mr: [null, 6]
           }}
         >
           <Link href="/flip">
-            <NavLink p={2}>Collateral auctions</NavLink>
+            <NavLink
+              sx={{
+                p: 2,
+                px: [4, 6]
+              }}
+            >
+              Collateral auctions
+            </NavLink>
           </Link>
           <Link href="/flop">
             <NavLink
               p={2}
               sx={{
-                px: 4
+                px: [4, 6]
               }}
             >
               Debt auctions

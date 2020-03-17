@@ -2,7 +2,6 @@ import { PublicService } from '@makerdao/services-core';
 import BigNumber from 'bignumber.js';
 
 export default class ValidatorService extends PublicService {
-
   flipAuctionsLastSynced = 0;
   flopAuctionsLastSynced = 0;
   backInTime = 1000 * 60 * 60 * 68; // 68 hours;
@@ -82,9 +81,8 @@ export default class ValidatorService extends PublicService {
     let currentTime = new Date().getTime();
     const timePassed = currentTime - this.flipAuctionsLastSynced;
     let queryDate = new Date();
-    
 
-    if(shouldSync){
+    if (shouldSync) {
       queryDate = new Date(currentTime - timePassed);
     } else {
       queryDate = new Date(currentTime - this.backInTime);
@@ -93,11 +91,11 @@ export default class ValidatorService extends PublicService {
     this.flipAuctionsLastSynced = currentTime;
 
     console.log(this.flipEthAddress, this.flipBatAddress);
-    
+
     return this.getAllAuctions({
       sources: [this.flipEthAddress, this.flipBatAddress],
       fromDate: queryDate
-    })
+    });
   }
 
   async fetchFlopAuctions(shouldSync = false) {
@@ -105,7 +103,7 @@ export default class ValidatorService extends PublicService {
     const timePassed = currentTime - this.flopAuctionsLastSynced;
     let queryDate = new Date();
 
-    if(shouldSync){
+    if (shouldSync) {
       queryDate = new Date(currentTime - timePassed);
     } else {
       queryDate = new Date(currentTime - this.backInTime);
@@ -115,11 +113,10 @@ export default class ValidatorService extends PublicService {
     return this.getAllAuctions({
       sources: [this.flopAddress],
       fromDate: queryDate
-    })
+    });
   }
 
   async getAllAuctions(variables) {
-
     const query = `query allLeveragedEvents($sources: [String!], $fromDate: Datetime) {
       allLeveragedEvents(
       filter: { 
@@ -175,10 +172,11 @@ export default class ValidatorService extends PublicService {
     this._url = 'https://api.prylabs.net';
   }
 
-  connect(){
-    this._cacheAPI = this.get('web3').networkName === 'kovan'
-    ? 'https://kovan-auctions.oasis.app/api/v1'
-    : 'https://auctions.oasis.app/api/v1';
+  connect() {
+    this._cacheAPI =
+      this.get('web3').networkName === 'kovan'
+        ? 'https://kovan-auctions.oasis.app/api/v1'
+        : 'https://auctions.oasis.app/api/v1';
   }
 
   async getLots(id) {
@@ -227,7 +225,6 @@ export default class ValidatorService extends PublicService {
   }
   //tend(uint id, uint lot, uint bid)
   async dent(id, size, amount) {
-
     function toRad(amount) {
       return BigNumber(amount.toString()).shiftedBy(45);
     }
@@ -258,7 +255,7 @@ export default class ValidatorService extends PublicService {
     console.log('fetching', id);
     try {
       return await this._flipEthAdapter().bids(id);
-    } catch (err) { }
+    } catch (err) {}
   }
 
   async joinDaiToAdapter(address, amount) {
@@ -277,7 +274,7 @@ export default class ValidatorService extends PublicService {
   }
 
   get flopAddress() {
-    return this._flop().address
+    return this._flop().address;
   }
 
   get joinDaiAdapterAddress() {
@@ -288,11 +285,11 @@ export default class ValidatorService extends PublicService {
     return this.get('smartContract').getContractByName('MCD_FLIP_ETH_A');
   }
 
-  _flipBatAdapter(){
+  _flipBatAdapter() {
     return this.get('smartContract').getContractByName('MCD_FLIP_BAT_A');
   }
 
-  _flop(){
+  _flop() {
     return this.get('smartContract').getContractByName('MCD_FLOP');
   }
 

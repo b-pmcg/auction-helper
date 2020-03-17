@@ -8,10 +8,12 @@ export default {
   space: [0, 4, 8, 12, 14, 16, 24, 32, 64, 128, 256, 512],
 
   fonts: {
-    body:
-      'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
-    heading: 'inherit',
-    monospace: 'Menlo, monospace'
+    body: '"SF Pro Text", sans-serif',
+    heading: '"SF Pro Display", sans-serif',
+    // body:
+    // 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
+    // heading: 'inherit',
+    monospace: 'monospace'
   },
 
   fontSizes: [11, 13, 14, 15, 16, 18, 20, 24, 32, 48, 64, 96],
@@ -34,6 +36,9 @@ export default {
     primaryHover: '#139D8D',
     primaryActive: '#098C7D',
     lightGreen: '#B6EDE7',
+
+    graphite: '#48495F',
+    lightGraphite: '#7E7E88',
     purple: '#447AFB',
     blackThree: '#333',
     border: '#D4D9E1',
@@ -46,12 +51,17 @@ export default {
     // muted: '#f6f6f6',
   },
 
+  borders: {
+    light: '1px solid'
+  },
+
   buttons: {
     primary: {
       outline: 'none',
       fontFamily: 'body',
       fontSize: 4,
-      px: 5,
+      px: 6,
+      py: 3,
       color: 'white',
       bg: 'primary',
       '&:hover': {
@@ -66,12 +76,27 @@ export default {
         cursor: 'not-allowed'
       }
     },
+    pill: {
+      outline: 'none',
+      variant: 'text.caps',
+      py: 2,
+      px: 4,
+      color: 'white',
+      bg: 'primary'
+    },
+    pillInactive: {
+      variant: 'buttons.pill',
+      bg: 'transparent',
+      color: 'lightGraphite',
+      border: '1px solid',
+      borderColor: 'border'
+    },
     textual: {
       background: 'transparent',
       color: 'purple',
       outline: 'none',
       cursor: 'pointer',
-      fontSize: 1,
+      fontSize: 1
     }
   },
 
@@ -84,12 +109,19 @@ export default {
 
     caps: {
       textTransform: 'uppercase',
-      fontWeight: 'semiBold'
+      letterSpacing: '0.05em',
+      color: 'graphite',
+      fontSize: 0,
+      fontWeight: 'bold'
     },
+
     h2: {
       fontSize: 6,
       fontWeight: 'semiBold',
       letterSpacing: '0.4px'
+    },
+    bigText: {
+      fontSize: 8
     },
     boldBody: {
       fontSize: 4,
@@ -117,6 +149,13 @@ export default {
       fontFamily: 'body',
       lineHeight: 'body',
       fontWeight: 'body'
+    },
+    roundedCard: {
+      border: '1px solid',
+      borderColor: 'border',
+      p: 6,
+      borderRadius: 6,
+      bg: 'white'
     }
     // h1: {
     //   variant: 'text.heading',

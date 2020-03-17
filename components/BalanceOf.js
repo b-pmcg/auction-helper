@@ -13,20 +13,31 @@ import {
   Flex
 } from 'theme-ui';
 
-const BalanceOf = ({ type, balance, vatBalance, actions }) => {
+const BalanceOf = ({
+  type,
+  balance,
+  vatBalance,
+  actions,
+  shouldUnlock,
+  unlock
+}) => {
+  if (shouldUnlock) {
+    return <Box>{unlock}</Box>;
+  }
   return (
     <Flex
       sx={{
-        bg: '#fff',
-        p: 4,
-        borderRadius: 5,
-        border: '1px solid',
-        borderColor: 'border',
+        variant: 'styles.roundedCard',
+        // bg: '#fff',
+        // p: 6,
+        // borderRadius: 5,
+        // border: '1px solid',
+        // borderColor: 'border',
         alignItems: 'center'
       }}
     >
       <Grid
-        gap={2}
+        gap={0}
         columns={[1]}
         sx={{
           flexDirection: ['column', 'row'],
@@ -34,17 +45,17 @@ const BalanceOf = ({ type, balance, vatBalance, actions }) => {
           alignItems: 'center'
         }}
       >
-        <Flex
+        <Grid
+          gap={0}
           sx={{
             alignItems: 'center',
             width: '100%'
           }}
         >
-          <Text variant="boldBody">
-            {balance} {type}
-          </Text>
+          <Text variant="caps">{type}</Text>
+          <Text variant="bigText">{balance}</Text>
           <Box ml="auto">{actions}</Box>
-        </Flex>
+        </Grid>
 
         {vatBalance ? (
           <Box>
@@ -55,6 +66,5 @@ const BalanceOf = ({ type, balance, vatBalance, actions }) => {
     </Flex>
   );
 };
-
 
 export default BalanceOf;

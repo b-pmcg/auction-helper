@@ -15,14 +15,13 @@ import {
   Flex
 } from 'theme-ui';
 
-
-const AccountManagerLayout = ({topActions, balances, balanceActions}) => {
-return (
-  <Grid>
-    {topActions}
-    {balances}
-    {balanceActions}
-  </Grid>
-)
-}
+const AccountManagerLayout = ({ topActions, balances, balanceActions }) => {
+  return (
+    <Grid>
+      {topActions}
+      {balances}
+      {balanceActions}
+    </Grid>
+  );
+};
 export default AccountManagerLayout;

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import useMaker from '../hooks/useMaker';
 import * as _ from 'lodash';
-import { Text, jsx, Flex} from 'theme-ui';
+import { Text, jsx, Flex, Box, Grid, Spinner, Button } from 'theme-ui';
 import AccountManager from '../components/FlopAccountManager';
 import GuttedLayout from '../components/GuttedLayout';
 import { AUCTION_DATA_FETCHER } from '../constants';
@@ -12,7 +12,7 @@ import AuctionsLayout from '../components/AuctionsLayout';
 const Index = () => {
   const { maker, web3Connected } = useMaker();
   const [auctions, setAuctions] = useState(null);
-
+  const [lastSynced, updateLastSynced] = useState(undefined);
 
   async function fetchAuctions() {
     const service = maker.service(AUCTION_DATA_FETCHER);
@@ -34,7 +34,6 @@ const Index = () => {
       <Head>
         <title>Auction Helper (Beta)</title>
       </Head>
-
       {!maker ? (
         <Flex
           sx={{
@@ -42,13 +41,55 @@ const Index = () => {
             p: 8
           }}
         >
-          <Text variant="boldBody">Loading...</Text>
+          <Spinner />
         </Flex>
       ) : (
-        <>
+        <Grid>
           <AccountManager web3Connected={web3Connected} />
-          <AuctionsLayout auctions={auctions} type="flop"/>
-        </>
+
+          {!web3Connected ? null : (
+            <Flex
+              sx={{
+                py: 5,
+                alignItems: 'center'
+              }}
+            >
+              <Text variant="boxldBody">Active Auctions</Text>
+              <Button
+                variant="pill"
+                sx={{ ml: 5 }}
+                disabled={!web3Connected}
+                onClick={() => fetchAuctions(true)}
+              >
+                Sync
+              </Button>
+              {lastSynced && (
+                <Text title={lastSynced} sx={{ ml: 5, fontSize: 2 }}>
+                  (Last synced: <Moment local>{lastSynced.getTime()}</Moment>)
+                </Text>
+              )}
+            </Flex>
+          )}
+          {!web3Connected ? null : !auctions ? (
+            <Flex
+              sx={{
+                justifyContent: 'center'
+              }}
+            >
+              <Spinner />
+            </Flex>
+          ) : !auctions.length ? (
+            <Flex>
+              <Text variant="boldBody">
+                No auctions found, check back later.
+              </Text>
+            </Flex>
+          ) : (
+            <AuctionsLayout auctions={auctions} type="flop" />
+
+            // <AuctionsLayout auctions={auctions} type="flip" />
+          )}
+        </Grid>
       )}
     </GuttedLayout>
   );

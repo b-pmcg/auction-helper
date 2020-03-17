@@ -100,7 +100,16 @@ const DentForm = ({ auctionId, lot }) => {
     </Grid>
   );
 };
-const AuctionEvent = ({ type, ilk, lot, currentBid, bid, timestamp, tx, sender }) => {
+const AuctionEvent = ({
+  type,
+  ilk,
+  lot,
+  currentBid,
+  bid,
+  timestamp,
+  tx,
+  sender
+}) => {
   const fields = [
     ['Event Type', type],
     ['Collateral Type', ilk],
@@ -108,8 +117,20 @@ const AuctionEvent = ({ type, ilk, lot, currentBid, bid, timestamp, tx, sender }
     ['Unit Price', currentBid],
     ['Bid Value', bid],
     ['Time', timestamp],
-    ['Tx', <a href={`https://etherscan.io/tx/${tx}`} target="_blank"> {tx.slice(0, 7) + '...' + tx.slice(-4)}</a>],
-    ['Sender', <a href={`https://etherscan.io/address/${sender}`} target="_blank"> {sender.slice(0, 7) + '...' + sender.slice(-4)}</a>],
+    [
+      'Tx',
+      <a href={`https://etherscan.io/tx/${tx}`} target="_blank">
+        {' '}
+        {tx.slice(0, 7) + '...' + tx.slice(-4)}
+      </a>
+    ],
+    [
+      'Sender',
+      <a href={`https://etherscan.io/address/${sender}`} target="_blank">
+        {' '}
+        {sender.slice(0, 7) + '...' + sender.slice(-4)}
+      </a>
+    ]
   ];
   return (
     <Grid
@@ -162,25 +183,22 @@ const byTimestamp = (prev, next) => {
   return 0;
 };
 
-export default ({ events:auctionEvents, id: auctionId }) => {
-
-
+export default ({ events: auctionEvents, id: auctionId }) => {
   const events = auctionEvents.sort(byTimestamp);
 
-  const lot = events
-  .sort(byTimestamp)
-  .map(a => a.lot)
-  [0]; 
+  const lot = events.sort(byTimestamp).map(a => a.lot)[0];
 
-
-const tab = events
-  .sort(byTimestamp)
-  .map(a => a.tab)
-  .filter(Boolean);
-
+  const tab = events
+    .sort(byTimestamp)
+    .map(a => a.tab)
+    .filter(Boolean);
 
   const hasDeal = events.find(e => e.type === 'Deal');
-  const {lot: latestLot, bid: latestBid, currentBid: latestCurrentBid} = events.filter(e => e.type !== 'Deal')[0];
+  const {
+    lot: latestLot,
+    bid: latestBid,
+    currentBid: latestCurrentBid
+  } = events.filter(e => e.type !== 'Deal')[0];
 
   return (
     <Grid
@@ -213,12 +231,11 @@ const tab = events
         </Heading> */}
       </Flex>
       <EventsList
-        events={events
-          .map(({ type, lot, bid, timestamp, ilk, hash, fromAddress }, index) => {
-// const currentBid = new BigNumber(lot).eq(new BigNumber(0))
-// ? new BigNumber(lot)
-// : new BigNumber(bid).div(new BigNumber(lot));
-
+        events={events.map(
+          ({ type, lot, bid, timestamp, ilk, hash, fromAddress }, index) => {
+            // const currentBid = new BigNumber(lot).eq(new BigNumber(0))
+            // ? new BigNumber(lot)
+            // : new BigNumber(bid).div(new BigNumber(lot));
 
             return (
               <AuctionEvent
@@ -227,13 +244,25 @@ const tab = events
                 tx={hash}
                 sender={fromAddress}
                 ilk={ilk.split('-')[0]}
-                lot={type === 'Deal'? new BigNumber(getValueOrDefault(latestLot)).toFormat(5, 4) : new BigNumber(getValueOrDefault(lot)).toFormat(5, 4)}
-                bid={type === 'Deal'?  new BigNumber(getValueOrDefault(latestBid)).toFormat(5, 4) : new BigNumber(getValueOrDefault(bid)).toFormat(5, 4)}
-                currentBid={type === 'Deal'? `${new BigNumber(getValueOrDefault(latestBid))
-                  .div(new BigNumber(getValueOrDefault(latestLot)))
-                  .toFormat(5, 4)} DAI` : `${new BigNumber(getValueOrDefault(bid))
-                  .div(new BigNumber(getValueOrDefault(lot)))
-                  .toFormat(5, 4)} DAI`}
+                lot={
+                  type === 'Deal'
+                    ? new BigNumber(getValueOrDefault(latestLot)).toFormat(5, 4)
+                    : new BigNumber(getValueOrDefault(lot)).toFormat(5, 4)
+                }
+                bid={
+                  type === 'Deal'
+                    ? new BigNumber(getValueOrDefault(latestBid)).toFormat(5, 4)
+                    : new BigNumber(getValueOrDefault(bid)).toFormat(5, 4)
+                }
+                currentBid={
+                  type === 'Deal'
+                    ? `${new BigNumber(getValueOrDefault(latestBid))
+                        .div(new BigNumber(getValueOrDefault(latestLot)))
+                        .toFormat(5, 4)} DAI`
+                    : `${new BigNumber(getValueOrDefault(bid))
+                        .div(new BigNumber(getValueOrDefault(lot)))
+                        .toFormat(5, 4)} DAI`
+                }
                 timestamp={
                   <Text title={new Date(timestamp)}>
                     <Moment fromNow ago>
@@ -244,7 +273,8 @@ const tab = events
                 }
               />
             );
-          })}
+          }
+        )}
       />
       {true && <DentForm auctionId={auctionId} lot={lot} />}
     </Grid>

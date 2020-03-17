@@ -5,7 +5,7 @@ import useMaker from '../hooks/useMaker';
 import useBalances from '../hooks/useBalances';
 import * as _ from 'lodash';
 import BigNumber from 'bignumber.js';
-import { Text, jsx, Flex, Button } from 'theme-ui';
+import { Text, jsx, Flex, Button, Grid, Spinner } from 'theme-ui';
 import FlipAccountManager from '../components/FlipAccountManager';
 import GuttedLayout from '../components/GuttedLayout';
 import { AUCTION_DATA_FETCHER } from '../constants';
@@ -55,29 +55,53 @@ const Index = () => {
             p: 8
           }}
         >
-          <Text variant="boldBody">Loading...</Text>
+          <Spinner />
         </Flex>
       ) : (
-          <>
-            <FlipAccountManager web3Connected={web3Connected} />
-            {/* TODO: Extract as separate components */}
+        <Grid>
+          <FlipAccountManager web3Connected={web3Connected} />
+          {!web3Connected ? null : (
             <Flex
               sx={{
                 py: 5,
                 alignItems: 'center'
               }}
             >
-              <Text variant="boldBody">Active Auctions</Text>
-              <Button variant="primary" sx={{ ml: 5 }} disabled={!web3Connected} onClick={() => fetchAuctions(true)}> Sync </Button>
+              <Text variant="boxldBody">Active Auctions</Text>
+              <Button
+                variant="pill"
+                sx={{ ml: 5 }}
+                disabled={!web3Connected}
+                onClick={() => fetchAuctions(true)}
+              >
+                Sync
+              </Button>
               {lastSynced && (
                 <Text title={lastSynced} sx={{ ml: 5, fontSize: 2 }}>
                   (Last synced: <Moment local>{lastSynced.getTime()}</Moment>)
                 </Text>
               )}
             </Flex>
+          )}
+          {!web3Connected ? null : !auctions ? (
+            <Flex
+              sx={{
+                justifyContent: 'center'
+              }}
+            >
+              <Spinner />
+            </Flex>
+          ) : !auctions.length ? (
+            <Flex>
+              <Text variant="boldBody">
+                No auctions found, check back later.
+              </Text>
+            </Flex>
+          ) : (
             <AuctionsLayout auctions={auctions} type="flip" />
-          </>
-        )}
+          )}
+        </Grid>
+      )}
     </GuttedLayout>
   );
 };

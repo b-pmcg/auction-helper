@@ -14,31 +14,32 @@ import {
   Flex
 } from 'theme-ui';
 
-export const AuctionEventsList = ({events}) => {
+export const AuctionEventsList = ({ events }) => {
   const [shouldSeeAllEvents, toggleEventsList] = useState(false);
 
   const visibleAuctionEvents = shouldSeeAllEvents ? events : [events[0]];
 
   return (
-    <Flex sx={{
-      flexDirection: 'column'
-    }}>
-     <Grid gap={2}>
-       {visibleAuctionEvents}
-     </Grid>
-     {
-        events.length > 1 && (
-          <Button variant="textual"
-                  sx={{textAlign: 'right', alignSelf: 'flex-end', pr: 0}}
-                  onClick={() => { toggleEventsList(!shouldSeeAllEvents)}}
-          >
-              {shouldSeeAllEvents ? 'Hide' : 'See' } all other events ({events.length - 1})
-          </Button>
-        )
-      }
+    <Flex
+      sx={{
+        flexDirection: 'column'
+      }}
+    >
+      <Grid gap={2}>{visibleAuctionEvents}</Grid>
+      {events.length > 1 && (
+        <Button
+          variant="textual"
+          sx={{ textAlign: 'right', alignSelf: 'flex-end', pr: 0 }}
+          onClick={() => {
+            toggleEventsList(!shouldSeeAllEvents);
+          }}
+        >
+          {shouldSeeAllEvents ? 'Hide' : 'See'} all other events (
+          {events.length - 1})
+        </Button>
+      )}
     </Flex>
-  )
-
-}
+  );
+};
 
 export default AuctionEventsList;
