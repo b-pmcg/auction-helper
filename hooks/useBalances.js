@@ -12,21 +12,26 @@ const useBalances = () => {
   const daiSymbol = 'MDAI';
   const mkrSymbol = 'MKR';
 
-  useEffect(() => {
-    if (!web3Connected) return;
-    (async () => {
-      const vatBal = await maker
-        .service('smartContract')
-        .getContract('MCD_VAT')
-        .dai(maker.currentAddress());
-      setVatDaiBalance(fromRad(vatBal).toFixed());
-    })();
-  }, [maker, web3Connected]);
+  const fetchVatDaiBalance = () => {
+    return maker
+      .service('smartContract')
+      .getContract('MCD_VAT')
+      .dai(maker.currentAddress());
+  };
+
+  const fetchDaiBalance = () => {
+    return maker.getToken(daiSymbol).balance();
+  };
+
+  const fetchBalances = () => {
+    return Promise.all([fetchVatDaiBalance(), fetchDaiBalance()]);
+  };
 
   useEffect(() => {
     if (!web3Connected) return;
     (async () => {
-      const daiBal = await maker.getToken(daiSymbol).balance();
+      const [vatBal, daiBal] = await fetchBalances();
+      setVatDaiBalance(fromRad(vatBal).toFixed());
       setDaiBalance(daiBal.toNumber());
     })();
   }, [maker, web3Connected]);
@@ -39,7 +44,6 @@ const useBalances = () => {
     })();
   }, [maker, web3Connected]);
 
-  //TODO update state to display amount in adapter after join & exit
   async function joinDaiToAdapter(amount) {
     const DaiJoinAdapter = maker
       .service('smartContract')
@@ -49,12 +53,14 @@ const useBalances = () => {
     const joinAmountInDai = maker
       .service('web3')
       ._web3.utils.toWei(amount.toFixed());
-    console.log('joinamountInDai', joinAmountInDai);
 
     await DaiJoinAdapter.join(
       maker.currentAddress(),
       BigNumber(joinAmountInDai).toFixed()
     );
+    const [vatBal, daiBal] = await fetchBalances();
+    setVatDaiBalance(fromRad(vatBal).toFixed());
+    setDaiBalance(daiBal.toNumber());
   }
 
   async function exitDaiFromAdapter(amount) {
@@ -70,6 +76,9 @@ const useBalances = () => {
       maker.currentAddress(),
       BigNumber(exitAmountInDai).toFixed()
     );
+    const [vatBal, daiBal] = await fetchBalances();
+    setVatDaiBalance(fromRad(vatBal).toFixed());
+    setDaiBalance(daiBal.toNumber());
   }
 
   return {
