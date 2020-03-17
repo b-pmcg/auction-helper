@@ -121,7 +121,7 @@ export default () => {
                 }
               />
               <BalanceOf
-                type={'Dai in Adaptor'}
+                type={'Dai locked in the adapter'}
                 balance={vatDaiBalance}
                 shouldUnlock={!hasFlopHope}
                 unlock={
@@ -157,7 +157,7 @@ export default () => {
                 }}
               />
               <BalanceOf
-                type={'MKR'}
+                type={'MKR in your wallet'}
                 balance={mkrBalance}
                 shouldUnlock={!hasMkrAllowance}
                 unlock={
