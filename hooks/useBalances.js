@@ -62,6 +62,10 @@ const useBalances = () => {
       .service('smartContract')
       .getContract('MCD_JOIN_DAI');
 
+    const exitAmountInDai = maker
+      .service('web3')
+      ._web3.utils.toWei(amount.toFixed());
+
     await DaiJoinAdapter.exit(
       maker.currentAddress(),
       BigNumber(exitAmountInDai).toString()

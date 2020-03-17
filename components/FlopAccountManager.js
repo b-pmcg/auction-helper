@@ -247,7 +247,7 @@ export default () => {
                           text={'Withdraw DAI from the Adapter'}
                           disabled={false}
                           inputUnit="DAI"
-                          onSubmit={() => {}}
+                          onSubmit={exitDaiFromAdapter}
                           small={''}
                           actionText={'Withdraw'}
                         />

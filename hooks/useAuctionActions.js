@@ -8,7 +8,7 @@ const useAuctionActions = () => {
   async function callTend(auctionId, lotSize, bidAmount) {
     console.log('auctionId, lotSize, bidAmount', auctionId, lotSize, bidAmount);
     try {
-      const t = await maker
+      const tend = await maker
         .service('validator')
         .tend(auctionId, lotSize, bidAmount.toNumber());
     } catch (err) {
@@ -19,9 +19,9 @@ const useAuctionActions = () => {
   async function callFlopDent(auctionId, lotSize, bidAmount) {
     console.log('auctionId, lotSize, bidAmount', auctionId, lotSize, bidAmount);
     try {
-      const t = await maker
+      const flopDent = await maker
         .service('validator')
-        .flopDent(auctionId, lotSize, bidAmount.toNumber());
+        .flopDent(auctionId, lotSize.toNumber(), bidAmount);
     } catch (err) {
       window.alert(err);
     }

@@ -115,11 +115,9 @@ export default ({ events, id: auctionId }) => {
 
   const maxBid = new BigNumber(100); // This should be taken from somewhere?
 
-  console.log('***state', latestBid, latestLot);
-
   const handleTendCTA = value => {
     console.log('value', value);
-    callFlopDent(auctionId, latestLot, value);
+    callFlopDent(auctionId, value, latestBid);
   };
 
   /**
