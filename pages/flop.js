@@ -87,7 +87,7 @@ const Index = () => {
             >
               <Spinner />
             </Flex>
-          ) : !auctions.length ? (
+          ) : !Object.keys(auctions).length ? (
             <Flex>
               <Text variant="boldBody">
                 No auctions found, check back later.
