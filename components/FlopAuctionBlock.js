@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Heading,
   Text,
@@ -100,7 +100,40 @@ const byTimestamp = (prev, next) => {
   return 0;
 };
 
-export default ({ events, id: auctionId }) => {
+
+export default ({ events, id: auctionId, end, tic, }) => {
+  const [timer, setTimer] = useState([]);
+
+  useEffect(() => {
+    // if there is no Dent first will be Kick
+    // If there is Deal first will be Deal
+    // If first is Dent it's an ongoing auction
+    const hasDent = sortedEvents[0].type === 'Dent';
+
+    var countDownDate = new Date((hasDent ? tic : end).toNumber()).getTime();
+    
+
+    var x = setInterval(function() {
+
+      var now = new Date().getTime();
+    
+      var distance = countDownDate - now;
+    
+      var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+      setTimer((days + "d " + hours + "h "
+      + minutes + "m " + seconds + "s "));
+    
+      if (distance < 0) {
+        clearInterval(x);
+      }
+    }, 1000);
+
+  }, []);
+
   const [state, setState] = useState({
     amount: undefined,
     error: undefined
@@ -163,7 +196,7 @@ export default ({ events, id: auctionId }) => {
         >
           {hasAuctionCompleted
             ? 'Auction Completed'
-            : 'Time remaining: 1h 20m 20s'}
+            : `Time remaining: ${timer}`}
         </Heading>
       </Flex>
       <Box>

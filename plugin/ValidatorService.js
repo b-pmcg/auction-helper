@@ -1,5 +1,6 @@
 import { PublicService } from '@makerdao/services-core';
 import { toRad } from './utils';
+import { BigNumber } from 'bignumber.js';
 
 export default class ValidatorService extends PublicService {
   flipAuctionsLastSynced = 0;
@@ -246,6 +247,26 @@ export default class ValidatorService extends PublicService {
     console.log('fetching', id);
     try {
       return await this._flipEthAdapter().bids(id);
+    } catch (err) {}
+  }
+
+  async getFlopDuration(id) {
+    try {
+      const flop = await this._flop().bids(id);
+      return {
+        end: new BigNumber(flop.end).times(1000),
+        tic: flop.tic ? new BigNumber(flop.tic).times(1000) : new BigNumber(0)
+      };
+    } catch (err) {}
+  }
+
+  async getFlipDuration(id) {
+    try {
+      const flip = await this._flipEthAdapter().bids(id);
+      return {
+        end: new BigNumber(flip.end).times(1000),
+        tic: flip.tic ? new BigNumber(flip.tic).times(1000) : new BigNumber(0)
+      };
     } catch (err) {}
   }
 
