@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import {
   Heading,
   Text,
@@ -110,10 +110,9 @@ export default ({ events, id: auctionId, end, tic, }) => {
     // If first is Dent it's an ongoing auction
     const hasDent = sortedEvents[0].type === 'Dent';
 
-    var countDownDate = new Date((hasDent ? tic : end).toNumber()).getTime();
-    
+    var countDownDate = new Date((hasDent ? tic : end).toNumber()).getTime();   
 
-    var x = setInterval(function() {
+    var timerId = setInterval(function() {
 
       var now = new Date().getTime();
     
@@ -128,11 +127,17 @@ export default ({ events, id: auctionId, end, tic, }) => {
       + minutes + "m " + seconds + "s "));
     
       if (distance < 0) {
-        clearInterval(x);
+        clearInterval(timerId);
       }
     }, 1000);
 
-  }, []);
+    return () => {
+      console.log("Called with:", timerId);
+      
+      clearInterval(timerId);
+    }
+
+  }, [end, tic]);
 
   const [state, setState] = useState({
     amount: undefined,

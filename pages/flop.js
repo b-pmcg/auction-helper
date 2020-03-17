@@ -46,7 +46,7 @@ const Index = () => {
         fetchAuctions();
       }
     }
-  }, [web3Connected, auctions]);
+  }, [web3Connected]);
 
   return (
     <GuttedLayout>
