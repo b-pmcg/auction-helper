@@ -1,21 +1,19 @@
 /** @jsx jsx */
 
 import React, { useState, useEffect, useLayoutEffect } from 'react';
-import {
-  Heading,
-
-  jsx,
-
-  Grid,
-  Box,
-
-  Flex
-} from 'theme-ui';
+import { Heading, jsx, Grid, Box, Flex } from 'theme-ui';
 
 import EventsList from './AuctionEventsList';
 
-export default ({ auctionId, end, tic, auctionStatus, auctionEvents, actions, hasDent}) => {
-  
+export default ({
+  auctionId,
+  end,
+  tic,
+  auctionStatus,
+  auctionEvents,
+  actions,
+  hasDent
+}) => {
   const [timer, setTimer] = useState([]);
 
   useEffect(() => {
@@ -86,9 +84,7 @@ export default ({ auctionId, end, tic, auctionStatus, auctionEvents, actions, ha
         </Heading>
       </Flex>
       <Box>
-        <EventsList
-          events={auctionEvents}
-        />
+        <EventsList events={auctionEvents} />
       </Box>
       {actions}
     </Grid>
