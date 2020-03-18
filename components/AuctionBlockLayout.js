@@ -119,7 +119,7 @@ export default ({
           {
             collapsed &&
             <Flex sx={{
-              flex: '2 0 0 ',
+              flex: '2 1 0',
               flexDirection: ['column', 'row'],
             }}> {onCollapseData.map(
               data => {
@@ -159,6 +159,7 @@ export default ({
           sx={{
             pt: [2, 0],
             flex: '1 1 0',
+            textAlign: 'right',
             fontSize: 4,
             ml: collapsed ? 0 : [0, 'auto'],
             color: auctionStatusColors[auctionStatus]
