@@ -104,14 +104,20 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
   const { maker } = useMaker();
   const { callFlopDent } = useAuctionActions();
   const [inputState, setInputState] = useState(new BigNumber(0));
+  const userAddress = maker.currentAddress().toLowerCase();
 
   const sortedEvents = events.sort(byTimestamp); // DEAL , [...DENT] , KICK ->
 
-  const { bid: latestBid, lot: latestLot } = sortedEvents.find(
+  const { bid: latestBid, lot: latestLot, fromAddress: latestBidder } = sortedEvents.find(
     event => event.type != 'Deal'
   );
 
   const hasDent = sortedEvents[0].type === 'Dent';
+
+  const userParticipationData = {
+    isWinning: latestBidder.toLowerCase() === userAddress.toLowerCase(),
+    hasParticipated: !!events.find(event => event.fromAddress === userAddress)
+  }  
 
   const now = new Date().getTime();
   let auctionStatus = IN_PROGRESS;
@@ -178,11 +184,13 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
     <AuctionBlockLayout
       latestEvent={{
         bid: new BigNumber(latestBid),
-        lot: new BigNumber(latestLot)
+        lot: new BigNumber(latestLot),
+        sender: sortedEvents[0].fromAddress
       }}
       auctionStatus={auctionStatus}
       auctionId={auctionId}
       hasDent={hasDent}
+      userParticipation={userParticipationData}
       end={end}
       tic={tic}
       actions={

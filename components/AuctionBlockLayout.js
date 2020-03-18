@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { Heading, jsx, Grid, Box, Flex } from 'theme-ui';
+import useMaker from '../hooks/useMaker';
 
 import EventsList from './AuctionEventsList';
 import CollapseToggle from './CollapseToggle';
@@ -21,7 +22,8 @@ export default ({
   auctionEvents,
   actions,
   forceExpanded,
-  hasDent
+  hasDent,
+  userParticipation
 }) => {
   const [timer, setTimer] = useState([]);
   const [collapsed, setCollapsed] = useState(false);
@@ -47,7 +49,7 @@ export default ({
 
     var countDownDate = new Date((hasDent ? tic : end).toNumber()).getTime();
 
-    var timerId = setInterval(function() {
+    var timerId = setInterval(function () {
       var now = new Date().getTime();
 
       var distance = countDownDate - now;
@@ -67,8 +69,6 @@ export default ({
     }, 1000);
 
     return () => {
-      console.log('Called with:', timerId);
-
       clearInterval(timerId);
     };
   }, [end, tic]);
@@ -97,6 +97,19 @@ export default ({
         <Heading as="h5" variant="h2">
           Auction ID: {auctionId}
         </Heading>
+        { userParticipation.isWinning && 
+          <Box sx={{
+            ml: 4,
+            borderRadius: '20px',
+            bg: 'yellow',
+            color: 'orange',
+            fontSize: 1,
+            lineHeight: '20px',
+            px: 4
+          }}>
+            Current Winning Bidder
+          </Box>
+        }
         {collapsed ? (
           <Heading
             as="h5"
