@@ -31,7 +31,28 @@ const sortByBidPrice = auctions => {
 };
 
 const sortByTime = auctions => {
-  return [];
+  return Object.keys(auctions || []).sort((prevId, nextId) => {
+    const now = new Date().getTime();
+
+    const prev = auctions[prevId];
+    const next = auctions[nextId];
+
+    const prevTicEndMin = prev.tic.lt(prev.end) ? prev.tic : prev.end;
+    const prevEndTime = prev.tic.eq(0) ? prev.end : prevTicEndMin;
+    const prevTimeRemaining = prevEndTime.lte(now)
+      ? new BigNumber(0)
+      : prevEndTime.minus(now);
+
+    const nextTicEndMin = next.tic.lt(next.end) ? next.tic : next.end;
+    const nextEndTime = next.tic.eq(0) ? next.end : nextTicEndMin;
+    const nextTimeRemaining = nextEndTime.lte(now)
+      ? new BigNumber(0)
+      : nextEndTime.minus(now);
+
+    if (prevTimeRemaining.eq(nextTimeRemaining)) return 0;
+    else if (prevTimeRemaining.lt(nextTimeRemaining)) return -1;
+    else return 1;
+  });
 };
 
 const sortByLatest = auctions => {
