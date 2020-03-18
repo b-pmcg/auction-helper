@@ -13,6 +13,8 @@ const transformEvents = async (auctions, service) => {
     Object.keys(groupedEvents).map(async id => {
       const { end, tic } = await service.getFlopDuration(id);
 
+      // console.log(tic.valueOf(), end.valueOf());
+      
       auctionsData[id.toString()] = {
         auctionId: id,
         end,

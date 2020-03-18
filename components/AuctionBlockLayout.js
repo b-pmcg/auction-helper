@@ -10,7 +10,8 @@ import {
   IN_PROGRESS,
   COMPLETED,
   CAN_BE_DEALT,
-  CAN_BE_RESTARTED
+  CAN_BE_RESTARTED,
+  ZERO
 } from '../constants';
 
 export default ({
@@ -41,6 +42,18 @@ export default ({
     [CAN_BE_RESTARTED]: 'text'
   };
 
+  const { lot: latestLot, bid: latestBid } = latestEvent;
+
+  const latestPrice = latestLot.eq(ZERO)
+  ? latestLot
+  : latestBid.div(latestLot);
+
+  const onCollapseData = [
+    {label:'Bid', value: latestBid.toFormat(2,4), notation: 'DAI',} ,
+    {label:'Lot', value: latestLot.toFormat(4,6), notation: 'MKR', styling: { color: 'primary' }},
+    {label:'Price', value: latestPrice.toFormat(2,4), notation: 'MKR/DAI', styling:{ fontWeight: 600 } }
+  ]
+
   useEffect(() => {
     // if there is no Dent first will be Kick
     // If there is Deal first will be Deal
@@ -62,7 +75,7 @@ export default ({
 
       setTimer(days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's ');
 
-      if (distance === 0) {
+      if (distance <= 0) {
         clearInterval(timerId);
       }
     }, 1000);
@@ -96,20 +109,49 @@ export default ({
         <Heading as="h5" variant="h2">
           Auction ID: {auctionId}
         </Heading>
-        {!pill ? null : <Box ml="4">{pill}</Box>}
-        {collapsed ? (
-          <Heading
-            as="h5"
-            variant="h2"
-            sx={{
-              fontSize: 4,
-              ml: [0, 'auto'],
-              mr: [0, 20]
-            }}
-          >
-            {latestEvent.bid.toFixed(2)} DAI
-          </Heading>
-        ) : null}
+        <Flex
+          sx={{
+            margin: 'auto',
+            alignItems: 'center',
+          }}        
+        >
+          {!pill ? null : <Box ml="4">{pill}</Box>}
+          {
+            collapsed &&
+            <Flex sx={{
+              flexDirection: ['column', 'row'],
+            }}> {onCollapseData.map(
+              data => {
+                return (
+                  <Heading
+                    key={`${auctionId}-${data.label}`}
+                    as="h5"
+                    variant="h2"
+                    sx={{
+                      fontSize: 4,
+                      ml: [0, 'auto'],
+                      mr: [0, 20]
+                    }}
+                  >
+                    <Flex sx={{
+                        alignItems:'baseline',
+                        justifyContent: 'center'
+                      }}>
+                      <Text variant="caps" sx={{
+                        fontSize: 1,
+                        mr: 2
+                      }}>
+                        {data.label}
+                      </Text>  
+                      <Text sx={data.styling}>{data.value} {data.notation}</Text>
+                    </Flex>
+                  </Heading>
+                )
+              })
+            }
+            </Flex>
+          }
+        </Flex>
         <Heading
           as="h5"
           variant="h2"
