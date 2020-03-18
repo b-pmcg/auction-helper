@@ -30,7 +30,7 @@ const AuctionEvent = ({
     ['Event Type', type],
     ['Bid Value', bid],
     ['Lot Size', `${lot} MKR`, { color: 'primary' }],
-    ['Current Bid Price', currentBid],
+    ['Current Bid Price', currentBid, { fontWeight: 600 }],
     // ['Price', price],
     ['Timestamp', timestamp],
     [
@@ -101,7 +101,7 @@ const byTimestamp = (prev, next) => {
 
 export default ({ events, id: auctionId, end, tic, stepSize }) => {
   const { callFlopDent } = useAuctionActions();
-  const [inputState, setInputState] = useState(null);
+  const [inputState, setInputState] = useState(new BigNumber(0));
 
   const sortedEvents = events.sort(byTimestamp); // DEAL , [...DENT] , KICK ->
 
@@ -129,6 +129,10 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
   const handleTendCTA = value => {
     console.log('value', value);
     callFlopDent(auctionId, value, latestBid);
+  };
+
+  const handleInstantBid = value => {
+    // callFlopDent(auctionId, value, latestBid);
   };
 
   /**
@@ -173,6 +177,7 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
             [
               'Instant Bid',
               <MiniFormLayout
+                disabled={auctionStatus !== IN_PROGRESS}
                 text={'Bid for the next minimum increment'}
                 buttonOnly
                 onSubmit={handleTendCTA}
@@ -183,13 +188,16 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
             [
               'Custom Bid',
               <MiniFormLayout
-                text={'Enter your bid in MKR for this Auction'}
+                disabled={auctionStatus !== IN_PROGRESS}
+                text={'Enter the amount of MKR requested for this auction'}
                 inputUnit="MKR"
                 onSubmit={handleTendCTA}
                 onChange={setInputState}
                 small={`Bidding ${new BigNumber(latestBid).toFixed(
                   2
-                )} Dai in exchange for ${inputState ? inputState : '---'} MKR`}
+                )} Dai in exchange for ${
+                  inputState.eq(0) || inputState.isNaN() ? '---' : inputState
+                } MKR`}
                 inputValidation={bidValidationTests}
                 actionText={'Bid Now'}
               />

@@ -15,6 +15,12 @@ export default () => {
     try {
       if (maker) {
         await maker.authenticate();
+        const { networkName } = maker.service('web3');
+        if (network === 'mainnet' && networkName !== 'mainnet')
+          window.alert(
+            `Please connect your wallet to mainnet to use this app. Or, if you'd like to try this app on the Kovan test network, add ?network=kovan to the end of the URL.`
+          );
+
         setWeb3Connected(true);
       }
     } catch (err) {
@@ -127,7 +133,8 @@ export default () => {
               >
                 <span
                   sx={{
-                    color: network === 'mainnet' ? 'primary' : 'purple',
+                    color:
+                      network === 'mainnet' ? 'primary' : 'rgb(144, 85, 175)',
                     marginRight: 2
                   }}
                 >
