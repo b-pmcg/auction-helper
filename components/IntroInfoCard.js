@@ -39,7 +39,10 @@ const IntroInfoCard = ({ title, text, action, forceExpanded }) => {
             ml: 'auto'
           }}
         >
-          <CollapseToggle onClick={() => forceExpanded ? null : setCollapsed(!collapsed) } active={!collapsed} />
+          <CollapseToggle
+            onClick={() => (forceExpanded ? null : setCollapsed(!collapsed))}
+            active={!collapsed}
+          />
         </Box>
       </Flex>
       {collapsed ? null : (

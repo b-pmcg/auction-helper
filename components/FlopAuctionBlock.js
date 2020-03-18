@@ -93,7 +93,7 @@ const byTimestamp = (prev, next) => {
   return 0;
 };
 
-export default ({ events, id: auctionId, end, tic }) => {
+export default ({ events, id: auctionId, end, tic, stepSize }) => {
   const { callFlopDent } = useAuctionActions();
   const sortedEvents = events.sort(byTimestamp); // DEAL , [...DENT] , KICK ->
 
@@ -123,12 +123,13 @@ export default ({ events, id: auctionId, end, tic }) => {
     // [() => !web3Connected],
     [
       val => {
-        const _val = new BigNumber(val);
-        const max = new BigNumber(latestLot);
-        console.log(_val, max, _val.gt(max));
-        return _val.gte(max);
+        const minMkrAsk = new BigNumber(latestLot).div(stepSize);
+        return minMkrAsk.lt(val);
       },
-      'Bid too high'
+      `Must ask for at least ${new BigNumber(stepSize)
+        .minus(1)
+        .multipliedBy(100)
+        .toString()}% less MKR than the current lot`
     ]
   ];
 

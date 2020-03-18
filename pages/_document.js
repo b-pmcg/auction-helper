@@ -12,8 +12,8 @@ const scriptTxt = `
 `;
 
 const bodyStyle = {
-  backgroundColor: "rgb(246, 248, 249)"
-}
+  backgroundColor: 'rgb(246, 248, 249)'
+};
 
 class MyDocument extends Document {
   render() {

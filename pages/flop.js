@@ -18,26 +18,29 @@ const Index = () => {
   const [auctions, setAuctions] = useState(null);
   const [lastSynced, updateLastSynced] = useState(undefined);
   const [TOCAccepted, setTOCAccepted] = useState(false);
+  const [stepSize, setStepSize] = useState(null);
+
   // console.log('mcd', IntroMDX)
   async function fetchAuctions() {
     const service = maker.service(AUCTION_DATA_FETCHER);
 
     const auctions = await service.fetchFlopAuctions();
     const groupedEvents = _.groupBy(auctions, auction => auction.auctionId);
+    setStepSize(await service.getFlopStepSize());
 
     const auctionsData = {};
 
-    Promise.all(Object.keys(groupedEvents).map(async (id) => {
-      const {end, tic} = await service.getFlopDuration(id);
+    Promise.all(
+      Object.keys(groupedEvents).map(async id => {
+        const { end, tic } = await service.getFlopDuration(id);
 
-      auctionsData[id.toString()] = {
-        end,
-        tic,
-        events: groupedEvents[id]
-      }
-    })).then(
-      () => setAuctions(auctionsData)
-    );
+        auctionsData[id.toString()] = {
+          end,
+          tic,
+          events: groupedEvents[id]
+        };
+      })
+    ).then(() => setAuctions(auctionsData));
   }
 
   useEffect(() => {
@@ -80,60 +83,66 @@ const Index = () => {
             action={
               TOCAccepted ? null : (
                 <TermsConfirm
-                  onConfirm={() => { setTOCAccepted(true);
+                  onConfirm={() => {
+                    setTOCAccepted(true);
                   }}
                 />
               )
             }
           />
-          <Box sx={{
-            opacity: TOCAccepted ? 1 : 0.2,
-            pointerEvents: TOCAccepted ? 'auto' : 'none'
-          }}>
-          <AccountManager web3Connected={web3Connected} />
+          <Box
+            sx={{
+              opacity: TOCAccepted ? 1 : 0.2,
+              pointerEvents: TOCAccepted ? 'auto' : 'none'
+            }}
+          >
+            <AccountManager web3Connected={web3Connected} />
 
-          {!web3Connected ? null : (
-            <Flex
-              sx={{
-                py: 4,
-                alignItems: 'center'
-              }}
-            >
-              <Text variant="h2">Active Auctions</Text>
-              <Button
-                variant="pill"
-                sx={{ ml: 5 }}
-                disabled={!web3Connected}
-                onClick={() => fetchAuctions(true)}
+            {!web3Connected ? null : (
+              <Flex
+                sx={{
+                  py: 4,
+                  alignItems: 'center'
+                }}
               >
-                Sync
-              </Button>
-              {lastSynced && (
-                <Text title={lastSynced} sx={{ ml: 5, fontSize: 2 }}>
-                  (Last synced: <Moment local>{lastSynced.getTime()}</Moment>)
+                <Text variant="h2">Active Auctions</Text>
+                <Button
+                  variant="pill"
+                  sx={{ ml: 5 }}
+                  disabled={!web3Connected}
+                  onClick={() => fetchAuctions(true)}
+                >
+                  Sync
+                </Button>
+                {lastSynced && (
+                  <Text title={lastSynced} sx={{ ml: 5, fontSize: 2 }}>
+                    (Last synced: <Moment local>{lastSynced.getTime()}</Moment>)
+                  </Text>
+                )}
+              </Flex>
+            )}
+            {!web3Connected ? null : !auctions ? (
+              <Flex
+                sx={{
+                  justifyContent: 'center'
+                }}
+              >
+                <Spinner />
+              </Flex>
+            ) : !Object.keys(auctions).length ? (
+              <Flex>
+                <Text variant="boldBody">
+                  No auctions found, check back later.
                 </Text>
-              )}
-            </Flex>
-          )}
-          {!web3Connected ? null : !auctions ? (
-            <Flex
-              sx={{
-                justifyContent: 'center'
-              }}
-            >
-              <Spinner />
-            </Flex>
-          ) : !Object.keys(auctions).length ? (
-            <Flex>
-              <Text variant="boldBody">
-                No auctions found, check back later.
-              </Text>
-            </Flex>
-          ) : (
-            <AuctionsLayout auctions={auctions} type="flop" />
-          )}
-        </Box>
-
+              </Flex>
+            ) : (
+              <AuctionsLayout
+                stepSize={stepSize}
+                auctions={auctions}
+                type="flop"
+              />
+            )}
+          </Box>
         </>
       )}
       {/* </Box> */}

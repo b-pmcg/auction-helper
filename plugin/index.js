@@ -20,7 +20,7 @@ export default {
 
     const makerConfig = {
       ...config,
-      additionalServices: ['validator', {network}],
+      additionalServices: ['validator', { network }],
       validator: [ValidatorService],
       smartContract: { addContracts }
     };
