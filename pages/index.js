@@ -36,11 +36,11 @@ const Index = () => {
         </Head>
 
         <Text variant="boldBody">Welcome to maker auctions</Text>
-        <Box sx={{ my: 2 }}>
+        {/* <Box sx={{ my: 2 }}>
           <Link href="/flip">
             <StyledLink variant="nav">Collateral Auctions →</StyledLink>
           </Link>
-        </Box>
+        </Box> */}
         <Box>
           <Link href="/flop">
             <StyledLink variant="nav">Debt Auctions →</StyledLink>
