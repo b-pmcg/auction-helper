@@ -1,6 +1,7 @@
 import { PublicService } from '@makerdao/services-core';
-import { toRad, fromWei, toWei, fromWad } from './utils';
 import BigNumber from 'bignumber.js';
+import { toRad, fromWei, toWei, fromWad } from './utils';
+import * as gqlQueries  from '../queries';
 
 export default class ValidatorService extends PublicService {
   flipAuctionsLastSynced = 0;
@@ -108,51 +109,30 @@ export default class ValidatorService extends PublicService {
     });
   }
 
-  async getAllAuctions(variables) {
-    const query = `query allLeveragedEvents($sources: [String!], $fromDate: Datetime) {
-      allLeveragedEvents(
-      filter: { 
-      and:[ 
-      {address: {in: $sources}},
-      {timestamp: {greaterThan: $fromDate}},
-        {
-          or: [
-            {type: {equalTo: "Tend"}},
-            {type: {equalTo: "Dent"}},
-            {type: {equalTo: "Kick"}},
-            {type: {equalTo: "Deal"}},
+  async fetchFlopAuctionsByIds(ids) {
+    let currentTime = new Date().getTime();
+    const queryDate = new Date(currentTime - this.backInTime);
 
-          ]
-        }
-        ]
-      }
-      ) {
-      nodes {
-        id
-        type
-        ilk
-        hash
-        fromAddress
-        amount
-        payAmount
-        minPayAmount
-        maxPayAmount
-        dgem
-        ddai
-        auctionId
-        lot
-        bid
-        ink
-        tab
-        timestamp
-        price
-      }
-      }
-    }`;
+    const variables = {
+      sources: [this.flopAddress],
+      auctionIds: ids,
+      fromDate: queryDate
+    }
 
     const response = await this.getQueryResponse(
       this._cacheAPI,
-      query,
+      gqlQueries.specificAuctionEvents,
+      variables
+    );
+
+    console.log('GraphQL response', response);
+    return response.allLeveragedEvents.nodes;
+  }
+
+  async getAllAuctions(variables) {    
+    const response = await this.getQueryResponse(
+      this._cacheAPI,
+      gqlQueries.allAuctionEvents,
       variables
     );
     console.log('GraphQL response', response);

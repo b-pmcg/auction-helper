@@ -1,6 +1,7 @@
 /** @jsx jsx */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import useMaker from '../hooks/useMaker';
 import { Text, jsx, Grid, Box } from 'theme-ui';
 import BigNumber from 'bignumber.js';
 import Moment from 'react-moment';
@@ -100,6 +101,7 @@ const byTimestamp = (prev, next) => {
 };
 
 export default ({ events, id: auctionId, end, tic, stepSize }) => {
+  const { maker } = useMaker();
   const { callFlopDent } = useAuctionActions();
   const [inputState, setInputState] = useState(new BigNumber(0));
 
@@ -135,6 +137,17 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
     const minMkrAsk = new BigNumber(latestLot).div(stepSize);
     callFlopDent(auctionId, minMkrAsk, latestBid);
   };
+
+  useEffect(() => {
+     const timerID = setTimeout(async () => {
+        console.log("Syncing events for specific Auction", auctionId)
+        const newEvents = await maker.service('validator').fetchFlopAuctionsByIds([auctionId]);
+        console.log(`Auction with ID ${auctionId} has ${newEvents.length} Events`)
+     }, 1000);
+     return () => {
+       clearInterval(timerID);
+     }     
+  }, []);
 
   /**
    * disabled when:
