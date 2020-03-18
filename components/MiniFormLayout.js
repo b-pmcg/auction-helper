@@ -24,6 +24,7 @@ const MiniFormLayout = ({
   inputType = 'number',
   onSubmit,
   inputValidation,
+  onChange,
   error,
   small
 }) => {
@@ -49,6 +50,7 @@ const MiniFormLayout = ({
     const value = event.target.value;
     // const state = { amount: undefined, error: undefined };
 
+    if (onChange) onChange(BigNumber(value));
     setInputState(BigNumber(value));
     // if (value) {
     // state.amount = new BigNumber(value);

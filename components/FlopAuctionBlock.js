@@ -29,7 +29,7 @@ const AuctionEvent = ({
   const fields = [
     ['Event Type', type],
     ['Bid Value', bid],
-    ['Lot Size', lot, { color: 'primary' }],
+    ['Lot Size', `${lot} MKR`, { color: 'primary' }],
     ['Current Bid Price', currentBid],
     // ['Price', price],
     ['Timestamp', timestamp],
@@ -101,6 +101,8 @@ const byTimestamp = (prev, next) => {
 
 export default ({ events, id: auctionId, end, tic, stepSize }) => {
   const { callFlopDent } = useAuctionActions();
+  const [inputState, setInputState] = useState(null);
+
   const sortedEvents = events.sort(byTimestamp); // DEAL , [...DENT] , KICK ->
 
   const { bid: latestBid, lot: latestLot } = sortedEvents.find(
@@ -184,8 +186,10 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
                 text={'Enter your bid in MKR for this Auction'}
                 inputUnit="MKR"
                 onSubmit={handleTendCTA}
-                inputChanged={() => {}}
-                small={'Price 1 MKR = 300 DAI'}
+                onChange={setInputState}
+                small={`Bidding ${new BigNumber(latestBid).toFixed(
+                  2
+                )} Dai in exchange for ${inputState ? inputState : '---'} MKR`}
                 inputValidation={bidValidationTests}
                 actionText={'Bid Now'}
               />
