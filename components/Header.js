@@ -5,8 +5,11 @@ import Link from 'next/link';
 import useMaker from '../hooks/useMaker';
 import GuttedLayout from './GuttedLayout';
 import Logo from './Logo';
+import { useRouter } from 'next/router';
+
 export default () => {
   const { maker, network, web3Connected, setWeb3Connected } = useMaker();
+  const { pathname } = useRouter();
 
   async function connectBrowserWallet() {
     try {
@@ -60,6 +63,7 @@ export default () => {
           <Link href="/flip">
             <NavLink
               sx={{
+                fontWeight: pathname === '/flip' ? 'bold' : 'normal',
                 p: 2,
                 px: [4, 6]
               }}
@@ -71,6 +75,7 @@ export default () => {
             <NavLink
               p={2}
               sx={{
+                fontWeight: pathname === '/flop' ? 'bold' : 'normal',
                 px: [4, 6]
               }}
             >
