@@ -160,7 +160,6 @@ export default () => {
                     }}
                   >
                     <Text variant="caps">Enable Debt Auctions</Text>
-
                     <Button
                       variant="pill"
                       onClick={() => {
@@ -171,7 +170,7 @@ export default () => {
                       }}
                       disabled={!web3Connected}
                     >
-                      Give flop hope
+                      Unlock DAI in the Debt Auction
                     </Button>
                   </Grid>
                 }
