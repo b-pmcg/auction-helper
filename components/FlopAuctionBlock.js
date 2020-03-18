@@ -100,7 +100,7 @@ const byTimestamp = (prev, next) => {
 };
 
 export default ({ events, id: auctionId, end, tic, stepSize }) => {
-  const { callFlopDent } = useAuctionActions();
+  const { callFlopDent, callFlopDeal } = useAuctionActions();
   const [inputState, setInputState] = useState(new BigNumber(0));
 
   const sortedEvents = events.sort(byTimestamp); // DEAL , [...DENT] , KICK ->
@@ -203,13 +203,13 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
                 actionText={'Bid Now'}
               />
             ],
-            [
+            auctionStatus === CAN_BE_DEALT && [
               'Deal Auction',
               <MiniFormLayout
-                disabled={auctionStatus !== IN_PROGRESS}
+                disabled={auctionStatus !== CAN_BE_DEALT}
                 text={'Call deal to end auction and mint MKR'}
                 buttonOnly
-                onSubmit={handleTendCTA}
+                onSubmit={() => callFlopDeal(auctionId)}
                 small={''}
                 actionText={'Call deal'}
               />
