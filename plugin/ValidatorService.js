@@ -1,5 +1,5 @@
 import { PublicService } from '@makerdao/services-core';
-import { toRad } from './utils';
+import { toRad, fromWad } from './utils';
 import { BigNumber } from 'bignumber.js';
 
 export default class ValidatorService extends PublicService {
@@ -268,6 +268,11 @@ export default class ValidatorService extends PublicService {
         tic: flip.tic ? new BigNumber(flip.tic).times(1000) : new BigNumber(0)
       };
     } catch (err) {}
+  }
+
+  async getFlopStepSize() {
+    const beg = await this._flop().beg();
+    return fromWad(beg);
   }
 
   async joinDaiToAdapter(address, amount) {
