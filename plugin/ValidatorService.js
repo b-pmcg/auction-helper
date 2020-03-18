@@ -1,6 +1,6 @@
 import { PublicService } from '@makerdao/services-core';
-import { toRad, fromWad } from './utils';
-import { BigNumber } from 'bignumber.js';
+import { toRad, fromWei, toWei, fromWad } from './utils';
+import BigNumber from 'bignumber.js';
 
 export default class ValidatorService extends PublicService {
   flipAuctionsLastSynced = 0;
@@ -209,28 +209,6 @@ export default class ValidatorService extends PublicService {
     console.log('dent in service', dent);
   }
 
-  async flopDent(id, size, amount) {
-    const lotSizeInWei = this.get('web3')._web3.utils.toWei(size.toString());
-    const bidAmountRad = toRad(amount);
-
-    console.log('id', id);
-    console.log('lotSizeInWei', lotSizeInWei);
-    console.log('bidAmountRad', bidAmountRad.toFixed());
-
-    const dent = await this._flop().dent(
-      id,
-      lotSizeInWei,
-      bidAmountRad.toFixed()
-    );
-    console.log('^^^dent in service', dent);
-  }
-
-  async flopDeal(id) {
-    console.log('id', id);
-    const deal = await this._flop().deal(id);
-    console.log('^^^flop deal in service', deal);
-  }
-
   async flipEthDeal(id) {
     console.log('id', id);
     const deal = await this._flipEthAdapter().deal(id);
@@ -241,6 +219,20 @@ export default class ValidatorService extends PublicService {
     console.log('id', id);
     const deal = await this._flipBatAdapter().deal(id);
     console.log('^^^bat deal in service', deal);
+  }
+
+  // FLOP
+  async flopDent(id, lotSize, bidAmount) {
+    const lotSizeInWei = toWei(lotSize).toFixed();
+    const bidAmountRad = toRad(bidAmount).toFixed();
+
+    const dent = await this._flop().dent(id, lotSizeInWei, bidAmountRad);
+  }
+
+  async flopDeal(id) {
+    console.log('id', id);
+    const deal = await this._flop().deal(id);
+    console.log('^^^flop deal in service', deal);
   }
 
   async getAuction(id) {

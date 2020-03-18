@@ -127,12 +127,13 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
   }
 
   const handleTendCTA = value => {
-    console.log('value', value);
     callFlopDent(auctionId, value, latestBid);
   };
 
-  const handleInstantBid = value => {
-    // callFlopDent(auctionId, value, latestBid);
+  const handleInstantBid = () => {
+    BigNumber.set({ DECIMAL_PLACES: 18, ROUNDING_MODE: BigNumber.ROUND_DOWN });
+    const minMkrAsk = new BigNumber(latestLot).div(stepSize);
+    callFlopDent(auctionId, minMkrAsk, latestBid);
   };
 
   /**
@@ -180,7 +181,7 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
                 disabled={auctionStatus !== IN_PROGRESS}
                 text={'Bid for the next minimum increment'}
                 buttonOnly
-                onSubmit={handleTendCTA}
+                onSubmit={handleInstantBid}
                 small={'Price 1 MKR = 300 DAI'}
                 actionText={'Bid Now'}
               />
@@ -202,16 +203,17 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
                 actionText={'Bid Now'}
               />
             ],
-            ['Deal Auction',  (
+            [
+              'Deal Auction',
               <MiniFormLayout
-              disabled={auctionStatus !== IN_PROGRESS}
-              text={'Call deal to end auction and mint MKR'}
-              buttonOnly
-              onSubmit={handleTendCTA}
-              small={''}
-              actionText={'Call deal'}
-            />
-            )]
+                disabled={auctionStatus !== IN_PROGRESS}
+                text={'Call deal to end auction and mint MKR'}
+                buttonOnly
+                onSubmit={handleTendCTA}
+                small={''}
+                actionText={'Call deal'}
+              />
+            ]
           ]}
         />
       }
