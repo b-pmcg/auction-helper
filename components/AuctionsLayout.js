@@ -4,7 +4,10 @@ import FlopAuctionBlock from './FlopAuctionBlock';
 import BigNumber from 'bignumber.js';
 import { Button, Grid, Input, Flex, Select } from 'theme-ui';
 
-const sortByBidPrice = auctions => {
+const ASCENDING = -1;
+const DESCENDING = 1;
+
+const sortByBidPrice = (auctions, direction) => {
   return Object.keys(auctions || [])
     .map(auctionId => {
       return auctions[auctionId].events.find(event => event.type !== 'Deal');
@@ -21,8 +24,8 @@ const sortByBidPrice = auctions => {
       };
     })
     .sort((prev, next) => {
-      if (next.bidPrice.gt(prev.bidPrice)) return 1;
-      if (next.bidPrice.lt(prev.bidPrice)) return -1;
+      if (next.bidPrice.gt(prev.bidPrice)) return 1 * direction;
+      if (next.bidPrice.lt(prev.bidPrice)) return -1 * direction;
       return 0;
     })
     .map(event => {
@@ -30,7 +33,7 @@ const sortByBidPrice = auctions => {
     });
 };
 
-const sortByTime = auctions => {
+const sortByTime = (auctions, direction) => {
   return Object.keys(auctions || []).sort((prevId, nextId) => {
     const now = new Date().getTime();
 
@@ -49,10 +52,10 @@ const sortByTime = auctions => {
       ? new BigNumber(0)
       : nextEndTime.minus(now);
   
-    if (prevTimeRemaining.eq(0) || nextTimeRemaining.eq(0)) return -1;
+    if (prevTimeRemaining.eq(0) || nextTimeRemaining.eq(0)) return -1 * direction;
     if (prevTimeRemaining.eq(nextTimeRemaining)) return 0;
-    else if (prevTimeRemaining.lt(nextTimeRemaining)) return -1;
-    else return 1;
+    else if (prevTimeRemaining.lt(nextTimeRemaining)) return -1 * direction;
+    else return 1 * direction;
   });
 };
 
@@ -82,18 +85,23 @@ const AuctionsLayout = ({ auctions, stepSize, type }) => {
 
   useEffect(() => {
     switch (sortCriteria) {
-      case 'byBidPrice': {
-        console.log('Sorted by Bid Price');
-        filterAuctionIds(filterById(sortByBidPrice(auctions), idFilter));
+      case 'byBidPriceDesc': {
+        filterAuctionIds(filterById(sortByBidPrice(auctions, DESCENDING), idFilter));
         break;
       }
-      case 'byTime': {
-        console.log('Sorted by Time Remaining');
-        filterAuctionIds(filterById(sortByTime(auctions), idFilter));
+      case 'byBidPriceAsc': {
+        filterAuctionIds(filterById(sortByBidPrice(auctions, ASCENDING), idFilter));
+        break;
+      }
+      case 'byTimeAsc': {
+        filterAuctionIds(filterById(sortByTime(auctions,ASCENDING), idFilter));
+        break;
+      }
+      case 'byTimeDesc': {
+        filterAuctionIds(filterById(sortByTime(auctions,DESCENDING), idFilter));
         break;
       }
       default: {
-        console.log('Sorted by Latest');
         filterAuctionIds(filterById(sortByLatest(auctions), idFilter));
       }
     }
@@ -146,8 +154,10 @@ const AuctionsLayout = ({ auctions, stepSize, type }) => {
           onChange={({ target: { value } }) => sortBy(value)}
         >
           <option value="byIdDescending">Sort By Id (Desc)</option>
-          <option value="byTime">Time Remaining</option>
-          <option value="byBidPrice">Current Bid Price</option>
+          <option value="byTimeDesc">Time Remaining (Desc)</option>
+          <option value="byTimeAsc">Time Remaining (Asc)</option>
+          <option value="byBidPriceDesc">Current Bid Price (Desc)</option>
+          <option value="byBidPriceAsc">Current Bid Price (Asc)</option>
         </Select>
       </Flex>
       <Grid gap={5}>
