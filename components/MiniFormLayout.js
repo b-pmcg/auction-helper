@@ -31,7 +31,7 @@ const MiniFormLayout = ({
   const [inputState, setInputState] = useState(undefined);
 
   const errors =
-    !inputState || !inputValidation
+    (!buttonOnly && !inputState) || !inputValidation
       ? []
       : inputValidation
           .map(([test, ...rest]) => {
@@ -40,7 +40,7 @@ const MiniFormLayout = ({
           .filter(([res]) => res);
   const errorMessages = errors.map(([res, text]) => text).filter(Boolean);
 
-  const _disabled = disabled || !inputState || !!errors.length;
+  const _disabled = disabled || (!buttonOnly && !inputState) || !!errors.length;
 
   const _onSubmit = () => {
     onSubmit(inputState);
