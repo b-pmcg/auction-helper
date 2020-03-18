@@ -10,3 +10,10 @@ export const CAN_BE_RESTARTED = 'canberestarted';
 export const TX_PENDING = 'pending';
 export const TX_SUCCESS = 'success';
 export const TX_ERROR = 'error';
+
+
+export const balanceRounding = {
+  zeroToOne: 6,
+  oneTo10K: 2,
+  over10K: 0
+};

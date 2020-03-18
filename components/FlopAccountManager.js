@@ -23,7 +23,7 @@ export default () => {
 
   daiBalance = formatBalance(daiBalance);
   vatDaiBalance = formatBalance(vatDaiBalance);
-  mkrBalance = formatBalance(mkrBalance);
+  // mkrBalance = formatBalance(mkrBalance);
 
   const {
     hasDaiAllowance,

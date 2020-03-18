@@ -1,5 +1,4 @@
-import theme from './theme';
-const { balanceRounding } = theme;
+import {balanceRounding} from './constants';
 
 export const getValueOrDefault = (value, def = '-') => {
   return value ? value : def;
