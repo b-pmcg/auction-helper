@@ -140,13 +140,13 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
 
   useEffect(() => {
     const timerID = setTimeout(async () => {
-      console.log('Syncing events for specific Auction', auctionId);
+      // console.log('Syncing events for specific Auction', auctionId);
       const newEvents = await maker
         .service('validator')
         .fetchFlopAuctionsByIds([auctionId]);
-      console.log(
-        `Auction with ID ${auctionId} has ${newEvents.length} Events`
-      );
+      // console.log(
+      //   `Auction with ID ${auctionId} has ${newEvents.length} Events`
+      // );
     }, 1000);
     return () => {
       clearInterval(timerID);

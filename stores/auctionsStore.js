@@ -1,4 +1,5 @@
 import create from 'zustand';
+import BigNumber from 'bignumber.js';
 import { AUCTION_DATA_FETCHER } from '../constants';
 
 const initialPageState = { pageStart: 0, pageEnd: 10, pageStep: 10 };
@@ -31,8 +32,10 @@ const filters = {
     return ids.slice(pageStart, pageEnd);
   },
 
-  byId: (state, id, ids) => {
-    return ids.filter(auctionId => (id ? auctionId.includes(id) : auctionId));
+  byId: (ids, id) => {
+    console.log(ids);
+    
+    return ids.filter(auctionId => (id ? auctionId === id : auctionId) );
   }
 };
 
@@ -104,16 +107,19 @@ const selectors = {
     const { pageEnd } = state;
     return pageEnd - (auctions || []).length < 0;
   },
+
   filteredAuctions: () => state => {
-    const { filterByIdValue, auctions } = state;
+    const { filterByIdValue, auctions, sortBy } = state;
     if (!auctions) return null;
 
-    let ids = Object.keys(auctions);
+    console.log(sortBy);
+    
 
-    if (filterByIdValue) {
-      ids = filters.byId(state, parseInt(filterByIdValue), ids);
-    }
+    console.log(sorters[sortBy](auctions));
 
+    let ids = Object.keys(auctions);   
+    ids = filters.byId(sorters[sortBy](auctions), filterByIdValue);       
+    
 
     return ids.map(id => auctions[id]);
   },
