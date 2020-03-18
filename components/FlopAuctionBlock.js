@@ -102,7 +102,7 @@ const byTimestamp = (prev, next) => {
 
 export default ({ events, id: auctionId, end, tic, stepSize }) => {
   const { maker } = useMaker();
-  const { callFlopDent } = useAuctionActions();
+  const { callFlopDent, callFlopDeal } = useAuctionActions();
   const [inputState, setInputState] = useState(new BigNumber(0));
 
   const sortedEvents = events.sort(byTimestamp); // DEAL , [...DENT] , KICK ->
@@ -139,14 +139,18 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
   };
 
   useEffect(() => {
-     const timerID = setTimeout(async () => {
-        console.log("Syncing events for specific Auction", auctionId)
-        const newEvents = await maker.service('validator').fetchFlopAuctionsByIds([auctionId]);
-        console.log(`Auction with ID ${auctionId} has ${newEvents.length} Events`)
-     }, 1000);
-     return () => {
-       clearInterval(timerID);
-     }     
+    const timerID = setTimeout(async () => {
+      console.log('Syncing events for specific Auction', auctionId);
+      const newEvents = await maker
+        .service('validator')
+        .fetchFlopAuctionsByIds([auctionId]);
+      console.log(
+        `Auction with ID ${auctionId} has ${newEvents.length} Events`
+      );
+    }, 1000);
+    return () => {
+      clearInterval(timerID);
+    };
   }, []);
 
   /**
@@ -216,13 +220,13 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
                 actionText={'Bid Now'}
               />
             ],
-            [
+            auctionStatus === CAN_BE_DEALT && [
               'Deal Auction',
               <MiniFormLayout
-                disabled={auctionStatus !== IN_PROGRESS}
+                disabled={auctionStatus !== CAN_BE_DEALT}
                 text={'Call deal to end auction and mint MKR'}
                 buttonOnly
-                onSubmit={handleTendCTA}
+                onSubmit={() => callFlopDeal(auctionId)}
                 small={''}
                 actionText={'Call deal'}
               />
