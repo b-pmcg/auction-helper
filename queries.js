@@ -2,7 +2,7 @@
 // The source might be: 
 // - flip auctions: [<FLIP_ETH_A_ADDRESS>, <FLIP_BAT_A_ADDRESS>]
 // - flop auctions: [<FLOP_ADDRESS>] 
-export const allAuctionEvents = `query allLeveragedEvents($sources: [String!], $fromDate: Datetime) {
+export const allAuctionEvents = `query allAuctionsEvents($sources: [String!], $fromDate: Datetime) {
   allLeveragedEvents(
   filter: { 
   and:[ 
@@ -45,7 +45,7 @@ export const allAuctionEvents = `query allLeveragedEvents($sources: [String!], $
 
 // The sources apply the same as in the query for all auctions
 // The difference is that we can specify auction ids and listen only for those events
-export const specificAuctionEvents = `query allLeveragedEvents($sources: [String!], $auctionIds: [BigFloat!], $fromDate: Datetime) {
+export const specificAuctionEvents = `query setAuctionsEvents($sources: [String!], $auctionIds: [BigFloat!], $fromDate: Datetime) {
   allLeveragedEvents(
   filter: { 
   and:[ 
