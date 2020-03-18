@@ -211,10 +211,9 @@ export default class ValidatorService extends PublicService {
     return this._flop().dent(id, lotSizeInWei, bidAmountRad, { promise });
   }
 
-  async flopDeal(id) {
-    console.log('id', id);
-    const deal = await this._flop().deal(id);
-    console.log('^^^flop deal in service', deal);
+  @tracksTransactions
+  async flopDeal(id, { promise }) {
+    return this._flop().deal(id, { promise });
   }
 
   async getAuction(id) {

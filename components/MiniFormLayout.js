@@ -14,10 +14,7 @@ import {
   Input,
   Flex
 } from 'theme-ui';
-
-const TX_PENDING = 'pending';
-const TX_SUCCESS = 'success';
-const TX_ERROR = 'error';
+import { TX_PENDING, TX_SUCCESS, TX_ERROR } from '../constants';
 
 const MiniFormLayout = ({
   text,
@@ -52,29 +49,20 @@ const MiniFormLayout = ({
     txState === TX_PENDING;
 
   const _onSubmit = () => {
-    //check if txObject is a promise before .listen
     const txObject = onSubmit(inputState);
     console.log('txObject', txObject);
     maker.service('transactionManager').listen(txObject, {
       initialized: () => {
         setTxState(TX_PENDING);
-        // dispatch({ type: 'initialized', payload: { sender } });
-        console.log('@@@init');
       },
       pending: tx => {
         setTxState(TX_PENDING);
-        console.log('@@@pending', tx);
-        // dispatch({ type: 'pending', payload: { hash: tx.hash } });
       },
       mined: tx => {
         setTxState(TX_SUCCESS);
-        console.log('@@@mined', tx);
-        // dispatch({ type: 'mined' });
       },
       error: (_, err) => {
         setTxState(TX_ERROR);
-        console.log('@@@err', err);
-        // dispatch({ type: 'error', payload: { msg: err.message } });
       }
     });
     return txObject;

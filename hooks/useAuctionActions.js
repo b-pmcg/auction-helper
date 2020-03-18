@@ -36,10 +36,10 @@ const useAuctionActions = () => {
     }
   }
 
-  async function callFlopDeal(auctionId) {
+  function callFlopDeal(auctionId) {
     console.log('auctionId', auctionId);
     try {
-      const flopDeal = await maker.service('validator').flopDeal(auctionId);
+      return maker.service('validator').flopDeal(auctionId);
     } catch (err) {
       window.alert(err);
     }
