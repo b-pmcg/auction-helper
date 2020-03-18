@@ -150,7 +150,7 @@ export default () => {
               />
               <BalanceOf
                 type={'MKR in your wallet'}
-                balance={`${mkrBalance} MKR`}
+                balance={`${mkrBalance && mkrBalance.toFixed(6)} MKR`}
                 shouldUnlock={!hasFlopHope}
                 unlock={
                   <Grid
