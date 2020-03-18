@@ -9,16 +9,21 @@ import BalanceOf from './BalanceOf';
 import AccountManagerLayout from '../components/AccountManagerLayout';
 import ActionTabs from './ActionTabs';
 import MiniFormLayout from './MiniFormLayout';
+import { formatBalance } from '../utils';
 
 export default () => {
   const { maker, web3Connected } = useMaker();
-  const {
+  let {
     vatDaiBalance,
     daiBalance,
     mkrBalance,
     joinDaiToAdapter,
     exitDaiFromAdapter
   } = useBalances();
+
+  daiBalance = formatBalance(daiBalance);
+  vatDaiBalance = formatBalance(vatDaiBalance);
+  mkrBalance = formatBalance(mkrBalance);
 
   const {
     hasDaiAllowance,
@@ -150,7 +155,7 @@ export default () => {
               />
               <BalanceOf
                 type={'MKR in your wallet'}
-                balance={`${mkrBalance && mkrBalance.toFixed(6)} MKR`}
+                balance={`${mkrBalance} MKR`}
                 shouldUnlock={!hasFlopHope}
                 unlock={
                   <Grid
