@@ -81,7 +81,7 @@ const AuctionsLayout = ({ auctions, stepSize, type }) => {
           defaultValue="Sort By Id (Desc)"
           onChange={({ target: { value } }) => setSortBy(value)}
         >
-          <option value="byIdDescending">Sort By Id (Desc)</option>
+          <option value="byLatest">Sort By Id (Desc)</option>
           <option value="byTime">Time Remaining</option>
           <option value="byBidPrice">Current Bid Price</option>
         </Select>

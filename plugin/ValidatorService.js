@@ -126,7 +126,7 @@ export default class ValidatorService extends PublicService {
       variables
     );
 
-    console.log('GraphQL response', response);
+    // console.log('GraphQL response', response);
     return response.allLeveragedEvents.nodes;
   }
 
@@ -136,7 +136,7 @@ export default class ValidatorService extends PublicService {
       gqlQueries.allAuctionEvents,
       variables
     );
-    console.log('GraphQL response', response);
+    // console.log('GraphQL response', response);
     return response.allLeveragedEvents.nodes;
   }
 

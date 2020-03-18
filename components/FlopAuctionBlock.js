@@ -140,13 +140,13 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
 
   useEffect(() => {
     const timerID = setTimeout(async () => {
-      console.log('Syncing events for specific Auction', auctionId);
+      // console.log('Syncing events for specific Auction', auctionId);
       const newEvents = await maker
         .service('validator')
         .fetchFlopAuctionsByIds([auctionId]);
-      console.log(
-        `Auction with ID ${auctionId} has ${newEvents.length} Events`
-      );
+      // console.log(
+      //   `Auction with ID ${auctionId} has ${newEvents.length} Events`
+      // );
     }, 1000);
     return () => {
       clearInterval(timerID);
@@ -199,7 +199,7 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
                 text={'Bid for the next minimum increment'}
                 buttonOnly
                 onSubmit={handleInstantBid}
-                small={'Price 1 MKR = 300 DAI'}
+                small={''}
                 actionText={'Bid Now'}
               />
             ],

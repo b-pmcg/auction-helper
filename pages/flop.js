@@ -22,7 +22,7 @@ const Index = () => {
   const stepSize = useAuctionsStore(state => state.flopStepSize);
   const [lastSynced, updateLastSynced] = useState(undefined);
   const [TOCAccepted, setTOCAccepted] = useState(false);
-  console.log(selectors.filteredAuctions(), 'laala');
+  // console.log(selectors.filteredAuctions(), 'laala');
   // const filteredAuctions = useAuctionsStore(selectors.filteredAuctions());
 
   useEffect(() => {
