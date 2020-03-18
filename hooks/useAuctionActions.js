@@ -32,7 +32,7 @@ const useAuctionActions = () => {
     try {
       const flopDent = await maker
         .service('validator')
-        .flopDent(auctionId, lotSize.toNumber(), bidAmount);
+        .flopDent(auctionId, lotSize, bidAmount);
     } catch (err) {
       window.alert(err);
     }

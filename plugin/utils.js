@@ -7,3 +7,11 @@ export const toRad = amount => {
 export const fromWad = amount => {
   return BigNumber(amount.toString()).shiftedBy(-18);
 };
+
+export const fromWei = amount => {
+  return BigNumber(amount).shiftedBy(-18);
+};
+
+export const toWei = amount => {
+  return BigNumber(amount).shiftedBy(18);
+};
