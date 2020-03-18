@@ -3,7 +3,6 @@ import { AUCTION_DATA_FETCHER } from '../constants';
 
 const initialPageState = { pageStart: 0, pageEnd: 10, pageStep: 10 };
 
-
 const transformEvents = async (auctions, service) => {
   const groupedEvents = _.groupBy(auctions, auction => auction.auctionId);
 
@@ -100,8 +99,9 @@ const selectors = {
     const { pageStep, pageStart } = state;
     return pageStart - pageStep >= 0;
   },
-  hasNextPageSelector: () => state => {
-    const { auctions, pageEnd } = state;
+
+  hasNextPageSelector: auctions => state => {
+    const { pageEnd } = state;
     return pageEnd - (auctions || []).length < 0;
   },
   filteredAuctions: () => state => {
@@ -114,11 +114,13 @@ const selectors = {
       ids = filters.byId(state, parseInt(filterByIdValue), ids);
     }
 
-    console.log(filterByIdValue, ids, 'lalala')
 
-    const byPage = filters.byPage(state, ids);
+    return ids.map(id => auctions[id]);
+  },
 
-    return byPage.map(id => auctions[id]);
+  auctionsPage: auctions => state => {
+    if (!auctions) return null;
+    return filters.byPage(state, auctions);
   }
 };
 
@@ -143,7 +145,7 @@ const [useAuctionsStore] = create((set, get) => ({
   prevPage: () => {
     const { pageStart, pageEnd, pageStep } = get();
 
-    updatePage({
+    set({
       pageStart: pageStart - pageStep,
       pageEnd: pageEnd - pageStep
     });

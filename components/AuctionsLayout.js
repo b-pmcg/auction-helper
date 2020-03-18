@@ -3,21 +3,25 @@ import FlipAuctionBlock from './FlipAuctionBlock';
 import FlopAuctionBlock from './FlopAuctionBlock';
 import BigNumber from 'bignumber.js';
 import { Button, Grid, Input, Flex, Select } from 'theme-ui';
-import useAuctionsStore, {selectors} from '../stores/auctionsStore';
-
+import useAuctionsStore, { selectors } from '../stores/auctionsStore';
 
 const AuctionsLayout = ({ auctions, stepSize, type }) => {
-  const {hasPrevPageSelector, hasNextPageSelector} = selectors;
+  const { hasPrevPageSelector, hasNextPageSelector } = selectors;
   const next = useAuctionsStore(state => state.nextPage);
   const prev = useAuctionsStore(state => state.prevPage);
   const filteredAuctions = useAuctionsStore(selectors.filteredAuctions());
-
+  const auctionsPage = useAuctionsStore(
+    selectors.auctionsPage(filteredAuctions)
+  );
 
   const hasPrev = useAuctionsStore(hasPrevPageSelector());
-  const hasNext = useAuctionsStore(hasNextPageSelector());
+  const hasNext = useAuctionsStore(hasNextPageSelector(filteredAuctions));
   const sortCriteria = useAuctionsStore(state => state.sortBy);
   const setSortBy = useAuctionsStore(state => state.setSortBy);
-  const setFilterByIdValue = useAuctionsStore(state => state.setFilterByIdValue);
+  const setFilterByIdValue = useAuctionsStore(
+    state => state.setFilterByIdValue
+  );
+
   const AuctionBlockLayout =
     type === 'flip' ? FlipAuctionBlock : FlopAuctionBlock;
   const initialPage = { pageStart: 0, pageEnd: 10, pageStep: 10 };
@@ -49,7 +53,6 @@ const AuctionsLayout = ({ auctions, stepSize, type }) => {
   //     }
   //   }
   // }, [sortCriteria, idFilter]);
-
 
   return (
     <>
@@ -84,7 +87,7 @@ const AuctionsLayout = ({ auctions, stepSize, type }) => {
         </Select>
       </Flex>
       <Grid gap={5}>
-        {filteredAuctions.map(({ events, end, tic, auctionId }) => {
+        {auctionsPage.map(({ events, end, tic, auctionId }) => {
           // const { events, end, tic } = auctions[auctionId];
           return (
             <AuctionBlockLayout
