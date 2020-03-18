@@ -48,7 +48,8 @@ const sortByTime = auctions => {
     const nextTimeRemaining = nextEndTime.lte(now)
       ? new BigNumber(0)
       : nextEndTime.minus(now);
-
+  
+    if (prevTimeRemaining.eq(0) || nextTimeRemaining.eq(0)) return -1;
     if (prevTimeRemaining.eq(nextTimeRemaining)) return 0;
     else if (prevTimeRemaining.lt(nextTimeRemaining)) return -1;
     else return 1;
