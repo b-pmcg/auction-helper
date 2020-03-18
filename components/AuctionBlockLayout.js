@@ -61,7 +61,7 @@ export default ({
 
       setTimer(days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's ');
 
-      if (distance < 0) {
+      if (distance === 0) {
         clearInterval(timerId);
       }
     }, 1000);
