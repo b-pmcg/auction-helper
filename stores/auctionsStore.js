@@ -33,9 +33,7 @@ const filters = {
   },
 
   byId: (ids, id) => {
-    console.log(ids);
-    
-    return ids.filter(auctionId => (id ? auctionId === id : auctionId) );
+    return ids.filter(auctionId => (id ? auctionId === id : auctionId));
   }
 };
 
@@ -112,14 +110,8 @@ const selectors = {
     const { filterByIdValue, auctions, sortBy } = state;
     if (!auctions) return null;
 
-    console.log(sortBy);
-    
-
-    console.log(sorters[sortBy](auctions));
-
-    let ids = Object.keys(auctions);   
-    ids = filters.byId(sorters[sortBy](auctions), filterByIdValue);       
-    
+    let ids = Object.keys(auctions);
+    ids = filters.byId(sorters[sortBy](auctions), filterByIdValue);
 
     return ids.map(id => auctions[id]);
   },

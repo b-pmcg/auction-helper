@@ -58,6 +58,7 @@ const MiniFormLayout = ({
 
   const _onSubmit = () => {
     const txObject = onSubmit(inputState);
+    setTxErrorMsg(undefined)
     maker.service('transactionManager').listen(txObject, {
       initialized: () => {
         setTxState(TX_PENDING);
@@ -70,6 +71,7 @@ const MiniFormLayout = ({
       mined: tx => {
         setTxState(TX_SUCCESS);
         setTxMsg('Transaction Sucessful!')
+        setInputState(undefined)
         if (onTxFinished) onTxFinished();
       },
       error: (_, err) => {

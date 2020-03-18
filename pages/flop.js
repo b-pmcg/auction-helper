@@ -11,7 +11,7 @@ import IntroInfoCard from '../components/IntroInfoCard';
 import IntroMDX from '../text/flopIntro.mdx';
 import Footer from '../components/Footer';
 import TermsConfirm from '../components/TermsConfirm';
-import useAuctionsStore, {selectors} from '../stores/auctionsStore';
+import useAuctionsStore, { selectors } from '../stores/auctionsStore';
 
 const Index = () => {
   const { maker, web3Connected } = useMaker();

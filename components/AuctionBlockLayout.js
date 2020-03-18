@@ -1,10 +1,11 @@
 /** @jsx jsx */
 
 import React, { useState, useEffect, useLayoutEffect } from 'react';
-import { Heading, jsx, Grid, Box, Flex } from 'theme-ui';
+import { Heading, jsx, Grid, Box, Flex, Text } from 'theme-ui';
 
 import EventsList from './AuctionEventsList';
 import CollapseToggle from './CollapseToggle';
+
 import {
   IN_PROGRESS,
   COMPLETED,
@@ -21,11 +22,11 @@ export default ({
   auctionEvents,
   actions,
   forceExpanded,
-  hasDent
+  hasDent,
+  pill
 }) => {
   const [timer, setTimer] = useState([]);
   const [collapsed, setCollapsed] = useState(false);
-
   const auctionStatusHeadings = {
     [COMPLETED]: 'Auction Completed',
     [IN_PROGRESS]: `Time remaining: ${timer}`,
@@ -79,8 +80,6 @@ export default ({
       sx={{
         variant: 'styles.roundedCard',
         p: 0
-        // mb: 6
-        // p: 6,
       }}
     >
       <Flex
@@ -97,6 +96,7 @@ export default ({
         <Heading as="h5" variant="h2">
           Auction ID: {auctionId}
         </Heading>
+        {!pill ? null : <Box ml="4">{pill}</Box>}
         {collapsed ? (
           <Heading
             as="h5"

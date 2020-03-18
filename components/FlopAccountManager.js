@@ -227,27 +227,7 @@ export default () => {
                       </Box>
                     </Grid>
                   ]
-                  // hasMkrAllowance && [
-                  //   'Withdraw MKR',
-                  //   <Grid>
-                  //     <Box
-                  //       sx={{
-                  //         bg: 'background',
-                  //         p: 4,
-                  //         borderRadius: 6
-                  //       }}
-                  //     >
-                  //       <MiniFormLayout
-                  //         text={'Withdraw MKR from the Adapter'}
-                  //         disabled={false}
-                  //         inputUnit="MKR"
-                  //         onSubmit={() => {}}
-                  //         small={''}
-                  //         actionText={'Withdraw'}
-                  //       />
-                  //     </Box>
-                  //   </Grid>
-                  // ]
+                  
                 ]}
               />
             </Grid>

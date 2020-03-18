@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import FlipAuctionBlock from './FlipAuctionBlock';
 import FlopAuctionBlock from './FlopAuctionBlock';
-import BigNumber from 'bignumber.js';
 import { Button, Grid, Input, Flex, Select } from 'theme-ui';
 import useAuctionsStore, { selectors } from '../stores/auctionsStore';
 
@@ -13,7 +12,6 @@ const AuctionsLayout = ({ auctions, stepSize, type }) => {
   const auctionsPage = useAuctionsStore(
     selectors.auctionsPage(filteredAuctions)
   );
-
   const hasPrev = useAuctionsStore(hasPrevPageSelector());
   const hasNext = useAuctionsStore(hasNextPageSelector(filteredAuctions));
   const sortCriteria = useAuctionsStore(state => state.sortBy);

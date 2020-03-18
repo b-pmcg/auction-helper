@@ -17,7 +17,6 @@ import {
 } from '../constants';
 import useAuctionsStore, { selectors } from '../stores/auctionsStore';
 
-
 const AuctionEvent = ({
   type,
   ilk,
@@ -36,18 +35,19 @@ const AuctionEvent = ({
     ['Current Bid Price', currentBid, { fontWeight: 600 }],
     // ['Price', price],
     ['Timestamp', timestamp],
-    [
-      'Tx',
-      <a href={`https://etherscan.io/tx/${tx}`} target="_blank">
-        {' '}
-        {tx.slice(0, 7) + '...' + tx.slice(-4)}
-      </a>
-    ],
+
     [
       'Sender',
       <a href={`https://etherscan.io/address/${sender}`} target="_blank">
         {' '}
         {sender.slice(0, 7) + '...' + sender.slice(-4)}
+      </a>
+    ],
+    [
+      'Tx',
+      <a href={`https://etherscan.io/tx/${tx}`} target="_blank">
+        {' '}
+        {tx.slice(0, 7) + '...' + tx.slice(-4)}
       </a>
     ]
   ];
@@ -102,6 +102,22 @@ const byTimestamp = (prev, next) => {
   return 0;
 };
 
+const PillInfo = ({ bg = 'primary', color = 'white', text }) => {
+  return (
+    <Box
+      sx={{
+        py: 1,
+        px: 4,
+        borderRadius: 12,
+        bg,
+        color
+      }}
+    >
+      <Text variant="caps">{text}</Text>
+    </Box>
+  );
+};
+
 export default ({ events, id: auctionId, end, tic, stepSize }) => {
   const { maker } = useMaker();
   const { callFlopDent, callFlopDeal } = useAuctionActions();
@@ -109,7 +125,14 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
   const [inputState, setInputState] = useState(new BigNumber(0));
 
   const sortedEvents = events.sort(byTimestamp); // DEAL , [...DENT] , KICK ->
+  const chickenDinner = maker.currentAddress() === sortedEvents[0].fromAddress;
 
+  console.log(
+    chickenDinner,
+    maker.currentAddress(),
+    sortedEvents[0].sender,
+    sortedEvents[0]
+  );
   const { bid: latestBid, lot: latestLot } = sortedEvents.find(
     event => event.type != 'Deal'
   );
@@ -167,9 +190,7 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
    * - OR when the auction duration (tau) has passed.
    */
   // const bidDisabled = state.error;
-  const mainValidation = [
-
-  ];
+  const mainValidation = [];
 
   const bidValidationTests = [
     // [() => !web3Connected],
@@ -193,6 +214,7 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
       }}
       auctionStatus={auctionStatus}
       auctionId={auctionId}
+      pill={!chickenDinner ? null : <PillInfo text="Current Winning Bidder" />}
       hasDent={hasDent}
       end={end}
       tic={tic}
