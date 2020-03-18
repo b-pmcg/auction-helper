@@ -64,7 +64,7 @@ const TermsConfirm = ({ onConfirm, confirmed }) => {
                   display: 'inline'
                 }}
               >
-                Terms and Conditions
+                Terms of Service
               </Link>
             </Text>
           </Label>

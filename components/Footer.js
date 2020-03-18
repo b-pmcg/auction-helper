@@ -36,7 +36,7 @@ const Footer = () => {
             pr: 0
           }}
         >
-          Terms
+          Terms of Service
         </NavLink>
       </Link>
     </Flex>
