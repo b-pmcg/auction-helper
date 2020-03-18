@@ -15,6 +15,10 @@ import {
   Flex
 } from 'theme-ui';
 
+const TX_PENDING = 'pending';
+const TX_SUCCESS = 'success';
+const TX_ERROR = 'error';
+
 const MiniFormLayout = ({
   text,
   disabled,
@@ -29,6 +33,7 @@ const MiniFormLayout = ({
   small
 }) => {
   const [inputState, setInputState] = useState(undefined);
+  const [txState, setTxState] = useState(undefined);
 
   const errors =
     (!buttonOnly && !inputState) || !inputValidation
@@ -40,10 +45,39 @@ const MiniFormLayout = ({
           .filter(([res]) => res);
   const errorMessages = errors.map(([res, text]) => text).filter(Boolean);
 
-  const _disabled = disabled || (!buttonOnly && !inputState) || !!errors.length;
+  const _disabled =
+    disabled ||
+    (!buttonOnly && !inputState) ||
+    !!errors.length ||
+    txState === TX_PENDING;
 
   const _onSubmit = () => {
-    onSubmit(inputState);
+    //check if txObject is a promise before .listen
+    const txObject = onSubmit(inputState);
+    console.log('txObject', txObject);
+    maker.service('transactionManager').listen(txObject, {
+      initialized: () => {
+        setTxState(TX_PENDING);
+        // dispatch({ type: 'initialized', payload: { sender } });
+        console.log('@@@init');
+      },
+      pending: tx => {
+        setTxState(TX_PENDING);
+        console.log('@@@pending', tx);
+        // dispatch({ type: 'pending', payload: { hash: tx.hash } });
+      },
+      mined: tx => {
+        setTxState(TX_SUCCESS);
+        console.log('@@@mined', tx);
+        // dispatch({ type: 'mined' });
+      },
+      error: (_, err) => {
+        setTxState(TX_ERROR);
+        console.log('@@@err', err);
+        // dispatch({ type: 'error', payload: { msg: err.message } });
+      }
+    });
+    return txObject;
   };
 
   const handleInputChange = event => {
@@ -112,7 +146,7 @@ const MiniFormLayout = ({
           disabled={_disabled}
           onClick={_onSubmit}
         >
-          {actionText}
+          {txState === TX_PENDING ? 'Waiting for Transaction' : actionText}
         </Button>
       </Flex>
       {!errorMessages

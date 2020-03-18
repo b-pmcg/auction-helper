@@ -1,7 +1,8 @@
 import { PublicService } from '@makerdao/services-core';
+import tracksTransactions from './tracksTransactions';
 import BigNumber from 'bignumber.js';
 import { toRad, fromWei, toWei, fromWad } from './utils';
-import * as gqlQueries  from '../queries';
+import * as gqlQueries from '../queries';
 
 export default class ValidatorService extends PublicService {
   flipAuctionsLastSynced = 0;
@@ -117,7 +118,7 @@ export default class ValidatorService extends PublicService {
       sources: [this.flopAddress],
       auctionIds: ids,
       fromDate: queryDate
-    }
+    };
 
     const response = await this.getQueryResponse(
       this._cacheAPI,
@@ -129,7 +130,7 @@ export default class ValidatorService extends PublicService {
     return response.allLeveragedEvents.nodes;
   }
 
-  async getAllAuctions(variables) {    
+  async getAllAuctions(variables) {
     const response = await this.getQueryResponse(
       this._cacheAPI,
       gqlQueries.allAuctionEvents,
@@ -202,11 +203,12 @@ export default class ValidatorService extends PublicService {
   }
 
   // FLOP
-  async flopDent(id, lotSize, bidAmount) {
+  @tracksTransactions
+  async flopDent(id, lotSize, bidAmount, { promise }) {
     const lotSizeInWei = toWei(lotSize).toFixed();
     const bidAmountRad = toRad(bidAmount).toFixed();
 
-    const dent = await this._flop().dent(id, lotSizeInWei, bidAmountRad);
+    return this._flop().dent(id, lotSizeInWei, bidAmountRad, { promise });
   }
 
   async flopDeal(id) {

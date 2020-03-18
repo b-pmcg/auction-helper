@@ -135,7 +135,7 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
   const handleInstantBid = () => {
     BigNumber.set({ DECIMAL_PLACES: 18, ROUNDING_MODE: BigNumber.ROUND_DOWN });
     const minMkrAsk = new BigNumber(latestLot).div(stepSize);
-    callFlopDent(auctionId, minMkrAsk, latestBid);
+    return callFlopDent(auctionId, minMkrAsk, latestBid);
   };
 
   useEffect(() => {
