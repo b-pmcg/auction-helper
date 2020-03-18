@@ -13,6 +13,7 @@ import {
 } from '../constants';
 
 export default ({
+  latestEvent,
   auctionId,
   end,
   tic,
@@ -96,13 +97,26 @@ export default ({
         <Heading as="h5" variant="h2">
           Auction ID: {auctionId}
         </Heading>
+        {collapsed ? (
+          <Heading
+            as="h5"
+            variant="h2"
+            sx={{
+              fontSize: 4,
+              ml: [0, 'auto'],
+              mr: [0, 20]
+            }}
+          >
+            {latestEvent.bid.toFixed(2)} DAI
+          </Heading>
+        ) : null}
         <Heading
           as="h5"
           variant="h2"
           sx={{
             pt: [2, 0],
             fontSize: 4,
-            ml: [0, 'auto'],
+            ml: collapsed ? 0 : [0, 'auto'],
             color: auctionStatusColors[auctionStatus]
           }}
         >

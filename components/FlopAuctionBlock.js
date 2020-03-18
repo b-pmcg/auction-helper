@@ -156,6 +156,10 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
 
   return (
     <AuctionBlockLayout
+      latestEvent={{
+        bid: new BigNumber(latestBid),
+        lot: new BigNumber(latestLot)
+      }}
       auctionStatus={auctionStatus}
       auctionId={auctionId}
       hasDent={hasDent}
