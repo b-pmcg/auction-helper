@@ -171,7 +171,7 @@ const [useAuctionsStore] = create((set, get) => ({
 
   fetchSet: async ids => {
     const service = maker.service(AUCTION_DATA_FETCHER);
-    const auctions = await service.fetchFlopAuctions();
+    const auctions = await service.fetchFlopAuctionsByIds(ids);
     const transformedAuctions = await transformEvents(auctions, service);
 
     const currentState = get().auctions || {};
