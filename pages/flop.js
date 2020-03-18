@@ -6,47 +6,30 @@ import * as _ from 'lodash';
 import { Text, jsx, Flex, Heading, Grid, Box, Spinner, Button } from 'theme-ui';
 import AccountManager from '../components/FlopAccountManager';
 import GuttedLayout from '../components/GuttedLayout';
-import { AUCTION_DATA_FETCHER } from '../constants';
 import AuctionsLayout from '../components/AuctionsLayout';
 import IntroInfoCard from '../components/IntroInfoCard';
 import IntroMDX from '../text/flopIntro.mdx';
 import Footer from '../components/Footer';
 import TermsConfirm from '../components/TermsConfirm';
+import useAuctionsStore, {selectors} from '../stores/auctionsStore';
 
 const Index = () => {
   const { maker, web3Connected } = useMaker();
-  const [auctions, setAuctions] = useState(null);
+  const auctions = useAuctionsStore(state => state.auctions);
+  const fetchAuctions = useAuctionsStore(state => state.fetchAll);
+  const fetchAuctionsSet = useAuctionsStore(state => state.fetchSet);
+  const fetchFlopStepSize = useAuctionsStore(state => state.fetchFlopStepSize);
+  const stepSize = useAuctionsStore(state => state.flopStepSize);
   const [lastSynced, updateLastSynced] = useState(undefined);
   const [TOCAccepted, setTOCAccepted] = useState(false);
-  const [stepSize, setStepSize] = useState(null);
-
-  // console.log('mcd', IntroMDX)
-  async function fetchAuctions() {
-    const service = maker.service(AUCTION_DATA_FETCHER);
-
-    const auctions = await service.fetchFlopAuctions();
-    const groupedEvents = _.groupBy(auctions, auction => auction.auctionId);
-    setStepSize(await service.getFlopStepSize());
-
-    const auctionsData = {};
-
-    Promise.all(
-      Object.keys(groupedEvents).map(async id => {
-        const { end, tic } = await service.getFlopDuration(id);
-
-        auctionsData[id.toString()] = {
-          end,
-          tic,
-          events: groupedEvents[id]
-        };
-      })
-    ).then(() => setAuctions(auctionsData));
-  }
+  console.log(selectors.filteredAuctions(), 'laala');
+  // const filteredAuctions = useAuctionsStore(selectors.filteredAuctions());
 
   useEffect(() => {
     if (web3Connected) {
       if (!auctions) {
-        fetchAuctions();
+        fetchAuctions(maker);
+        fetchFlopStepSize(maker);
       }
     }
   }, [web3Connected]);

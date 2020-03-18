@@ -3,120 +3,53 @@ import FlipAuctionBlock from './FlipAuctionBlock';
 import FlopAuctionBlock from './FlopAuctionBlock';
 import BigNumber from 'bignumber.js';
 import { Button, Grid, Input, Flex, Select } from 'theme-ui';
+import useAuctionsStore, {selectors} from '../stores/auctionsStore';
 
-const sortByBidPrice = auctions => {
-  return Object.keys(auctions || [])
-    .map(auctionId => {
-      return auctions[auctionId].events.find(event => event.type !== 'Deal');
-    })
-    .map(event => {
-      const bid = new BigNumber(event.bid);
-      const lot = new BigNumber(event.lot);
-      const bidPrice = lot.eq(new BigNumber(0)) ? lot : bid.div(lot);
-      return {
-        ...event,
-        bid,
-        lot,
-        bidPrice
-      };
-    })
-    .sort((prev, next) => {
-      if (next.bidPrice.gt(prev.bidPrice)) return 1;
-      if (next.bidPrice.lt(prev.bidPrice)) return -1;
-      return 0;
-    })
-    .map(event => {
-      return event.auctionId;
-    });
-};
-
-const sortByTime = auctions => {
-  return Object.keys(auctions || []).sort((prevId, nextId) => {
-    const now = new Date().getTime();
-
-    const prev = auctions[prevId];
-    const next = auctions[nextId];
-
-    const prevTicEndMin = prev.tic.lt(prev.end) ? prev.tic : prev.end;
-    const prevEndTime = prev.tic.eq(0) ? prev.end : prevTicEndMin;
-    const prevTimeRemaining = prevEndTime.lte(now)
-      ? new BigNumber(0)
-      : prevEndTime.minus(now);
-
-    const nextTicEndMin = next.tic.lt(next.end) ? next.tic : next.end;
-    const nextEndTime = next.tic.eq(0) ? next.end : nextTicEndMin;
-    const nextTimeRemaining = nextEndTime.lte(now)
-      ? new BigNumber(0)
-      : nextEndTime.minus(now);
-  
-    if (prevTimeRemaining.eq(0) || nextTimeRemaining.eq(0)) return -1;
-    if (prevTimeRemaining.eq(nextTimeRemaining)) return 0;
-    else if (prevTimeRemaining.lt(nextTimeRemaining)) return -1;
-    else return 1;
-  });
-};
-
-const sortByLatest = auctions => {
-  return Object.keys(auctions || []).reverse();
-};
-
-const filterById = (ids, id) => {
-  return ids.filter(auctionId => (id ? auctionId.includes(id) : auctionId));
-};
 
 const AuctionsLayout = ({ auctions, stepSize, type }) => {
+  const {hasPrevPageSelector, hasNextPageSelector} = selectors;
+  const next = useAuctionsStore(state => state.nextPage);
+  const prev = useAuctionsStore(state => state.prevPage);
+  const filteredAuctions = useAuctionsStore(selectors.filteredAuctions());
+
+
+  const hasPrev = useAuctionsStore(hasPrevPageSelector());
+  const hasNext = useAuctionsStore(hasNextPageSelector());
+  const sortCriteria = useAuctionsStore(state => state.sortBy);
+  const setSortBy = useAuctionsStore(state => state.setSortBy);
+  const setFilterByIdValue = useAuctionsStore(state => state.setFilterByIdValue);
   const AuctionBlockLayout =
     type === 'flip' ? FlipAuctionBlock : FlopAuctionBlock;
-  const initialPage = { start: 0, end: 10, step: 10 };
+  const initialPage = { pageStart: 0, pageEnd: 10, pageStep: 10 };
 
   // hooks
   const [idFilter, updateFilterById] = useState(undefined);
   const [auctionIds, filterAuctionIds] = useState([]);
-  const [sortCriteria, sortBy] = useState(undefined);
+  // const [sortCriteria, sortBy] = useState(undefined);
   const [page, updatePage] = useState(initialPage);
 
   // effects
-  useEffect(() => {
-    updatePage(initialPage);
-  }, [auctionIds]);
 
-  useEffect(() => {
-    switch (sortCriteria) {
-      case 'byBidPrice': {
-        console.log('Sorted by Bid Price');
-        filterAuctionIds(filterById(sortByBidPrice(auctions), idFilter));
-        break;
-      }
-      case 'byTime': {
-        console.log('Sorted by Time Remaining');
-        filterAuctionIds(filterById(sortByTime(auctions), idFilter));
-        break;
-      }
-      default: {
-        console.log('Sorted by Latest');
-        filterAuctionIds(filterById(sortByLatest(auctions), idFilter));
-      }
-    }
-  }, [sortCriteria, idFilter]);
+  console.log(filteredAuctions, 'fultereddd');
+  // useEffect(() => {
+  //   switch (sortCriteria) {
+  //     case 'byBidPrice': {
+  //       console.log('Sorted by Bid Price');
+  //       filterAuctionIds(filterById(sortByBidPrice(auctions), idFilter));
+  //       break;
+  //     }
+  //     case 'byTime': {
+  //       console.log('Sorted by Time Remaining');
+  //       filterAuctionIds(filterById(sortByTime(auctions), idFilter));
+  //       break;
+  //     }
+  //     default: {
+  //       console.log('Sorted by Latest');
+  //       filterAuctionIds(filterById(sortByLatest(auctions), idFilter));
+  //     }
+  //   }
+  // }, [sortCriteria, idFilter]);
 
-  const next = () => {
-    updatePage({
-      ...page,
-      start: page.start + page.step,
-      end: page.end + page.step
-    });
-  };
-
-  const prev = () => {
-    updatePage({
-      ...page,
-      start: page.start - page.step,
-      end: page.end - page.step
-    });
-  };
-
-  const hasPrev = page.start - page.step >= 0;
-  const hasNext = page.end - (auctionIds || []).length < 0;
 
   return (
     <>
@@ -134,7 +67,7 @@ const AuctionsLayout = ({ auctions, stepSize, type }) => {
             maxWidth: ['100%', '180px']
           }}
           placeholder="Filter by ID"
-          onChange={({ target: { value } }) => updateFilterById(value)}
+          onChange={({ target: { value } }) => setFilterByIdValue(value)}
         />
         <Select
           sx={{
@@ -143,7 +76,7 @@ const AuctionsLayout = ({ auctions, stepSize, type }) => {
             bg: 'white'
           }}
           defaultValue="Sort By Id (Desc)"
-          onChange={({ target: { value } }) => sortBy(value)}
+          onChange={({ target: { value } }) => setSortBy(value)}
         >
           <option value="byIdDescending">Sort By Id (Desc)</option>
           <option value="byTime">Time Remaining</option>
@@ -151,8 +84,8 @@ const AuctionsLayout = ({ auctions, stepSize, type }) => {
         </Select>
       </Flex>
       <Grid gap={5}>
-        {auctionIds.slice(page.start, page.end).map(auctionId => {
-          const { events, end, tic } = auctions[auctionId];
+        {filteredAuctions.map(({ events, end, tic, auctionId }) => {
+          // const { events, end, tic } = auctions[auctionId];
           return (
             <AuctionBlockLayout
               stepSize={stepSize}
