@@ -201,7 +201,17 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
                 inputValidation={bidValidationTests}
                 actionText={'Bid Now'}
               />
-            ]
+            ],
+            ['Deal Auction',  (
+              <MiniFormLayout
+              disabled={auctionStatus !== IN_PROGRESS}
+              text={'Call deal to end auction and mint MKR'}
+              buttonOnly
+              onSubmit={handleTendCTA}
+              small={''}
+              actionText={'Call deal'}
+            />
+            )]
           ]}
         />
       }
