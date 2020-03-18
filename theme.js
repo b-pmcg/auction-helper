@@ -242,5 +242,10 @@ export default {
     //   textAlign: 'left',
     //   borderBottomStyle: 'solid',
     // },
+  },
+  balanceRounding: {
+    zeroToOne: 6,
+    oneTo10K: 2,
+    over10K: 0
   }
 };

@@ -93,7 +93,7 @@ const Index = () => {
                   variant="pill"
                   sx={{ ml: 5 }}
                   disabled={!web3Connected}
-                  onClick={() => fetchAuctions(true)}
+                  onClick={() => fetchAuctions(maker)}
                 >
                   Sync
                 </Button>
