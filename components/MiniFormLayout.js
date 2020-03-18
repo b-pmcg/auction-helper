@@ -15,6 +15,7 @@ import {
   Flex
 } from 'theme-ui';
 import { TX_PENDING, TX_SUCCESS, TX_ERROR } from '../constants';
+import useAuctionsStore, { selectors } from '../stores/auctionsStore';
 
 const MiniFormLayout = ({
   text,
@@ -29,6 +30,7 @@ const MiniFormLayout = ({
   error,
   small
 }) => {
+  const fetchAuctions = useAuctionsStore(state => state.fetchAll);
   const [inputState, setInputState] = useState(undefined);
   const [txState, setTxState] = useState(undefined);
 
@@ -50,7 +52,6 @@ const MiniFormLayout = ({
 
   const _onSubmit = () => {
     const txObject = onSubmit(inputState);
-    console.log('txObject', txObject);
     maker.service('transactionManager').listen(txObject, {
       initialized: () => {
         setTxState(TX_PENDING);
@@ -60,6 +61,7 @@ const MiniFormLayout = ({
       },
       mined: tx => {
         setTxState(TX_SUCCESS);
+        fetchAuctions(maker);
       },
       error: (_, err) => {
         setTxState(TX_ERROR);
