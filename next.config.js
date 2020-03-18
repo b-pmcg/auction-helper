@@ -5,9 +5,16 @@ const withMDX = require('@next/mdx')();
 module.exports = withMDX({
   // assetPrefix: './',
   // exportTrailingSlash: true,
-
+  publicRuntimeConfig: {
+    INFURA_KEY: process.env.INFURA_KEY,
+    kovan: {
+      CACHE_API: process.env.KOVAN_CACHE_API
+    },
+    mainnet: {
+      CACHE_API: process.env.CACHE_API
+    },
+  },  
   env: {
-    IPFS: process.env.IPFS,
-    INFURA_KEY: '6ba7a95268bf4ccda9bf1373fe582b43'
+    IPFS: process.env.IPFS,    
   }
 });
