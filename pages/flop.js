@@ -11,7 +11,8 @@ import IntroInfoCard from '../components/IntroInfoCard';
 import IntroMDX from '../text/flopIntro.mdx';
 import Footer from '../components/Footer';
 import TermsConfirm from '../components/TermsConfirm';
-import useAuctionsStore, { selectors } from '../stores/auctionsStore';
+import Moment from 'react-moment';
+import useAuctionsStore, {selectors} from '../stores/auctionsStore';
 
 const Index = () => {
   const { maker, web3Connected } = useMaker();
@@ -20,10 +21,8 @@ const Index = () => {
   const fetchAuctionsSet = useAuctionsStore(state => state.fetchSet);
   const fetchFlopStepSize = useAuctionsStore(state => state.fetchFlopStepSize);
   const stepSize = useAuctionsStore(state => state.flopStepSize);
-  const [lastSynced, updateLastSynced] = useState(undefined);
   const [TOCAccepted, setTOCAccepted] = useState(false);
-  // console.log(selectors.filteredAuctions(), 'laala');
-  // const filteredAuctions = useAuctionsStore(selectors.filteredAuctions());
+  const [{isSyncing, lastSynced}, sync] = useState({})
 
   useEffect(() => {
     if (web3Connected) {
@@ -33,6 +32,15 @@ const Index = () => {
       }
     }
   }, [web3Connected]);
+
+  useEffect(() => {
+      if(isSyncing) {
+        sync({
+          lastSynced,
+          isSyncing:false
+        })
+      } ;
+  }, [auctions])
 
   return (
     <GuttedLayout>
@@ -89,14 +97,24 @@ const Index = () => {
                 }}
               >
                 <Text variant="h2">Active Auctions</Text>
-                <Button
-                  variant="pill"
-                  sx={{ ml: 5 }}
-                  disabled={!web3Connected}
-                  onClick={() => fetchAuctions(maker)}
-                >
-                  Sync
-                </Button>
+                {
+                  isSyncing 
+                    ? <Spinner
+                        sx={{
+                          height: 7,
+                          ml: 5
+                        }}
+                      />
+                    : <Button
+                        variant="pill"
+                        sx={{ ml: 5 }}
+                        disabled={!web3Connected}
+                        onClick={() => { sync({isSyncing: true, lastSynced: new Date()}); fetchAuctions(maker) }}
+                       >
+                      Sync
+                    </Button>
+                }
+               
                 {lastSynced && (
                   <Text title={lastSynced} sx={{ ml: 5, fontSize: 2 }}>
                     (Last synced: <Moment local>{lastSynced.getTime()}</Moment>)
