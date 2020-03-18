@@ -35,13 +35,13 @@ const Index = () => {
           <title>Maker Auctions</title>
         </Head>
 
-        <Text variant="boldBody">Welcome to maker auctions</Text>
+        <Text variant="boldBody">Welcome to Maker auctions</Text>
         {/* <Box sx={{ my: 2 }}>
           <Link href="/flip">
             <StyledLink variant="nav">Collateral Auctions →</StyledLink>
           </Link>
         </Box> */}
-        <Box>
+        <Box pt="6">
           <Link href="/flop">
             <StyledLink variant="nav">Debt Auctions →</StyledLink>
           </Link>

@@ -27,12 +27,15 @@ const MiniFormLayout = ({
   onSubmit,
   inputValidation,
   onChange,
+  onTxFinished, 
   error,
   small
 }) => {
   const fetchAuctions = useAuctionsStore(state => state.fetchAll);
   const [inputState, setInputState] = useState(undefined);
   const [txState, setTxState] = useState(undefined);
+  const [txMsg, setTxMsg] = useState(undefined);
+  const [txErrorMsg, setTxErrorMsg] = useState(undefined);
 
   const errors =
     (!buttonOnly && !inputState) || !inputValidation
@@ -43,6 +46,9 @@ const MiniFormLayout = ({
           })
           .filter(([res]) => res);
   const errorMessages = errors.map(([res, text]) => text).filter(Boolean);
+  if (txErrorMsg) {
+    errorMessages.push(txErrorMsg);
+  }
 
   const _disabled =
     disabled ||
@@ -58,13 +64,21 @@ const MiniFormLayout = ({
       },
       pending: tx => {
         setTxState(TX_PENDING);
+        setTxMsg('Please wait while the transaction is being mined (this can take a while)')
+
       },
       mined: tx => {
         setTxState(TX_SUCCESS);
-        fetchAuctions(maker);
+        setTxMsg('Transaction Sucessful!')
+        if (onTxFinished) onTxFinished();
       },
       error: (_, err) => {
+        const errorMsg = _.error.message.split('\n')[0];
         setTxState(TX_ERROR);
+        setTxMsg(null)
+
+        setTxErrorMsg(`Transaction failed with error: ${errorMsg}`)
+        if (onTxFinished) onTxFinished();
       }
     });
     return txObject;
@@ -76,15 +90,6 @@ const MiniFormLayout = ({
 
     if (onChange) onChange(BigNumber(value));
     setInputState(BigNumber(value));
-    // if (value) {
-    // state.amount = new BigNumber(value);
-
-    // if (state.amount.lt(maxBid)) {
-    //   state.error = 'Your bid is too low, you will need to increase.';
-    // }
-    // }
-
-    // setState(state);
   };
   return (
     <Grid gap={2}>
@@ -119,6 +124,7 @@ const MiniFormLayout = ({
               }}
               id="big-amount"
               type={inputType}
+              value={inputState ? inputState.toNumber() : inputState}
               step="0.01"
               placeholder="0"
               onChange={handleInputChange}
@@ -143,6 +149,9 @@ const MiniFormLayout = ({
         ? null
         : errorMessages.map(err => <Text variant="smallDanger">{err}</Text>)}
       <Text variant="small">{small}</Text>
+      {txMsg ? <Text variant="small" sx={{
+        color: 'primary'
+      }}>{txMsg}</Text> : null}
     </Grid>
   );
 };

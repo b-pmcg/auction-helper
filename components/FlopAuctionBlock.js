@@ -15,6 +15,8 @@ import {
   CAN_BE_DEALT,
   CAN_BE_RESTARTED
 } from '../constants';
+import useAuctionsStore, { selectors } from '../stores/auctionsStore';
+
 
 const AuctionEvent = ({
   type,
@@ -103,6 +105,7 @@ const byTimestamp = (prev, next) => {
 export default ({ events, id: auctionId, end, tic, stepSize }) => {
   const { maker } = useMaker();
   const { callFlopDent, callFlopDeal } = useAuctionActions();
+  const fetchAuctionsSet = useAuctionsStore(state => state.fetchSet);
   const [inputState, setInputState] = useState(new BigNumber(0));
 
   const sortedEvents = events.sort(byTimestamp); // DEAL , [...DENT] , KICK ->
@@ -164,6 +167,10 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
    * - OR when the auction duration (tau) has passed.
    */
   // const bidDisabled = state.error;
+  const mainValidation = [
+
+  ];
+
   const bidValidationTests = [
     // [() => !web3Connected],
     [
@@ -211,6 +218,7 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
                 inputUnit="MKR"
                 onSubmit={handleTendCTA}
                 onChange={setInputState}
+                onTxFinished={() => fetchAuctionsSet([auctionId])}
                 small={`Bidding ${new BigNumber(latestBid).toFixed(
                   2
                 )} Dai in exchange for ${
