@@ -199,7 +199,7 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
                 text={'Bid for the next minimum increment'}
                 buttonOnly
                 onSubmit={handleInstantBid}
-                small={'Price 1 MKR = 300 DAI'}
+                small={''}
                 actionText={'Bid Now'}
               />
             ],
