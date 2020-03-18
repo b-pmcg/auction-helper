@@ -106,7 +106,7 @@ export default ({
           alignItems: 'center'
         }}
       >
-        <Heading as="h5" variant="h2">
+        <Heading as="h5" variant="h2" sx={{ flex: '1 0 0 ',}}>
           Auction ID: {auctionId}
         </Heading>
         <Flex
@@ -119,6 +119,7 @@ export default ({
           {
             collapsed &&
             <Flex sx={{
+              flex: '2 0 0 ',
               flexDirection: ['column', 'row'],
             }}> {onCollapseData.map(
               data => {
@@ -157,6 +158,7 @@ export default ({
           variant="h2"
           sx={{
             pt: [2, 0],
+            flex: '1 1 0',
             fontSize: 4,
             ml: collapsed ? 0 : [0, 'auto'],
             color: auctionStatusColors[auctionStatus]
