@@ -4,6 +4,7 @@ import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { Heading, jsx, Grid, Box, Flex } from 'theme-ui';
 
 import EventsList from './AuctionEventsList';
+import CollapseToggle from './CollapseToggle';
 
 export default ({
   auctionId,
@@ -12,9 +13,11 @@ export default ({
   auctionStatus,
   auctionEvents,
   actions,
+  forceExpanded,
   hasDent
 }) => {
   const [timer, setTimer] = useState([]);
+  const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
     // if there is no Dent first will be Kick
@@ -50,20 +53,24 @@ export default ({
   }, [end, tic]);
 
   return (
-    <Grid
+    <Box
       gap={5}
       sx={{
-        bg: '#fff',
-        p: 6,
-        borderRadius: 5,
-        border: '1px solid',
-        borderColor: 'border'
+        variant: 'styles.roundedCard',
+        p: 0
+        // mb: 6
+        // p: 6,
       }}
     >
       <Flex
         sx={{
+          p: 6,
+          py: 5,
           flexDirection: ['column', 'row'],
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
+          borderBottom: collapsed ? null : '1px solid',
+          borderColor: 'border',
+          alignItems: 'center'
         }}
       >
         <Heading as="h5" variant="h2">
@@ -75,6 +82,7 @@ export default ({
           sx={{
             pt: [2, 0],
             fontSize: 4,
+            ml: [0, 'auto'],
             color: auctionStatus === 'completed' ? 'primaryHover' : 'text'
           }}
         >
@@ -82,11 +90,27 @@ export default ({
             ? 'Auction Completed'
             : `Time remaining: ${timer}`}
         </Heading>
+        <Box
+          sx={{
+            ml: 4
+          }}
+        >
+          <CollapseToggle
+            onClick={() => (forceExpanded ? null : setCollapsed(!collapsed))}
+            active={!collapsed}
+          />
+        </Box>
       </Flex>
-      <Box>
-        <EventsList events={auctionEvents} />
-      </Box>
-      {actions}
-    </Grid>
+      {collapsed ? null : (
+        <>
+          <Box p="6">
+            <EventsList events={auctionEvents} />
+            <Box pt="6">
+            {actions}
+            </Box>
+          </Box>
+        </>
+      )}
+    </Box>
   );
 };

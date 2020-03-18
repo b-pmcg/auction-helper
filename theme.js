@@ -30,7 +30,9 @@ export default {
 
   lineHeights: {
     body: 1.5,
-    heading: 1.125
+    heading: 1.125,
+    tight: 1.05,
+    loose: 1.2
   },
   colors: {
     text: '#231536',
@@ -135,7 +137,7 @@ export default {
 
     h2: {
       fontSize: 6,
-      lineHeight: '20px',
+      lineHeight: 'loose',
       fontWeight: 'semiBold',
       letterSpacing: '0.4px'
     },

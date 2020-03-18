@@ -26,8 +26,9 @@ const IntroInfoCard = ({ title, text, action, forceExpanded }) => {
       }}
     >
       <Flex
-        p="6"
         sx={{
+          p:6,
+          py:5,
           borderBottom: collapsed ? null : '1px solid',
           borderColor: 'border',
           alignItems: 'center'

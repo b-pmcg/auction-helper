@@ -22,14 +22,15 @@ export const AuctionEventsList = ({ events }) => {
   return (
     <Flex
       sx={{
-        flexDirection: 'column'
+        flexDirection: 'column',
+        position: 'relative'
       }}
     >
-      <Grid gap={2}>{visibleAuctionEvents}</Grid>
+      <Grid gap={2} >{visibleAuctionEvents}</Grid>
       {events.length > 1 && (
         <Button
           variant="textual"
-          sx={{ textAlign: 'right', alignSelf: 'flex-end', pr: 0 }}
+          sx={{ textAlign: 'right', alignSelf: 'flex-end', pr: 0, position: 'absolute', top: '100%' }}
           onClick={() => {
             toggleEventsList(!shouldSeeAllEvents);
           }}
