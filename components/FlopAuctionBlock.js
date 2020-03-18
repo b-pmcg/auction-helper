@@ -129,7 +129,7 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
   }
 
   const handleTendCTA = value => {
-    callFlopDent(auctionId, value, latestBid);
+    return callFlopDent(auctionId, value, latestBid);
   };
 
   const handleInstantBid = () => {
