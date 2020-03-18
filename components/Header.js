@@ -66,7 +66,7 @@ export default () => {
             mr: [null, 6]
           }}
         >
-          <Link href="/flip">
+          {/* <Link href="/flip">
             <NavLink
               sx={{
                 fontWeight: pathname === '/flip' ? 'bold' : 'normal',
@@ -77,12 +77,13 @@ export default () => {
             >
               Collateral auctions
             </NavLink>
-          </Link>
+          </Link> */}
           <Link href="/flop">
             <NavLink
               p={2}
               sx={{
-                fontWeight: pathname === '/flop' ? 'bold' : 'normal',
+                fontWeight: pathname === '/flop' ? 500 : 'normal',
+                // color: pathname === '/flop' ? 'primary' : 'body',
                 cursor: 'default',
                 px: [4, 6]
               }}
