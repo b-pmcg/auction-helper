@@ -5,6 +5,12 @@ import { Heading, jsx, Grid, Box, Flex } from 'theme-ui';
 
 import EventsList from './AuctionEventsList';
 import CollapseToggle from './CollapseToggle';
+import {
+  IN_PROGRESS,
+  COMPLETED,
+  CAN_BE_DEALT,
+  CAN_BE_RESTARTED
+} from '../constants';
 
 export default ({
   auctionId,
@@ -18,6 +24,20 @@ export default ({
 }) => {
   const [timer, setTimer] = useState([]);
   const [collapsed, setCollapsed] = useState(false);
+
+  const auctionStatusHeadings = {
+    [COMPLETED]: 'Auction Completed',
+    [IN_PROGRESS]: `Time remaining: ${timer}`,
+    [CAN_BE_DEALT]: 'Auction Can Be Dealt',
+    [CAN_BE_RESTARTED]: 'Auction Can Be Restarted'
+  };
+
+  const auctionStatusColors = {
+    [COMPLETED]: 'primaryHover',
+    [IN_PROGRESS]: 'text',
+    [CAN_BE_DEALT]: 'text',
+    [CAN_BE_RESTARTED]: 'text'
+  };
 
   useEffect(() => {
     // if there is no Dent first will be Kick
@@ -83,12 +103,10 @@ export default ({
             pt: [2, 0],
             fontSize: 4,
             ml: [0, 'auto'],
-            color: auctionStatus === 'completed' ? 'primaryHover' : 'text'
+            color: auctionStatusColors[auctionStatus]
           }}
         >
-          {auctionStatus === 'completed'
-            ? 'Auction Completed'
-            : `Time remaining: ${timer}`}
+          {auctionStatusHeadings[auctionStatus]}
         </Heading>
         <Box
           sx={{
@@ -105,9 +123,7 @@ export default ({
         <>
           <Box p="6">
             <EventsList events={auctionEvents} />
-            <Box pt="6">
-            {actions}
-            </Box>
+            <Box pt="6">{actions}</Box>
           </Box>
         </>
       )}

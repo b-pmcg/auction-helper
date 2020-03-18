@@ -64,6 +64,7 @@ export default () => {
             <NavLink
               sx={{
                 fontWeight: pathname === '/flip' ? 'bold' : 'normal',
+                cursor: 'default',
                 p: 2,
                 px: [4, 6]
               }}
@@ -76,6 +77,7 @@ export default () => {
               p={2}
               sx={{
                 fontWeight: pathname === '/flop' ? 'bold' : 'normal',
+                cursor: 'default',
                 px: [4, 6]
               }}
             >

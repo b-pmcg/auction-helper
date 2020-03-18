@@ -8,6 +8,12 @@ import MiniFormLayout from './MiniFormLayout';
 import useAuctionActions from '../hooks/useAuctionActions';
 import ActionTabs from './ActionTabs';
 import AuctionBlockLayout from './AuctionBlockLayout';
+import {
+  IN_PROGRESS,
+  COMPLETED,
+  CAN_BE_DEALT,
+  CAN_BE_RESTARTED
+} from '../constants';
 
 const AuctionEvent = ({
   type,
@@ -23,7 +29,7 @@ const AuctionEvent = ({
   const fields = [
     ['Event Type', type],
     ['Bid Value', bid],
-    ['Lot Size', lot, {color: 'primary'}],
+    ['Lot Size', lot, { color: 'primary' }],
     ['Current Bid Price', currentBid],
     // ['Price', price],
     ['Timestamp', timestamp],
@@ -100,8 +106,23 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
   const { bid: latestBid, lot: latestLot } = sortedEvents.find(
     event => event.type != 'Deal'
   );
-  const hasAuctionCompleted = sortedEvents[0].type === 'Deal';
+
   const hasDent = sortedEvents[0].type === 'Dent';
+
+  const now = new Date().getTime();
+  let auctionStatus = IN_PROGRESS;
+  // if the auction has been dealt, it must be over
+  if (sortedEvents[0].type === 'Deal') {
+    auctionStatus = COMPLETED;
+    // if `tic` is greater than 0, then a bid has been submitted. in this case...
+    //  1. if the current time is later than `end`, the auction has finished, it just hasn't been dealt yet
+    //  2. if `tic` is less than the current time, the auction can also be dealt
+  } else if (tic.gt(0) && (new BigNumber(now).gt(end) || tic.lt(now))) {
+    auctionStatus = CAN_BE_DEALT;
+    // if a bid has NOT been submitted and the current time is later than `end`, the auction can be restarted (w a higher mkr price)
+  } else if (tic.eq(0) && new BigNumber(now).gt(end)) {
+    auctionStatus = CAN_BE_RESTARTED;
+  }
 
   const handleTendCTA = value => {
     console.log('value', value);
@@ -119,7 +140,7 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
    * - OR when the auction duration (tau) has passed.
    */
   // const bidDisabled = state.error;
-  const bidDisabledTests = [
+  const bidValidationTests = [
     // [() => !web3Connected],
     [
       val => {
@@ -135,7 +156,7 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
 
   return (
     <AuctionBlockLayout
-      auctionStatus={hasAuctionCompleted ? 'completed' : 'inprogress'}
+      auctionStatus={auctionStatus}
       auctionId={auctionId}
       hasDent={hasDent}
       end={end}
@@ -159,8 +180,9 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
                 text={'Enter your bid in MKR for this Auction'}
                 inputUnit="MKR"
                 onSubmit={handleTendCTA}
+                inputChanged={() => {}}
                 small={'Price 1 MKR = 300 DAI'}
-                inputValidation={bidDisabledTests}
+                inputValidation={bidValidationTests}
                 actionText={'Bid Now'}
               />
             ]
@@ -168,7 +190,10 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
         />
       }
       auctionEvents={events.map(
-        ({ type, ilk, lot, bid, timestamp, hash, fromAddress, price }, index) => {
+        (
+          { type, ilk, lot, bid, timestamp, hash, fromAddress, price },
+          index
+        ) => {
           const eventBid = type === 'Deal' ? latestBid : bid;
           const eventLot = type === 'Deal' ? latestLot : lot;
 
