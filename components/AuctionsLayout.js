@@ -3,12 +3,16 @@ import FlipAuctionBlock from './FlipAuctionBlock';
 import FlopAuctionBlock from './FlopAuctionBlock';
 import { Button, Grid, Input, Flex, Select } from 'theme-ui';
 import useAuctionsStore, { selectors } from '../stores/auctionsStore';
+import useMaker from '../hooks/useMaker';
 
 const AuctionsLayout = ({ auctions, stepSize, type }) => {
   const { hasPrevPageSelector, hasNextPageSelector } = selectors;
   const next = useAuctionsStore(state => state.nextPage);
   const prev = useAuctionsStore(state => state.prevPage);
-  const filteredAuctions = useAuctionsStore(selectors.filteredAuctions());
+
+  const { maker } = useMaker();
+
+  const filteredAuctions = useAuctionsStore(selectors.filteredAuctions(maker.currentAddress()));
   const auctionsPage = useAuctionsStore(
     selectors.auctionsPage(filteredAuctions)
   );
@@ -32,7 +36,7 @@ const AuctionsLayout = ({ auctions, stepSize, type }) => {
 
   // effects
 
-  console.log(filteredAuctions, 'fultereddd');
+  // console.log(filteredAuctions, 'fultereddd');
   // useEffect(() => {
   //   switch (sortCriteria) {
   //     case 'byBidPrice': {
@@ -82,6 +86,7 @@ const AuctionsLayout = ({ auctions, stepSize, type }) => {
           <option value="byLatest">Sort By Id (Desc)</option>
           <option value="byTime">Time Remaining</option>
           <option value="byBidPrice">Current Bid Price</option>
+          <option value="filterByCurrentAddress">Current Address</option>
         </Select>
       </Flex>
       <Grid gap={5}>

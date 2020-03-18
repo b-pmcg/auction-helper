@@ -92,7 +92,14 @@ const sorters = {
       else if (prevTimeRemaining.lt(nextTimeRemaining)) return -1;
       else return 1;
     });
-  }
+  },
+  filterByCurrentAddress: (auctions, currentAddress) => {
+    return Object.keys(auctions || []).filter(id =>
+        auctions[id].events.filter(e =>
+          e.type === 'Dent' && e.fromAddress === currentAddress
+        ).length > 0
+    );
+  },
 };
 
 const selectors = {
@@ -106,12 +113,12 @@ const selectors = {
     return pageEnd - (auctions || []).length < 0;
   },
 
-  filteredAuctions: () => state => {
+  filteredAuctions: (currentAddress) => state => {
     const { filterByIdValue, auctions, sortBy } = state;
     if (!auctions) return null;
 
     let ids = Object.keys(auctions);
-    ids = filters.byId(sorters[sortBy](auctions), filterByIdValue);
+    ids = filters.byId(sorters[sortBy](auctions, currentAddress), filterByIdValue);
 
     return ids.map(id => auctions[id]);
   },
