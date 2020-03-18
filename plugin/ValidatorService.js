@@ -17,7 +17,7 @@ export default class ValidatorService extends PublicService {
     this.id = 123;
   }
 
-  async getQueryResponse(serverUrl, query, variables = {}) {
+  async getQueryResponse(serverUrl, query, operationName, variables = {}) {
     const resp = await fetch(serverUrl, {
       method: 'POST',
       headers: {
@@ -26,7 +26,8 @@ export default class ValidatorService extends PublicService {
       },
       body: JSON.stringify({
         query,
-        variables
+        variables,
+        operationName
       })
     });
     const { data } = await resp.json();
@@ -123,6 +124,7 @@ export default class ValidatorService extends PublicService {
     const response = await this.getQueryResponse(
       this._cacheAPI,
       gqlQueries.specificAuctionEvents,
+      'setAuctionsEvents',
       variables
     );
 
@@ -134,6 +136,7 @@ export default class ValidatorService extends PublicService {
     const response = await this.getQueryResponse(
       this._cacheAPI,
       gqlQueries.allAuctionEvents,
+      'allAuctionsEvents',
       variables
     );
     // console.log('GraphQL response', response);
