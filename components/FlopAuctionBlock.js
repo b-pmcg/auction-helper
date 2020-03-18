@@ -12,6 +12,7 @@ import AuctionBlockLayout from './AuctionBlockLayout';
 const AuctionEvent = ({
   type,
   ilk,
+  price,
   lot,
   bid,
   currentBid,
@@ -21,9 +22,10 @@ const AuctionEvent = ({
 }) => {
   const fields = [
     ['Event Type', type],
-    ['Lot Size', lot],
-    ['Current Bid Price', currentBid],
     ['Bid Value', bid],
+    ['Lot Size', lot, {color: 'primary'}],
+    ['Current Bid Price', currentBid],
+    // ['Price', price],
     ['Timestamp', timestamp],
     [
       'Tx',
@@ -50,7 +52,7 @@ const AuctionEvent = ({
         borderRadius: 5
       }}
     >
-      {fields.map(([title, value]) => {
+      {fields.map(([title, value, styling]) => {
         return (
           <Box key={title}>
             <Text
@@ -64,7 +66,8 @@ const AuctionEvent = ({
             </Text>
             <Text
               sx={{
-                fontSize: 1
+                fontSize: 1,
+                ...styling
               }}
             >
               {value}
@@ -164,7 +167,7 @@ export default ({ events, id: auctionId, end, tic }) => {
         />
       }
       auctionEvents={events.map(
-        ({ type, ilk, lot, bid, timestamp, hash, fromAddress }, index) => {
+        ({ type, ilk, lot, bid, timestamp, hash, fromAddress, price }, index) => {
           const eventBid = type === 'Deal' ? latestBid : bid;
           const eventLot = type === 'Deal' ? latestLot : lot;
 
@@ -178,10 +181,11 @@ export default ({ events, id: auctionId, end, tic }) => {
               type={type}
               ilk={ilk}
               tx={hash}
+              price={price}
               sender={fromAddress}
-              lot={new BigNumber(eventLot).toFormat(5, 4)}
-              bid={new BigNumber(eventBid).toFormat(5, 4)}
-              currentBid={`${currentBid.toFormat(5, 4)} MKR`}
+              lot={new BigNumber(eventLot).toFormat(4, 6)}
+              bid={`${new BigNumber(eventBid).toFormat(2, 4)} DAI`}
+              currentBid={`${currentBid.toFormat(2, 4)} MKR/DAI`}
               timestamp={
                 <Text title={new Date(timestamp)}>
                   <Moment fromNow ago>
