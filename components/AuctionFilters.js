@@ -129,7 +129,6 @@ const AuctionFilters = ({ title, text, action, forceExpanded }) => {
           bg: 'white',
           borderColor: 'border',
           width: ['100%', '280px']
-          
         }}
         placeholder="Bidder Address"
         onChange={({ target: { value } }) => setFilterByBidderValue(value)}
@@ -169,29 +168,32 @@ const AuctionFilters = ({ title, text, action, forceExpanded }) => {
         sx={{
           // p: 6,
           py: 0,
-          alignItems: 'center',
+          alignItems: ['flex-start', 'center'],
+          flexDirection: ['column', 'row'],
           width: '100%'
         }}
       >
-        <Button
-          key={``}
-          variant={collapsed ? 'pillInactive' : 'pill'}
-          sx={{
-            mr: 2
-          }}
-          onClick={() => (forceExpanded ? null : setCollapsed(!collapsed))}
-        >
-          Filter By...
-        </Button>
-        <Box>
+        <Flex>
           <Button
-            variant={collapsedGloss ? 'pillInactive' : 'pill'}
-            onClick={() => setCollapsedGloss(!collapsedGloss)}
+            key={``}
+            variant={collapsed ? 'pillInactive' : 'pill'}
+            sx={{
+              mr: 2
+            }}
+            onClick={() => (forceExpanded ? null : setCollapsed(!collapsed))}
           >
-            Glossary
+            Filter By...
           </Button>
-        </Box>
-        <Box ml="auto">
+          <Box>
+            <Button
+              variant={collapsedGloss ? 'pillInactive' : 'pill'}
+              onClick={() => setCollapsedGloss(!collapsedGloss)}
+            >
+              Glossary
+            </Button>
+          </Box>
+        </Flex>
+        <Box ml={[0, 'auto']} mt={[4, null]}>
           <Select
             sx={{
               width: ['100%', '300px'],
@@ -220,16 +222,21 @@ const AuctionFilters = ({ title, text, action, forceExpanded }) => {
               variant: 'styles.roundedCard'
             }}
           >
-            <Grid gap={6} columns={2}>
+            <Grid gap={6} columns={[1, 2]}>
               {gloss.map(([title, text]) => {
-                return (<Box>
-                  <Text mb="1" variant="boldBody">{title}</Text>
-                <Text> 
-                  {/* <Text mb="2" variant="boldBody" as="span">{title}{" "}</Text> */}
-                   {text}</Text>
-                </Box>)
+                return (
+                  <Box>
+                    <Text mb="1" variant="boldBody">
+                      {title}
+                    </Text>
+                    <Text>
+                      {/* <Text mb="2" variant="boldBody" as="span">{title}{" "}</Text> */}
+                      {text}
+                    </Text>
+                  </Box>
+                );
               })}
-              </Grid>
+            </Grid>
           </Box>
         </Box>
       )}
@@ -245,19 +252,40 @@ const AuctionFilters = ({ title, text, action, forceExpanded }) => {
           <Text variant="caps" mb="4">
             Show or hide
           </Text>
-          <Flex>
+          <Flex
+            sx={{
+              flexDirection: ['column', 'row']
+            }}
+          >
             {toggles.map(([text, body], index) => {
               return (
-                <Box mr="4" key={index}>
+                <Box
+                  sx={{
+                    mr: [0, 4],
+                    mb: [4, 0]
+                  }}
+                  key={index}
+                >
                   {body}
                 </Box>
               );
             })}
           </Flex>
-          <Flex mt="6">
+          <Flex
+            mt="6"
+            sx={{
+              flexDirection: ['column', 'row']
+            }}
+          >
             {filters.map(([text, body], index) => {
               return (
-                <Box mr="4" key={index}>
+                <Box
+                  sx={{
+                    mr: [0, 4],
+                    mb: [4, 0]
+                  }}
+                  key={index}
+                >
                   <Text
                     variant="caps"
                     sx={{

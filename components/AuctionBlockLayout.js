@@ -139,15 +139,17 @@ export default ({
         </Heading>
         <Flex
           sx={{
-            margin: 'auto',
-            alignItems: 'center'
+            // margin: 'auto',
+            // alignItems: 'center',
+            mt: [2, 0],
+            position: 'relative'
           }}
         >
           {!pill ? null : <Box ml={[0, 4]}>{pill}</Box>}
           {collapsed && auctionStatus === IN_PROGRESS && (
             <Flex
               sx={{
-                flex: '2 1 0',
+                // flex: '2 1 0',
                 // ml: '4',
                 flexDirection: ['column', 'row']
               }}
@@ -158,10 +160,12 @@ export default ({
                   <Heading
                     key={`${auctionId}-${data.label}`}
                     as="h5"
-                    variant="h2"
+                    variant="boldBody"
                     sx={{
-                      fontSize: 4,
+                      // fontSize: 4,
                       ml: [0, '6'],
+                      mb: [2, 0],
+
                       // mr: [0, 20],
                       ...data.styling
                     }}
@@ -175,12 +179,12 @@ export default ({
         </Flex>
         <Heading
           as="h5"
-          variant="h2"
+          variant="boldBody"
           sx={{
             pt: [2, 0],
             flex: '1 1 0',
-            textAlign: 'right',
-            fontSize: 4,
+            textAlign: ['left', 'right'],
+            // fontSize: 4,
             ml: collapsed ? 0 : [0, 'auto'],
             color: auctionStatusColors[auctionStatus]
           }}
@@ -189,7 +193,10 @@ export default ({
         </Heading>
         <Box
           sx={{
-            ml: 4
+            ml: [0, 4],
+            position: ['absolute', 'relative'],
+            right: [0, null],
+            mr: [7, 0]
           }}
         >
           <CollapseToggle
@@ -209,7 +216,7 @@ export default ({
               </Box>
             ) : (
               <Grid columns={1}>
-                <Box pt="6">{actions}</Box>
+                <Box pt={['7', '6']}>{actions}</Box>
                 {/* <Box pt="6">{orderSummary}</Box> */}
               </Grid>
             )}

@@ -10,12 +10,8 @@ export default {
   fonts: {
     body:
       '-apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu',
-    // body: '-apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu',
     heading:
       '-apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu',
-    // body:
-    // 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
-    // heading: 'inherit',
     monospace: 'monospace'
   },
 
@@ -139,10 +135,11 @@ export default {
       borderColor: 'border',
       '&:hover': {
         bg: 'transparent',
-        color: 'lightGraphite',
+        color: 'graphite',
         borderColor: 'lightGraphite'
       },
       '&:active': {
+        bg: 'transparent',
         borderColor: 'text',
         color: 'text'
       }

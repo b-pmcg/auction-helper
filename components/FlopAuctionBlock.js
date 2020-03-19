@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import useMaker from '../hooks/useMaker';
-import { Text, jsx, Grid, Box, Flex } from 'theme-ui';
+import { Text, jsx, Grid, Box, Flex, Link as SLink } from 'theme-ui';
 import BigNumber from 'bignumber.js';
 import Moment from 'react-moment';
 import { etherscanLink } from '../utils';
@@ -46,8 +46,7 @@ const AuctionEvent = ({
     [
       'Sender',
       <a href={etherscanLink(sender, network)} target="_blank">
-        {' '}
-        {sender.slice(0, 7) + '...' + sender.slice(-4)}
+        <SLink> {sender.slice(0, 7) + '...' + sender.slice(-4)}</SLink>
       </a>,
       {
         fontWeight: maker.currentAddress() === sender ? 500 : 400
@@ -56,8 +55,7 @@ const AuctionEvent = ({
     [
       'Tx',
       <a href={etherscanLink(tx, network)} target="_blank">
-        {' '}
-        {tx.slice(0, 7) + '...' + tx.slice(-4)}
+        <SLink> {tx.slice(0, 7) + '...' + tx.slice(-4)}</SLink>
       </a>
     ]
   ];
@@ -139,11 +137,7 @@ const OrderSummary = ({
 
   return (
     <Grid gap={2}>
-      <Text
-        variant="caps"
-      >
-        {'Order Summary'}
-      </Text>
+      <Text variant="caps">{'Order Summary'}</Text>
       <Grid
         maxWidth={'500px'}
         gap={2}
@@ -327,57 +321,61 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
             actions={[
               [
                 'Instant Bid',
-                <Flex sx={{
-          flexDirection: ['column', 'row'],
-
-                }}>
+                <Flex
+                  sx={{
+                    flexDirection: ['column', 'row']
+                  }}
+                >
                   <Box>
-                <MiniFormLayout
-                  disabled={auctionStatus !== IN_PROGRESS || !canBid}
-                  text={'Bid for the next minimum increment'}
-                  buttonOnly
-                  onSubmit={handleInstantBid}
-                  onMount={() => {
-                    setCalculatedBidPrice(BigNumber(0))
-                  }}
-                  onTxFinished={status => {
-                    if (status === TX_SUCCESS) {
-                      setJustBidded(true);
-                      ReactGA.event({
-                        category: 'bid',
-                        action: 'instant',
-                        label: auctionId
-                      });
-                    }
-                    fetchAuctionsSet([auctionId]);
-                  }}
-                  small={calculateBidPrice}
-                  inputValidation={bidValidationTests}
-                  actionText={'Bid Now'}
-                />
-                </Box>
-                <Box ml="auto"> 
-                  <OrderSummary
-                    key={`${latestLot}-${vatDaiBalance}`}
-                    remainingBal={
-                      vatDaiBalance &&
-                      `${BigNumber(vatDaiBalance)
-                        .minus(BigNumber(latestBid))
-                        .toFormat(0, 4)} DAI`
-                    }
-                    currentBid={`${minMkrAsk.toFixed(2, 1)} MKR`}
-                    minMkrAsk={`${minMkrAsk.toFixed(2, 1)} MKR`}
-                    calculatedBidPrice={`${calculatedBidPrice} MKR/DAI`}
-                  />
-                </Box>
-              </Flex>,
-              false, auctionStatus === CAN_BE_DEALT
+                    <MiniFormLayout
+                      disabled={auctionStatus !== IN_PROGRESS || !canBid}
+                      text={'Bid for the next minimum increment'}
+                      buttonOnly
+                      onSubmit={handleInstantBid}
+                      onMount={() => {
+                        setCalculatedBidPrice(BigNumber(0));
+                      }}
+                      onTxFinished={status => {
+                        if (status === TX_SUCCESS) {
+                          setJustBidded(true);
+                          ReactGA.event({
+                            category: 'bid',
+                            action: 'instant',
+                            label: auctionId
+                          });
+                        }
+                        fetchAuctionsSet([auctionId]);
+                      }}
+                      small={calculateBidPrice}
+                      inputValidation={bidValidationTests}
+                      actionText={'Bid Now'}
+                    />
+                  </Box>
+                  <Box ml="auto">
+                    <OrderSummary
+                      key={`${latestLot}-${vatDaiBalance}`}
+                      remainingBal={
+                        vatDaiBalance &&
+                        `${BigNumber(vatDaiBalance)
+                          .minus(BigNumber(latestBid))
+                          .toFormat(0, 4)} DAI`
+                      }
+                      currentBid={`${minMkrAsk.toFixed(2, 1)} MKR`}
+                      minMkrAsk={`${minMkrAsk.toFixed(2, 1)} MKR`}
+                      calculatedBidPrice={`${calculatedBidPrice} MKR/DAI`}
+                    />
+                  </Box>
+                </Flex>,
+                false,
+                auctionStatus === CAN_BE_DEALT
               ],
               [
                 'Custom Bid',
-                <Flex sx={{
-                  flexDirection: ['column', 'row']
-                }}>
+                <Flex
+                  sx={{
+                    flexDirection: ['column', 'row']
+                  }}
+                >
                   <Box>
                     <MiniFormLayout
                       disabled={auctionStatus !== IN_PROGRESS || !canBid}
@@ -387,7 +385,7 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
                       inputUnit="MKR"
                       onSubmit={handleTendCTA}
                       onMount={() => {
-                        setCalculatedBidPrice(BigNumber(0))
+                        setCalculatedBidPrice(BigNumber(0));
                       }}
                       onTxFinished={status => {
                         if (status === TX_SUCCESS) {
@@ -406,7 +404,7 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
                       actionText={'Bid Now'}
                     />
                   </Box>
-                  <Box ml="auto"> 
+                  <Box ml="auto">
                     <OrderSummary
                       key={`${latestLot}-${vatDaiBalance}`}
                       remainingBal={
@@ -424,7 +422,8 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
                     />
                   </Box>
                 </Flex>,
-                false, auctionStatus === CAN_BE_DEALT
+                false,
+                auctionStatus === CAN_BE_DEALT
               ],
               auctionStatus === CAN_BE_DEALT && [
                 'Deal Auction',

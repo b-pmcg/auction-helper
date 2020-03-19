@@ -13,7 +13,8 @@ import {
   Input,
   Checkbox,
   Flex,
-  NavLink
+  NavLink,
+  Link as SLink
 } from 'theme-ui';
 import Link from 'next/link';
 
@@ -43,30 +44,36 @@ const TermsConfirm = ({ onConfirm, confirmed }) => {
             alignItems: 'center'
           }}
         >
-          <Box onClick={_onConfirm}>
-            <Checkbox
-              as="input"
-              defualtChecked={confirmed}
-              onChange={_onConfirm}
-            />
-          </Box>
-          <Label
-            sx={{
-              pl: 0
-            }}
-          >
+          <Label>
+            <Box
+              onClick={_onConfirm}
+              sx={{
+                mr: 1
+              }}
+            >
+              <Checkbox
+                as="input"
+                defualtChecked={confirmed}
+                onChange={_onConfirm}
+              />
+            </Box>
+
             <Text variant="inputText">
               I have read and accept these{' '}
               <Link
                 href="/terms"
                 // variant="clean"
-                sx={{
-                  variant: 'styles.a',
-                  display: 'inline'
-                }}
               >
-                Terms of Service
+                <SLink
+                  sx={{
+                    variant: 'styles.a',
+                    display: 'inline'
+                  }}
+                >
+                  Terms of Service
+                </SLink>
               </Link>
+              .
             </Text>
           </Label>
         </Flex>
