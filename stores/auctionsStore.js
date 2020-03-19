@@ -244,13 +244,17 @@ const [useAuctionsStore] = create((set, get) => ({
   },
 
   fetchSet: async ids => {
-    const service = maker.service(AUCTION_DATA_FETCHER);
-    const auctions = await service.fetchFlopAuctionsByIds(ids);
-    const transformedAuctions = await transformEvents(auctions, service);
+    setTimeout(async () => {
+      console.log('fetching set: ', ids);
+      const service = maker.service(AUCTION_DATA_FETCHER);
+      const auctions = await service.fetchFlopAuctionsByIds(ids);
+      const transformedAuctions = await transformEvents(auctions, service);
+  
+      const currentState = get().auctions || {};
+      const updatedState = Object.assign({}, currentState, transformedAuctions);
+      set({ auctions: updatedState });
+    }, 500);
 
-    const currentState = get().auctions || {};
-    const updatedState = Object.assign({}, currentState, transformedAuctions);
-    set({ auctions: updatedState });
   },
 
   fetchFlopStepSize: async maker => {
