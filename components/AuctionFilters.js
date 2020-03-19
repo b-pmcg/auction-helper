@@ -52,7 +52,7 @@ const AuctionFilters = ({ title, text, action, forceExpanded }) => {
         sx={{
           bg: 'white',
           borderColor: 'border',
-          maxWidth: ['100%', '180px']
+          width: ['100%', '280px']
         }}
         placeholder="Auction ID"
         onChange={({ target: { value } }) => setFilterByIdValue(value)}
@@ -64,7 +64,8 @@ const AuctionFilters = ({ title, text, action, forceExpanded }) => {
         sx={{
           bg: 'white',
           borderColor: 'border',
-          maxWidth: ['100%', '240px']
+          width: ['100%', '280px']
+          
         }}
         placeholder="Bidder Address"
         onChange={({ target: { value } }) => setFilterByBidderValue(value)}
@@ -79,7 +80,7 @@ const AuctionFilters = ({ title, text, action, forceExpanded }) => {
         variant={filterByNotCompleted ? 'pill' : 'pillInactive'}
         onClick={toggleFilterByNotCompleted}
       >
-        Hide Complete Auctions
+        Hide Completed Auctions
       </Button>
     ],
     [
@@ -169,6 +170,9 @@ const AuctionFilters = ({ title, text, action, forceExpanded }) => {
             variant: 'styles.roundedCard'
           }}
         >
+          <Text variant="caps" mb="4">
+            Show or hide
+          </Text>
           <Flex>
             {toggles.map(([text, body], index) => {
               return (
@@ -178,7 +182,7 @@ const AuctionFilters = ({ title, text, action, forceExpanded }) => {
               );
             })}
           </Flex>
-          <Flex mt="4">
+          <Flex mt="6">
             {filters.map(([text, body], index) => {
               return (
                 <Box mr="4" key={index}>

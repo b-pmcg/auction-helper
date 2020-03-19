@@ -26,7 +26,7 @@ const Index = () => {
   const { maker, web3Connected } = useMaker();
 
   return (
-    <GuttedLayout>
+    <GuttedLayout maxWidth="970px">
       <Box
         sx={{
           pb: 5
@@ -35,11 +35,15 @@ const Index = () => {
         <Head>
           <title>Terms</title>
         </Head>
-        <Heading variant="h1" py="y">
-          Terms and Conditions
+        <Heading variant="h1" py="7">
+          Terms of Service
         </Heading>
 
-        <Box>
+        <Box sx={{
+          variant: 'styles.roundedCard',
+          px: 6,
+          py: 4
+        }}>
           <TermsMDX />
         </Box>
       </Box>
