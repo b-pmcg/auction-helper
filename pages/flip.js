@@ -57,7 +57,7 @@ const Index = () => {
   return (
     <GuttedLayout>
       <Head>
-        <title>Auction Helper (Beta)</title>
+        <title>Maker Auctions (Beta)</title>
       </Head>
 
       {!maker ? (

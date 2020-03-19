@@ -84,7 +84,7 @@ const Index = () => {
   return (
     <GuttedLayout>
       <Head>
-        <title>Debt Auctions - Maker Auctions</title>
+        <title>Debt Auctions (Beta) - Maker Auctions</title>
       </Head>
       {!maker ? (
         <Flex

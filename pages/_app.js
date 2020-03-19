@@ -19,7 +19,7 @@ class MyApp extends App {
       network: window.location.search.includes('kovan') ? 'kovan' : 'mainnet'
     });
 
-    if (window && window.location.search.includes('show-test-ui')) {
+    if (window && (window.location.search.includes('show-test-ui') || window.location.search.includes('kovan'))) {
       setFeatureFlag('alpha-ui');
     }
 
