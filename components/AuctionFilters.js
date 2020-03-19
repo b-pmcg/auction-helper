@@ -18,6 +18,70 @@ import CollapseToggle from './CollapseToggle';
 import useAuctionsStore, { selectors } from '../stores/auctionsStore';
 import useMaker from '../hooks/useMaker';
 
+const gloss = [
+  [
+    'Dai Locked in the VAT',
+    'This is the amount of Dai you have locked into the Maker Protocol that is available for bidding. You can only bid with Dai that is locked, and you will need 50,000 Dai for each auction you wish to participate in.'
+  ],
+  [
+    'Deposit/Withdraw DAI into the VAT',
+    'This is where you will add or remove DAI that can be used for bidding. This goes into the VAT and will be reflected on the ‘Dai Locked in the VAT’ balance.'
+  ],
+  [
+    'Kick',
+    'This is the first event in an auction, and refers to the auction starting. It sets the initial price (200 Dai/MKR) and allows you to start bidding on it.'
+  ],
+  [
+    'Dent',
+    'These are bid events, where users are bidding decreasing amounts of MKR for a set amount of Dai.'
+  ],
+  [
+    'Deal: ',
+    'This is end of the auction, and is called when the total time of the auction has elapsed. When Deal is called, the MKR will be sent to the winning bidder.'
+  ],
+  [
+    'Bid Value',
+    'This is the amount of Dai that is being bid on the Lot Size. This value is fixed at 50,000 DAI for each bid.'
+  ],
+  [
+    'Lot Size',
+    'This is the amount of MKR that is currently being bid for the Bid Value (10,000 Dai). Each new bid will have to bid a lower Lot Size (amount of MKR) to be successful.'
+  ],
+  [
+    'Current Bid Price',
+    'This is current price that is being paid for per MKR. Has each bid is for a decreasing amount of MKR, the price each time will increase.'
+  ],
+  [
+    'Bidder',
+    'This is the address of the user who made the bid. This can be clicked on to view their address in Etherscan.'
+  ],
+  [
+    'Instant Bid',
+    'Instant Bid allows you to bid for the pre-definied next available amount. For example, if the current bid is 200MKR, the next available bid is 194MKR and Instant Bid will calculate this for you.'
+  ],
+  [
+    'Custom Bid',
+    'Custom Bid allows you to bid any amount of MKR, providing it is at least 3% lower than the current best bid.'
+  ],
+
+  [
+    'Deal Auction/Call Deal',
+    'This option becomes available once the auction time has expired. This can be called by anyone, and it is needed to give the winner bidder their MKR.'
+  ],
+  [
+    'Auction Completed',
+    'This signifies that the auction has fully completed, and has been ‘Dealt’. You can see the amount of MKR that won (Lot Size) and the Price in the ‘Deal’ event within the auction details.'
+  ],
+  [
+    'Current Winning Bidder',
+    'If you see this label on any of the auctions, this indicates that your bid is currently the best bid and on course for winning. If you see this label, and the button ‘Deal Auction’ is available, you should click it and then ‘Call Deal’ to claim your MKR.'
+  ],
+  [
+    'Show Only Participating',
+    'This filter option allows you to filter by all the bids you have participated in (winning or not).'
+  ]
+];
+
 const AuctionFilters = ({ title, text, action, forceExpanded }) => {
   const { maker, web3Connected } = useMaker();
   const [collapsed, setCollapsed] = useState(true);
@@ -156,11 +220,16 @@ const AuctionFilters = ({ title, text, action, forceExpanded }) => {
               variant: 'styles.roundedCard'
             }}
           >
-            {' '}
-            <Text>
-              glossary, kick, tend, dent, deal, vat, flop, flip, bid, lot,
-              price, tau, tll, adapter, end...
-            </Text>
+            <Grid gap={6} columns={2}>
+              {gloss.map(([title, text]) => {
+                return (<Box>
+                  <Text mb="1" variant="boldBody">{title}</Text>
+                <Text> 
+                  {/* <Text mb="2" variant="boldBody" as="span">{title}{" "}</Text> */}
+                   {text}</Text>
+                </Box>)
+              })}
+              </Grid>
           </Box>
         </Box>
       )}
