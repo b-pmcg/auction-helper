@@ -337,10 +337,8 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
                     }
                     fetchAuctionsSet([auctionId]);
                   }}
-
                   small={calculateBidPrice}
-
-inputValidation={bidValidationTests}
+                  inputValidation={bidValidationTests}
                   actionText={'Bid Now'}
                 />
               ],
@@ -412,9 +410,13 @@ inputValidation={bidValidationTests}
           key={`${latestLot}-${vatDaiBalance}`}
           remainingBal={
             vatDaiBalance &&
-            `${BigNumber(vatDaiBalance)
+            BigNumber(vatDaiBalance)
               .minus(BigNumber(latestBid))
-              .toFormat(0, 4)} DAI`
+              .lt(0)
+              ? '--- DAI'
+              : `${BigNumber(vatDaiBalance)
+                  .minus(BigNumber(latestBid))
+                  .toFormat(0, 4)} DAI`
           }
           currentBid={`${new BigNumber(latestLot).toFixed(2, 1)} MKR`}
           minMkrAsk={`${minMkrAsk.toFixed(2, 1)} MKR`}
