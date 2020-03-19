@@ -35,7 +35,16 @@ const Index = () => {
           <title>Maker Auctions</title>
         </Head>
 
-        <Text variant="boldBody">Welcome to Maker auctions</Text>
+        {/* <Text variant="boldBody">Welcome to Maker auctions</Text> */}
+        <Heading
+            variant="h1"
+            sx={{
+              py: 7
+            }}
+          >
+            Maker Auctions
+          </Heading>
+
         {/* <Box sx={{ my: 2 }}>
           <Link href="/flip">
             <StyledLink variant="nav">Collateral Auctions →</StyledLink>
