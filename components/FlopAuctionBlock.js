@@ -125,6 +125,8 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
     event => event.type != 'Deal'
   );
 
+  const minMkrAsk = new BigNumber(latestLot).div(stepSize);
+
   const hasDent = sortedEvents[0].type === 'Dent';
 
   const now = new Date().getTime();
@@ -148,7 +150,6 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
 
   const handleInstantBid = () => {
     BigNumber.set({ DECIMAL_PLACES: 18, ROUNDING_MODE: BigNumber.ROUND_DOWN });
-    const minMkrAsk = new BigNumber(latestLot).div(stepSize);
     return callFlopDent(auctionId, minMkrAsk, latestBid);
   };
 
@@ -183,7 +184,6 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
     // [() => !web3Connected],
     [
       val => {
-        const minMkrAsk = new BigNumber(latestLot).div(stepSize);
         return minMkrAsk.lt(val);
       },
       `Must ask for at least ${new BigNumber(stepSize)
@@ -230,7 +230,13 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
                 buttonOnly
                 onSubmit={handleInstantBid}
                 onTxFinished={() => fetchAuctionsSet([auctionId])}
-                small={''}
+                small={`Bidding ${BigNumber(latestBid).toFixed(
+                  2
+                )} DAI in exchange for ${minMkrAsk.toFixed(4)} MKR (${BigNumber(
+                  latestBid
+                )
+                  .div(minMkrAsk)
+                  .toFixed(2)} MKR/DAI)`}
                 actionText={'Bid Now'}
               />
             ],
@@ -245,7 +251,7 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
                 small={inputState =>
                   `Bidding ${BigNumber(latestBid).toFixed(
                     2
-                  )} Dai in exchange for ${
+                  )} DAI in exchange for ${
                     !inputState || inputState.eq(0) || inputState.isNaN()
                       ? '---'
                       : inputState
