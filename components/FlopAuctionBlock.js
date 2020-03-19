@@ -113,7 +113,9 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
   const { callFlopDent, callFlopDeal } = useAuctionActions();
   const fetchAuctionsSet = useAuctionsStore(state => state.fetchSet);
   const sortedEvents = events.sort(byTimestamp); // DEAL , [...DENT] , KICK ->
-  const chickenDinner = maker.currentAddress() === sortedEvents[0].fromAddress;
+  const chickenDinner =
+    sortedEvents[0].type !== 'Kick' &&
+    maker.currentAddress() === sortedEvents[0].fromAddress;
 
   const { bid: latestBid, lot: latestLot } = sortedEvents.find(
     event => event.type != 'Deal'
