@@ -155,7 +155,6 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
 
   useEffect(() => {
     const timerID = setTimeout(async () => {
-      console.log('hello');
       const newEvents = await maker
         .service('validator')
         .fetchFlopAuctionsByIds([auctionId]);

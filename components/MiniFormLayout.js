@@ -14,7 +14,7 @@ import {
   Input,
   Flex
 } from 'theme-ui';
-import { TX_PENDING, TX_SUCCESS, TX_ERROR } from '../constants';
+import { TX_PENDING, TX_SUCCESS, TX_ERROR, ZERO } from '../constants';
 import useAuctionsStore, { selectors } from '../stores/auctionsStore';
 
 const MiniFormLayout = ({
@@ -50,11 +50,12 @@ const MiniFormLayout = ({
     errorMessages.push(txErrorMsg);
   }
 
-  const _disabled =
-    disabled ||
-    (!buttonOnly && !inputState) ||
-    !!errors.length ||
-    txState === TX_PENDING;
+
+  const _disabled = disabled 
+  || (!buttonOnly && !inputState) 
+  || (inputState && inputState.eq(ZERO))
+  !! errors.length 
+  || txState === TX_PENDING;
 
   const _onSubmit = () => {
     const txObject = onSubmit(inputState);
