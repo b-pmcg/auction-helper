@@ -27,7 +27,7 @@ const MiniFormLayout = ({
   onSubmit,
   inputValidation,
   onChange,
-  onTxFinished, 
+  onTxFinished,
   error,
   small
 }) => {
@@ -58,28 +58,29 @@ const MiniFormLayout = ({
 
   const _onSubmit = () => {
     const txObject = onSubmit(inputState);
-    setTxErrorMsg(undefined)
+    setTxErrorMsg(undefined);
     maker.service('transactionManager').listen(txObject, {
       initialized: () => {
         setTxState(TX_PENDING);
       },
       pending: tx => {
         setTxState(TX_PENDING);
-        setTxMsg('Please wait while the transaction is being mined (this can take a while)')
-
+        setTxMsg(
+          'Please wait while the transaction is being mined (this can take a while)'
+        );
       },
       mined: tx => {
         setTxState(TX_SUCCESS);
-        setTxMsg('Transaction Sucessful!')
-        setInputState(undefined)
+        setTxMsg('Transaction Sucessful!');
+        setInputState(undefined);
         if (onTxFinished) onTxFinished();
       },
       error: (_, err) => {
         const errorMsg = _.error.message.split('\n')[0];
         setTxState(TX_ERROR);
-        setTxMsg(null)
+        setTxMsg(null);
 
-        setTxErrorMsg(`Transaction failed with error: ${errorMsg}`)
+        setTxErrorMsg(`Transaction failed with error: ${errorMsg}`);
         if (onTxFinished) onTxFinished();
       }
     });
@@ -88,11 +89,9 @@ const MiniFormLayout = ({
 
   const handleInputChange = event => {
     const value = event.target.value;
-    // const state = { amount: undefined, error: undefined };
-
-    if (onChange) onChange(BigNumber(value));
     setInputState(BigNumber(value));
   };
+
   return (
     <Grid gap={2}>
       <Text variant="boldBody">{text}</Text>
@@ -150,10 +149,19 @@ const MiniFormLayout = ({
       {!errorMessages
         ? null
         : errorMessages.map(err => <Text variant="smallDanger">{err}</Text>)}
-      <Text variant="small">{small}</Text>
-      {txMsg ? <Text variant="small" sx={{
-        color: 'primary'
-      }}>{txMsg}</Text> : null}
+      <Text variant="small">
+        {typeof small === 'function' ? small(inputState) : small}
+      </Text>
+      {txMsg ? (
+        <Text
+          variant="small"
+          sx={{
+            color: 'primary'
+          }}
+        >
+          {txMsg}
+        </Text>
+      ) : null}
     </Grid>
   );
 };

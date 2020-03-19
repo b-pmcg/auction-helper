@@ -112,7 +112,6 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
   const { hasDaiAllowance, hasFlopHope, hasJoinDaiHope } = allowances;
   const { callFlopDent, callFlopDeal } = useAuctionActions();
   const fetchAuctionsSet = useAuctionsStore(state => state.fetchSet);
-  const [inputState, setInputState] = useState(new BigNumber(0));
   const sortedEvents = events.sort(byTimestamp); // DEAL , [...DENT] , KICK ->
   const chickenDinner = maker.currentAddress() === sortedEvents[0].fromAddress;
 
@@ -228,13 +227,22 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
                 text={'Enter the amount of MKR requested for this auction'}
                 inputUnit="MKR"
                 onSubmit={handleTendCTA}
-                onChange={setInputState}
                 onTxFinished={() => fetchAuctionsSet([auctionId])}
-                small={`Bidding ${new BigNumber(latestBid).toFixed(
-                  2
-                )} Dai in exchange for ${
-                  inputState.eq(0) || inputState.isNaN() ? '---' : inputState
-                } MKR`}
+                small={inputState =>
+                  `Bidding ${BigNumber(latestBid).toFixed(
+                    2
+                  )} Dai in exchange for ${
+                    !inputState || inputState.eq(0) || inputState.isNaN()
+                      ? '---'
+                      : inputState
+                  } MKR (${
+                    !inputState || inputState.eq(0) || inputState.isNaN()
+                      ? '---'
+                      : BigNumber(latestBid)
+                          .div(inputState)
+                          .toFixed(2)
+                  } MKR/DAI)`
+                }
                 inputValidation={bidValidationTests}
                 actionText={'Bid Now'}
               />
