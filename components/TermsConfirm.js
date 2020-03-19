@@ -59,7 +59,9 @@ const TermsConfirm = ({ onConfirm, confirmed }) => {
               I have read and accept these{' '}
               <Link
                 href="/terms"
+                // variant="clean"
                 sx={{
+                  variant: 'styles.a',
                   display: 'inline'
                 }}
               >

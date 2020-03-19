@@ -43,7 +43,7 @@ const AuctionEvent = ({
     ['Timestamp', timestamp],
 
     [
-      'Bidder',
+      'Sender',
       <a href={etherscanLink(sender, network)} target="_blank">
         {' '}
         {sender.slice(0, 7) + '...' + sender.slice(-4)}
@@ -337,7 +337,10 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
                     }
                     fetchAuctionsSet([auctionId]);
                   }}
+
                   small={calculateBidPrice}
+
+inputValidation={bidValidationTests}
                   actionText={'Bid Now'}
                 />
               ],
@@ -392,7 +395,7 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
               sender={fromAddress}
               lot={new BigNumber(eventLot).toFormat(4, 6)}
               bid={`${new BigNumber(eventBid).toFormat(2, 4)} DAI`}
-              currentBid={`${currentBid.toFormat(2, 4)} DAI/MKR`}
+              currentBid={`${currentBid.toFormat(2, 4)} MKR/DAI`}
               timestamp={
                 <Text>
                   <Moment format="HH:mm, DD MMM" withTitle>

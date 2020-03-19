@@ -49,10 +49,10 @@ const gloss = [
   ],
   [
     'Current Bid Price',
-    'The current price that is being paid for per MKR. Has each bid is for a decreasing amount of MKR, the price each time will increase.'
+    'The current price that is being bid for MKR in Dai. As each bid is for a decreasing amount of MKR, the bid price after each bid will increase.'
   ],
   [
-    'Bidder',
+    'Sender',
     'The address of the user who made the bid. This can be clicked on to view their address in Etherscan.'
   ],
   [

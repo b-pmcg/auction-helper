@@ -14,6 +14,7 @@ import AuctionsLayout from '../components/AuctionsLayout';
 import useAuctionsStore, { selectors } from '../stores/auctionsStore';
 import useAllowances from '../hooks/useAllowances';
 import ReactGA from 'react-ga';
+import useSystemStore from '../stores/systemStore';
 
 
 const Index = () => {
@@ -27,6 +28,8 @@ const Index = () => {
   const [TOCAccepted, setTOCAccepted] = useState(false);
   const allowances = useAllowances();
   const [{ isSyncing, lastSynced }, sync] = useState({});
+  const featureFlags = useSystemStore(state => state.featureFlags);
+  const hasFlipFlag = featureFlags.includes('flip-ui');
 
 
   useEffect(() => {
@@ -53,6 +56,34 @@ const Index = () => {
     }
   }, [auctions]);
 
+
+  if (!hasFlipFlag)
+    return (
+      <GuttedLayout>
+        <>
+          <Heading
+            variant="h1"
+            sx={{
+              py: 7
+            }}
+          >
+            Collateral Auctions
+            <Text
+              variant="caps"
+              sx={{
+                color: 'orange',
+                display: 'inline-block',
+                ml: 4
+              }}
+            >
+              BETA{' '}
+            </Text>
+          </Heading>
+
+          <Text>Coming soon.</Text>
+        </>
+      </GuttedLayout>
+    );
 
   return (
     <GuttedLayout>
