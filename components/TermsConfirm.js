@@ -36,7 +36,7 @@ const TermsConfirm = ({ onConfirm, confirmed }) => {
         }}
       >
         <Text variant="boldBody" pb="2">
-          Please accept the Terms and Conditions before bidding
+          Please accept the Terms of Service before bidding.
         </Text>
         <Flex
           sx={{
