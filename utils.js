@@ -1,13 +1,13 @@
-import { balanceRounding } from './constants';
+import { balanceRounding, ZERO } from './constants';
 
 export const getValueOrDefault = (value, def = '-') => {
   return value ? value : def;
 };
 
 export const formatBalance = value => {
-  if (value === 0) return '0.000000';
-  if (!value) return;
   if (typeof value === 'string') value = parseFloat(value);
+  if (value === 0) return '0.000';
+  if (!value) return;
   if (value < 1)
     return value.toLocaleString(undefined, {
       minimumFractionDigits: balanceRounding.zeroToOne,
