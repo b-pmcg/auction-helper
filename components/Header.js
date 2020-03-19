@@ -6,6 +6,7 @@ import useMaker from '../hooks/useMaker';
 import GuttedLayout from './GuttedLayout';
 import Logo from './Logo';
 import { useRouter } from 'next/router';
+import ReactGA from 'react-ga';
 
 export default () => {
   const { maker, network, web3Connected, setWeb3Connected } = useMaker();
@@ -22,6 +23,11 @@ export default () => {
           );
 
         setWeb3Connected(true);
+        ReactGA.event({
+          category: 'account',
+          action: 'connected',
+          label: maker.currentAddress()
+        });
       }
     } catch (err) {
       window.alert(err);

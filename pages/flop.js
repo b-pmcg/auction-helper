@@ -14,6 +14,8 @@ import TermsConfirm from '../components/TermsConfirm';
 import useAllowances from '../hooks/useAllowances';
 import Moment from 'react-moment';
 import useAuctionsStore, { selectors } from '../stores/auctionsStore';
+import ReactGA from 'react-ga';
+
 
 const Index = () => {
   const { maker, web3Connected } = useMaker();
@@ -25,6 +27,13 @@ const Index = () => {
   const [TOCAccepted, setTOCAccepted] = useState(false);
   const allowances = useAllowances();
   const [{ isSyncing, lastSynced }, sync] = useState({});
+
+
+  useEffect(() => {
+    if (window !== undefined) {
+      ReactGA.pageview(window.location.pathname + window.location.search);
+    }
+  }, []);
 
   useEffect(() => {
     if (web3Connected) {

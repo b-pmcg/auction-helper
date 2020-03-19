@@ -9,6 +9,7 @@ import AccountManagerLayout from '../components/AccountManagerLayout';
 import ActionTabs from './ActionTabs';
 import MiniFormLayout from './MiniFormLayout';
 import { formatBalance } from '../utils';
+import ReactGA from 'react-ga';
 
 export default ({ allowances }) => {
   const { maker, web3Connected } = useMaker();
@@ -202,11 +203,18 @@ export default ({ allowances }) => {
                         }}
                       >
                         <MiniFormLayout
-                          text={'Deposit DAI to the Adapter'}
+                          text={'Deposit DAI into the VAT'}
                           disabled={false}
                           inputUnit="DAI"
                           onSubmit={joinDaiToAdapter}
-                          onTxFinished={updateDaiBalances}
+                          onTxFinished={() => {
+                            ReactGA.event({
+                              category: 'account',
+                              action: 'deposited'
+                              // label: maker.currentAddress()
+                            });
+                            updateDaiBalances();
+                          }}
                           small={''}
                           actionText={'Deposit'}
                         />
@@ -224,11 +232,18 @@ export default ({ allowances }) => {
                         }}
                       >
                         <MiniFormLayout
-                          text={'Withdraw DAI from the Adapter'}
+                          text={'Withdraw DAI from the VAT'}
                           disabled={false}
                           inputUnit="DAI"
                           onSubmit={exitDaiFromAdapter}
-                          onTxFinished={updateDaiBalances}
+                          onTxFinished={() => {
+                            ReactGA.event({
+                              category: 'account',
+                              action: 'withdraw'
+                              // label: maker.currentAddress()
+                            });
+                            updateDaiBalances();
+                          }}
                           small={''}
                           actionText={'Withdraw'}
                         />

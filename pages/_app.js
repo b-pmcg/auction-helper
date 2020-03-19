@@ -4,6 +4,8 @@ import MakerProvider from '../providers/MakerProvider';
 import { ThemeProvider, Styled, Box } from 'theme-ui';
 import theme from '../theme';
 import Header from '../components/Header';
+import ReactGA from 'react-ga';
+
 class MyApp extends App {
   state = {
     network: ''
@@ -13,6 +15,11 @@ class MyApp extends App {
     this.setState({
       network: window.location.search.includes('kovan') ? 'kovan' : 'mainnet'
     });
+
+    if (window !== undefined) {
+      ReactGA.initialize('UA-65766767-8');
+      // ReactGA.pageview(window.location.pathname + window.location.search);
+    }
   }
 
   render() {
