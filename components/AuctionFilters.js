@@ -130,16 +130,19 @@ const AuctionFilters = ({ title, text, action, forceExpanded }) => {
         <Box ml="auto">
           <Select
             sx={{
-              width: ['100%', '200px'],
+              width: ['100%', '300px'],
               borderColor: 'border',
               bg: 'white'
             }}
             defaultValue="Sort By Id (Desc)"
             onChange={({ target: { value } }) => setSortBy(value)}
           >
-            <option value="byLatest">Sort By Id (Desc)</option>
-            <option value="byTime">Time Remaining</option>
-            <option value="byBidPrice">Current Bid Price</option>
+            <option value="byLatestDesc">Sort By Id (Desc)</option>
+            <option value="byLatestAsc">Sort By Id (Asc)</option>
+            <option value="byTimeAsc">Time Remaining (Asc)</option>
+            <option value="byTimeDesc">Time Remaining (Desc)</option>
+            <option value="byBidPriceAsc">Current Bid Price (Asc)</option>
+            <option value="byBidPriceDesc">Current Bid Price (Desc)</option>
           </Select>
         </Box>
       </Flex>
