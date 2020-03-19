@@ -19,7 +19,7 @@ import {
 } from '../constants';
 import useAuctionsStore, { selectors } from '../stores/auctionsStore';
 import InfoPill from './InfoPill';
-import { TX_SUCCESS, } from '../constants';
+import { TX_SUCCESS } from '../constants';
 
 const AuctionEvent = ({
   type,
@@ -225,80 +225,78 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
       end={end}
       tic={tic}
       actions={
-        justBidded
-          ? (
-            <Box variant="styles.statusBox.success">
-              You have successfully bid on that auction!
-            </Box>
-          )
-          : (
-            <ActionTabs
-              actions={[
-                [
-                  'Instant Bid',
-                  <MiniFormLayout
-                    disabled={auctionStatus !== IN_PROGRESS || !canBid}
-                    text={'Bid for the next minimum increment'}
-                    buttonOnly
-                    onSubmit={handleInstantBid}
-                    onTxFinished={(status) => {
-                      if(status === TX_SUCCESS) {
-                        setJustBidded(true);
-                      }
-                      fetchAuctionsSet([auctionId])
-                    }}
-                    small={`Bidding ${BigNumber(latestBid).toFixed(
+        justBidded ? (
+          <Box variant="styles.statusBox.success">
+            You have successfully bid on that auction!
+          </Box>
+        ) : (
+          <ActionTabs
+            actions={[
+              [
+                'Instant Bid',
+                <MiniFormLayout
+                  disabled={auctionStatus !== IN_PROGRESS || !canBid}
+                  text={'Bid for the next minimum increment'}
+                  buttonOnly
+                  onSubmit={handleInstantBid}
+                  onTxFinished={status => {
+                    if (status === TX_SUCCESS) {
+                      setJustBidded(true);
+                    }
+                    fetchAuctionsSet([auctionId]);
+                  }}
+                  small={`Bidding ${BigNumber(latestBid).toFixed(
+                    2
+                  )} DAI in exchange for ${minMkrAsk.toFixed(
+                    4
+                  )} MKR (${BigNumber(latestBid)
+                    .div(minMkrAsk)
+                    .toFixed(2)} MKR/DAI)`}
+                  actionText={'Bid Now'}
+                />
+              ],
+              [
+                'Custom Bid',
+                <MiniFormLayout
+                  disabled={auctionStatus !== IN_PROGRESS || !canBid}
+                  text={'Enter the amount of MKR requested for this auction'}
+                  inputUnit="MKR"
+                  onSubmit={handleTendCTA}
+                  onTxFinished={() => fetchAuctionsSet([auctionId])}
+                  small={inputState =>
+                    `Bidding ${BigNumber(latestBid).toFixed(
                       2
-                    )} DAI in exchange for ${minMkrAsk.toFixed(4)} MKR (${BigNumber(
-                      latestBid
-                    )
-                      .div(minMkrAsk)
-                      .toFixed(2)} MKR/DAI)`}
-                    actionText={'Bid Now'}
-                  />
-                ],
-                [
-                  'Custom Bid',
-                  <MiniFormLayout
-                    disabled={auctionStatus !== IN_PROGRESS || !canBid}
-                    text={'Enter the amount of MKR requested for this auction'}
-                    inputUnit="MKR"
-                    onSubmit={handleTendCTA}
-                    onTxFinished={() => fetchAuctionsSet([auctionId])}
-                    small={inputState =>
-                      `Bidding ${BigNumber(latestBid).toFixed(
-                        2
-                      )} DAI in exchange for ${
+                    )} DAI in exchange for ${
                       !inputState || inputState.eq(0) || inputState.isNaN()
                         ? '---'
                         : inputState
-                      } MKR (${
+                    } MKR (${
                       !inputState || inputState.eq(0) || inputState.isNaN()
                         ? '---'
                         : BigNumber(latestBid)
-                          .div(inputState)
-                          .toFixed(2)
-                      } MKR/DAI)`
-                    }
-                    inputValidation={bidValidationTests}
-                    actionText={'Bid Now'}
-                  />
-                ],
-                auctionStatus === CAN_BE_DEALT && [
-                  'Deal Auction',
-                  <MiniFormLayout
-                    disabled={auctionStatus !== CAN_BE_DEALT}
-                    text={'Call deal to end auction and mint MKR'}
-                    buttonOnly
-                    onTxFinished={() => fetchAuctionsSet([auctionId])}
-                    onSubmit={() => callFlopDeal(auctionId)}
-                    small={''}
-                    actionText={'Call deal'}
-                  />
-                ]
-              ]}
-            />
-          )
+                            .div(inputState)
+                            .toFixed(2)
+                    } MKR/DAI)`
+                  }
+                  inputValidation={bidValidationTests}
+                  actionText={'Bid Now'}
+                />
+              ],
+              auctionStatus === CAN_BE_DEALT && [
+                'Deal Auction',
+                <MiniFormLayout
+                  disabled={auctionStatus !== CAN_BE_DEALT}
+                  text={'Call deal to end auction and mint MKR'}
+                  buttonOnly
+                  onTxFinished={() => fetchAuctionsSet([auctionId])}
+                  onSubmit={() => callFlopDeal(auctionId)}
+                  small={''}
+                  actionText={'Call deal'}
+                />
+              ]
+            ]}
+          />
+        )
       }
       auctionEvents={events.map(
         (
