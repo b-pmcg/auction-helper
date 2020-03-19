@@ -1,6 +1,6 @@
 import { Heading, Text, jsx, Box, Button, Styled, Input, Flex } from 'theme-ui';
 
-export default ({ children }) => {
+export default ({ children, maxWidth = '1140px' }) => {
   return (
     <Flex
       sx={{
@@ -10,7 +10,7 @@ export default ({ children }) => {
       <Box
         sx={{
           px: 5,
-          width: '1140px'
+          width: maxWidth
         }}
       >
         {children}
