@@ -105,7 +105,7 @@ const OrderSummary = ({
   const fields = [
     ['Max bid amount', minMkrAsk, { fontWeight: 600 }],
     ['Current bid amount', currentBid, { fontWeight: 600 }],
-    ['VAT balance after bid', calculatedBidPrice, { fontWeight: 600 }]
+    ['Bid price per MKR', calculatedBidPrice, { fontWeight: 600 }]
   ];
 
   const SummaryLine = ({ title, value, styling }) => (
@@ -167,7 +167,7 @@ const OrderSummary = ({
         }}
       >
         <SummaryLine
-          title={'Balance Remaining'}
+          title={'VAT balance after bid'}
           value={remainingBal}
           styling={{ fontWeight: 600 }}
         />

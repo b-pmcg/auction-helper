@@ -208,7 +208,10 @@ export default ({
                 {auctionStatusHeadings[COMPLETED]}.{' '}
               </Box>
             ) : (
-              <Box pt="6">{actions}</Box>
+              <Grid columns={2}>
+                <Box pt="6">{actions}</Box>
+                <Box pt="6">{orderSummary}</Box>
+              </Grid>
             )}
           </Box>
         </>
@@ -216,12 +219,3 @@ export default ({
     </Box>
   );
 };
-
-/**
- * 
- * 
-    <Grid columns={2}>
-    <Box pt="6">{actions}</Box>
-    <Box pt="6">{orderSummary}</Box>
-  </Grid>
- */
