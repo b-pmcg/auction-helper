@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import BigNumber from 'bignumber.js';
 import {
   Heading,
@@ -29,6 +29,7 @@ const MiniFormLayout = ({
   onChange,
   onTxFinished,
   error,
+  onMount,
   small
 }) => {
   const fetchAuctions = useAuctionsStore(state => state.fetchAll);
@@ -52,12 +53,13 @@ const MiniFormLayout = ({
 
   // console.log(txState === TX_PENDING)
 
-  const _disabled = disabled 
-  || (!buttonOnly && !inputState) 
-  || (inputState && inputState.eq(ZERO))
-  || !! errors.length 
-  || txState === TX_PENDING;
-  
+  const _disabled =
+    disabled ||
+    (!buttonOnly && !inputState) ||
+    (inputState && inputState.eq(ZERO)) ||
+    !!errors.length ||
+    txState === TX_PENDING;
+
   const _onSubmit = () => {
     const txObject = onSubmit(inputState);
     setTxErrorMsg(undefined);
@@ -94,9 +96,13 @@ const MiniFormLayout = ({
     setInputState(BigNumber(value));
   };
 
+  useEffect(() => {
+    if (onMount) onMount();
+  }, []);
+
   return (
     <Grid gap={2}>
-      <Text variant="boldBody">{text}</Text>
+      <Text >{text}</Text>
       <Flex
         sx={{
           flexDirection: ['column', 'row']

@@ -26,6 +26,7 @@ const ActionTabs = ({ actions }) => {
         {tabs.map((t, i) => (
           <Button
             key={`${t}-${i}`}
+            disabled={f[i][3]}
             variant={i !== activeTabIndex ? 'pillInactive' : 'pill'}
             sx={{
               mr: 2

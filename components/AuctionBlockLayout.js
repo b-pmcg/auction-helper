@@ -24,7 +24,8 @@ export default ({
   actions,
   forceExpanded,
   hasDent,
-  pill
+  pill,
+  orderSummary
 }) => {
   const [timer, setTimer] = useState({
     end: undefined,
@@ -35,10 +36,10 @@ export default ({
     [COMPLETED]: 'Auction completed',
     [IN_PROGRESS]: (
       <Box>
-        {
-         timer.tic && <Text variant={'styles.time.major'}>{timer.tic}</Text>
-        }
-        <Text variant={timer.tic ? 'styles.time.minor' : 'styles.time.major'}>{timer.end}</Text>        
+        {timer.tic && <Text variant={'styles.time.major'}>{timer.tic}</Text>}
+        <Text variant={timer.tic ? 'styles.time.minor' : 'styles.time.major'}>
+          {timer.end}
+        </Text>
       </Box>
     ),
     [CAN_BE_DEALT]: 'Auction Can Be Dealt',
@@ -73,19 +74,17 @@ export default ({
 
   const parseRemainingTime = time => {
     var days = Math.floor(time / (1000 * 60 * 60 * 24));
-    var hours = Math.floor(
-      (time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-    );
+    var hours = Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     var minutes = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60));
     var seconds = Math.floor((time % (1000 * 60)) / 1000);
 
-    return {days, hours, minutes, seconds};
-  }
+    return { days, hours, minutes, seconds };
+  };
 
-  const formatRemainingTime = (time) => {
+  const formatRemainingTime = time => {
     const { days, hours, minutes } = time;
     return `${days}d ${hours}h ${minutes}m`;
-  }
+  };
 
   useEffect(() => {
     // if there is no Dent first will be Kic
@@ -101,7 +100,9 @@ export default ({
 
       setTimer({
         end: formatRemainingTime(parseRemainingTime(overallDownDate - now)),
-        tic: hasDent ? formatRemainingTime(parseRemainingTime(distance)) : undefined
+        tic: hasDent
+          ? formatRemainingTime(parseRemainingTime(distance))
+          : undefined
       });
 
       if (distance <= 0) {
@@ -201,11 +202,17 @@ export default ({
         <>
           <Box p="6">
             <EventsList events={auctionEvents} />
-            { 
-              auctionStatus === COMPLETED
-              ? <Box variant="styles.statusBox.warning"> { auctionStatusHeadings[COMPLETED] }. </Box>
-              : <Box pt="6">{actions}</Box>
-            }
+            {auctionStatus === COMPLETED ? (
+              <Box variant="styles.statusBox.warning">
+                {' '}
+                {auctionStatusHeadings[COMPLETED]}.{' '}
+              </Box>
+            ) : (
+              <Grid columns={1}>
+                <Box pt="6">{actions}</Box>
+                {/* <Box pt="6">{orderSummary}</Box> */}
+              </Grid>
+            )}
           </Box>
         </>
       )}

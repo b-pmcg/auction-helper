@@ -125,7 +125,8 @@ export default {
         bg: 'primaryActive'
       },
       '&:disabled': {
-        bg: 'lightGreen',
+        opacity: 0.5,
+        // bg: 'lightGreen',
         pointerEvents: 'none',
         cursor: 'not-allowed'
       }

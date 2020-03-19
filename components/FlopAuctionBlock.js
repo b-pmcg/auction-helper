@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import useMaker from '../hooks/useMaker';
-import { Text, jsx, Grid, Box } from 'theme-ui';
+import { Text, jsx, Grid, Box, Flex } from 'theme-ui';
 import BigNumber from 'bignumber.js';
 import Moment from 'react-moment';
 import { etherscanLink } from '../utils';
@@ -97,6 +97,93 @@ const AuctionEvent = ({
     </Grid>
   );
 };
+const OrderSummary = ({
+  currentBid,
+  minMkrAsk,
+  calculatedBidPrice,
+  remainingBal
+}) => {
+  const fields = [
+    ['Max bid amount', minMkrAsk, { fontWeight: 600 }],
+    ['Current bid amount', currentBid, { fontWeight: 600 }],
+    ['Bid price per MKR', calculatedBidPrice, { fontWeight: 600 }]
+  ];
+
+  const SummaryLine = ({ title, value, styling }) => (
+    <Grid
+      columns={2}
+      sx={{
+        justifyContent: 'space-between'
+      }}
+    >
+      <Text
+        sx={{
+          fontSize: 1,
+          textAlign: 'left'
+        }}
+      >
+        {title}
+      </Text>
+      <Text
+        sx={{
+          fontSize: 1,
+          textAlign: 'right',
+
+          ...styling
+        }}
+      >
+        {value}
+      </Text>
+    </Grid>
+  );
+
+  return (
+    <Grid gap={2}>
+      <Text
+        variant="caps"
+      >
+        {'Order Summary'}
+      </Text>
+      <Grid
+        maxWidth={'500px'}
+        gap={2}
+        rows={[2, 4, 7]}
+        sx={{
+          bg: 'background',
+          p: 5,
+          borderRadius: 5
+        }}
+      >
+        {fields.map(([title, value, styling]) => {
+          return (
+            <SummaryLine
+              key={title}
+              title={title}
+              value={value}
+              styling={styling}
+            />
+          );
+        })}
+      </Grid>
+      <Grid
+        gap={2}
+        rows={[2, 4, 7]}
+        sx={{
+          bg: 'background',
+          p: 5,
+          borderRadius: 5
+        }}
+      >
+        <SummaryLine
+          key={'VAT balance after bid'}
+          title={'VAT balance after bid'}
+          value={remainingBal}
+          styling={{ fontWeight: 600 }}
+        />
+      </Grid>
+    </Grid>
+  );
+};
 
 const byTimestamp = (prev, next) => {
   const nextTs = new Date(next.timestamp).getTime();
@@ -114,6 +201,7 @@ const byTimestamp = (prev, next) => {
 
 export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
   const { maker } = useMaker();
+  const [calculatedBidPrice, setCalculatedBidPrice] = useState(BigNumber(0));
   const { hasDaiAllowance, hasFlopHope, hasJoinDaiHope } = allowances;
   let { vatDaiBalance } = useBalances();
   const { callFlopDent, callFlopDeal } = useAuctionActions();
@@ -171,16 +259,6 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
     };
   }, []);
 
-  /**
-   * disabled when:
-   * - allowances & hopes not set
-   * - 'deal' has been called (if deal event exists for auctionId)
-   * - 'end' has passed
-   * - MKR 'bid' is gt DAI 'lot' size
-   * - MKR 'bid' is gte the current 'bid' (must be smaller by a certain % [3?])
-   * - when the latest bid duration (ttl) has passed
-   * - OR when the auction duration (tau) has passed.
-   */
   // const bidDisabled = state.error;
   const mainValidation = [];
 
@@ -206,6 +284,20 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
       )} DAI in the Vat to bid`
     ]
   ];
+
+  const calculateBidPrice = inputState => {
+    if (!inputState || inputState.eq(0) || inputState.isNaN()) {
+      const bidPrice = BigNumber(latestBid)
+        .div(minMkrAsk)
+        .toFixed(2);
+      setCalculatedBidPrice(bidPrice);
+    } else {
+      const bidPrice = BigNumber(latestBid)
+        .div(inputState)
+        .toFixed(2);
+      setCalculatedBidPrice(bidPrice);
+    }
+  };
 
   return (
     <AuctionBlockLayout
@@ -235,11 +327,16 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
             actions={[
               [
                 'Instant Bid',
+                <Flex>
+                  <Box>
                 <MiniFormLayout
                   disabled={auctionStatus !== IN_PROGRESS || !canBid}
                   text={'Bid for the next minimum increment'}
                   buttonOnly
                   onSubmit={handleInstantBid}
+                  onMount={() => {
+                    setCalculatedBidPrice(BigNumber(0))
+                  }}
                   onTxFinished={status => {
                     if (status === TX_SUCCESS) {
                       setJustBidded(true);
@@ -251,61 +348,87 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
                     }
                     fetchAuctionsSet([auctionId]);
                   }}
-                  small={`Bidding ${BigNumber(latestBid).toFixed(
-                    2
-                  )} DAI in exchange for ${minMkrAsk.toFixed(
-                    4
-                  )} MKR (${BigNumber(latestBid)
-                    .div(minMkrAsk)
-                    .toFixed(2)} MKR/DAI)`}
+                  small={calculateBidPrice}
                   inputValidation={bidValidationTests}
                   actionText={'Bid Now'}
                 />
+                </Box>
+                <Box ml="auto"> 
+                  <OrderSummary
+                    key={`${latestLot}-${vatDaiBalance}`}
+                    remainingBal={
+                      vatDaiBalance &&
+                      `${BigNumber(vatDaiBalance)
+                        .minus(BigNumber(latestBid))
+                        .toFormat(0, 4)} DAI`
+                    }
+                    currentBid={`${minMkrAsk.toFixed(2, 1)} MKR`}
+                    minMkrAsk={`${minMkrAsk.toFixed(2, 1)} MKR`}
+                    calculatedBidPrice={`${calculatedBidPrice} MKR/DAI`}
+                  />
+                </Box>
+              </Flex>,
+              false, auctionStatus === CAN_BE_DEALT
               ],
               [
                 'Custom Bid',
-                <MiniFormLayout
-                  disabled={auctionStatus !== IN_PROGRESS || !canBid}
-                  text={'Enter the amount of MKR requested for this auction'}
-                  inputUnit="MKR"
-                  onSubmit={handleTendCTA}
-                  onTxFinished={(status) => {
-                    if (status === TX_SUCCESS) {
-                      setJustBidded(true);
-                      ReactGA.event({
-                        category: 'bid',
-                        action: 'bid_custom',
-                        label: auctionId
-                      });
-                    }
+                <Flex>
+                  <Box>
+                    <MiniFormLayout
+                      disabled={auctionStatus !== IN_PROGRESS || !canBid}
+                      text={
+                        'Enter the amount of MKR requested for this auction'
+                      }
+                      inputUnit="MKR"
+                      onSubmit={handleTendCTA}
+                      onMount={() => {
+                        setCalculatedBidPrice(BigNumber(0))
+                      }}
+                      onTxFinished={status => {
+                        if (status === TX_SUCCESS) {
+                          setJustBidded(true);
+                          ReactGA.event({
+                            category: 'bid',
+                            action: 'bid_custom',
+                            label: auctionId
+                          });
+                        }
 
-                    fetchAuctionsSet([auctionId])}}
-                  small={inputState =>
-                    `Bidding ${BigNumber(latestBid).toFixed(
-                      2
-                    )} DAI in exchange for ${
-                      !inputState || inputState.eq(0) || inputState.isNaN()
-                        ? '---'
-                        : inputState
-                    } MKR (${
-                      !inputState || inputState.eq(0) || inputState.isNaN()
-                        ? '---'
-                        : BigNumber(latestBid)
-                            .div(inputState)
-                            .toFixed(2)
-                    } MKR/DAI)`
-                  }
-                  inputValidation={bidValidationTests}
-                  actionText={'Bid Now'}
-                />
+                        fetchAuctionsSet([auctionId]);
+                      }}
+                      small={calculateBidPrice}
+                      inputValidation={bidValidationTests}
+                      actionText={'Bid Now'}
+                    />
+                  </Box>
+                  <Box ml="auto"> 
+                    <OrderSummary
+                      key={`${latestLot}-${vatDaiBalance}`}
+                      remainingBal={
+                        vatDaiBalance &&
+                        `${BigNumber(vatDaiBalance)
+                          .minus(BigNumber(latestBid))
+                          .toFormat(0, 4)} DAI`
+                      }
+                      currentBid={`${new BigNumber(latestLot).toFixed(
+                        2,
+                        1
+                      )} MKR`}
+                      minMkrAsk={`${minMkrAsk.toFixed(2, 1)} MKR`}
+                      calculatedBidPrice={`${calculatedBidPrice} MKR/DAI`}
+                    />
+                  </Box>
+                </Flex>,
+                false, auctionStatus === CAN_BE_DEALT
               ],
               auctionStatus === CAN_BE_DEALT && [
                 'Deal Auction',
+
                 <MiniFormLayout
                   disabled={auctionStatus !== CAN_BE_DEALT}
                   text={'Call deal to end auction and mint MKR'}
                   buttonOnly
-                  onTxFinished={(status) => {
+                  onTxFinished={status => {
                     if (status === TX_SUCCESS) {
                       setJustBidded(true);
                       ReactGA.event({
@@ -315,7 +438,8 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
                       });
                     }
 
-                    fetchAuctionsSet([auctionId])}}
+                    fetchAuctionsSet([auctionId]);
+                  }}
                   onSubmit={() => callFlopDeal(auctionId)}
                   small={''}
                   actionText={'Call deal'}
@@ -325,7 +449,6 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
           />
         )
       }
-      
       auctionEvents={events.map(
         (
           { type, ilk, lot, bid, timestamp, hash, fromAddress, price },
