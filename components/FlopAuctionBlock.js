@@ -5,6 +5,7 @@ import useMaker from '../hooks/useMaker';
 import { Text, jsx, Grid, Box } from 'theme-ui';
 import BigNumber from 'bignumber.js';
 import Moment from 'react-moment';
+import { etherscanLink } from '../utils';
 import MiniFormLayout from './MiniFormLayout';
 import useAuctionActions from '../hooks/useAuctionActions';
 import useBalances from '../hooks/useBalances';
@@ -30,7 +31,8 @@ const AuctionEvent = ({
   tx,
   sender
 }) => {
-  const { maker } = useMaker();
+  const { maker, network } = useMaker();
+
   const fields = [
     ['Event Type', type],
     ['Bid Value', bid],
@@ -41,7 +43,7 @@ const AuctionEvent = ({
 
     [
       'Sender',
-      <a href={`https://etherscan.io/address/${sender}`} target="_blank">
+      <a href={etherscanLink(sender, network)} target="_blank">
         {' '}
         {sender.slice(0, 7) + '...' + sender.slice(-4)}
       </a>,
@@ -51,7 +53,7 @@ const AuctionEvent = ({
     ],
     [
       'Tx',
-      <a href={`https://etherscan.io/tx/${tx}`} target="_blank">
+      <a href={etherscanLink(tx, network)} target="_blank">
         {' '}
         {tx.slice(0, 7) + '...' + tx.slice(-4)}
       </a>
