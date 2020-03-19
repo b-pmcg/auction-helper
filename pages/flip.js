@@ -11,51 +11,50 @@ import GuttedLayout from '../components/GuttedLayout';
 import { AUCTION_DATA_FETCHER } from '../constants';
 import Moment from 'react-moment';
 import AuctionsLayout from '../components/AuctionsLayout';
+import useAuctionsStore, { selectors } from '../stores/auctionsStore';
+import useAllowances from '../hooks/useAllowances';
+import ReactGA from 'react-ga';
+
 
 const Index = () => {
-  const { maker, web3Connected } = useMaker();
-  const [rawAuctionData, updateRawAuctionData] = useState([]);
-  const [lastSynced, updateLastSynced] = useState(undefined);
-  const [auctions, setAuctions] = useState(null);
+
+  const { maker, web3Connected, blockHeight } = useMaker();
+  const auctions = useAuctionsStore(state => state.auctions);
+  const fetchAuctions = useAuctionsStore(state => state.fetchAll);
+  const fetchAuctionsSet = useAuctionsStore(state => state.fetchSet);
+  const fetchFlopStepSize = useAuctionsStore(state => state.fetchFlopStepSize);
+  const stepSize = useAuctionsStore(state => state.flopStepSize);
+  const [TOCAccepted, setTOCAccepted] = useState(false);
+  const allowances = useAllowances();
+  const [{ isSyncing, lastSynced }, sync] = useState({});
+
+  useEffect(() => {
+    console.log(blockHeight);
+  }, [blockHeight])
+  useEffect(() => {
+    if (window !== undefined) {
+      ReactGA.pageview(window.location.pathname + window.location.search);
+    }
+  }, []);
 
   useEffect(() => {
     if (web3Connected) {
       if (!auctions) {
-        fetchAuctions();
+        fetchAuctions(maker);
+        fetchFlopStepSize(maker);
       }
     }
   }, [web3Connected]);
 
-  async function fetchAuctions(shouldSync = false) {
-    const service = maker.service(AUCTION_DATA_FETCHER);
-
-    updateLastSynced(new Date());
-
-    let currentAuctions = await service.fetchFlipAuctions(shouldSync);
-    if (shouldSync) {
-      currentAuctions = [...rawAuctionData, ...currentAuctions];
+  useEffect(() => {
+    if (isSyncing) {
+      sync({
+        lastSynced,
+        isSyncing: false
+      });
     }
-    updateRawAuctionData(currentAuctions);
+  }, [auctions]);
 
-    const groupedEvents = _.groupBy(
-      currentAuctions,
-      auction => auction.auctionId
-    );
-
-    const auctionsData = {};
-
-    Promise.all(
-      Object.keys(groupedEvents).map(async id => {
-        const { end, tic } = await service.getFlipDuration(id);
-
-        auctionsData[id.toString()] = {
-          end,
-          tic,
-          events: groupedEvents[id]
-        };
-      })
-    ).then(() => setAuctions(auctionsData));
-  }
 
   return (
     <GuttedLayout>
@@ -122,7 +121,15 @@ const Index = () => {
               </Text>
             </Flex>
           ) : (
-            <AuctionsLayout auctions={auctions} type="flip" />
+            // <AuctionsLayout auctions={auctions} type="flip" />
+
+            <AuctionsLayout
+            allowances={allowances}
+            stepSize={stepSize}
+            auctions={auctions}
+            type="flip"
+          />
+
           )}
         </>
       )}

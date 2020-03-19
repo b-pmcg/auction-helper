@@ -1,4 +1,5 @@
 /** @jsx jsx */
+import { useState, useEffect } from 'react';
 
 import { Heading, Text, jsx, Button, NavLink, Box, Flex } from 'theme-ui';
 import Link from 'next/link';
@@ -11,7 +12,13 @@ import ReactGA from 'react-ga';
 export default () => {
   const { maker, network, web3Connected, setWeb3Connected } = useMaker();
   const { pathname } = useRouter();
+  const [showOtherUIs, setShow] = useState(false);
 
+  useEffect(() => {
+    if (window) {
+      setShow(window.location.search.includes('show-test-ui'));
+    }
+  }, []);
   async function connectBrowserWallet() {
     try {
       if (maker) {
@@ -72,18 +79,20 @@ export default () => {
             mr: [null, 6]
           }}
         >
-          {/* <Link href="/flip">
-            <NavLink
-              sx={{
-                fontWeight: pathname === '/flip' ? 'bold' : 'normal',
-                cursor: 'default',
-                p: 2,
-                px: [4, 6]
-              }}
-            >
-              Collateral auctions
-            </NavLink>
-          </Link> */}
+          {!showOtherUIs ? null : (
+            <Link href="/flip">
+              <NavLink
+                sx={{
+                  fontWeight: pathname === '/flip' ? 'bold' : 'normal',
+                  cursor: 'default',
+                  p: 2,
+                  px: [4, 6]
+                }}
+              >
+                Collateral auctions
+              </NavLink>
+            </Link>
+          )}
           <Link href="/flop">
             <NavLink
               p={2}
