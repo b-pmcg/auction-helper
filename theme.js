@@ -94,6 +94,7 @@ export default {
       bg: 'transparent',
       color: 'graphite',
       border: '1px solid',
+      cursor: 'pointer',
       borderColor: 'border',
       '&:hover': {
         bg: 'transparent',
@@ -110,19 +111,40 @@ export default {
       outline: 'none',
       variant: 'text.caps',
       letterSpacing: '0.05em',
+      cursor: 'pointer',
       py: 2,
       px: 4,
       color: 'white',
       bg: 'primary',
       border: '1px solid',
-      borderColor: 'primary'
+      borderColor: 'primary',
+      '&:hover': {
+        bg: 'primaryHover'
+      },
+      '&:active': {
+        bg: 'primaryActive'
+      },
+      '&:disabled': {
+        bg: 'lightGreen',
+        pointerEvents: 'none',
+        cursor: 'not-allowed'
+      }
     },
     pillInactive: {
       variant: 'buttons.pill',
       bg: 'transparent',
       color: 'lightGraphite',
       border: '1px solid',
-      borderColor: 'border'
+      borderColor: 'border',
+      '&:hover': {
+        bg: 'transparent',
+        color: 'lightGraphite',
+        borderColor: 'lightGraphite'
+      },
+      '&:active': {
+        borderColor: 'text',
+        color: 'text'
+      }
     },
     clear: {
       bg: 'transparent',
@@ -192,24 +214,30 @@ export default {
       fontSize: 5,
       fontWeight: 'body',
       letterSpacing: '0.4px',
-      color: 'blackThree'
+      color: 'blackThree',
+      cursor: 'pointer',
+      '&:hover': {
+        color: 'primary',
+        cursor: 'pointer'
+      }
     },
 
     footer: {
       fontSize: 4,
       fontWeight: 'semiBold',
       letterSpacing: '0.4px',
-      color: 'blackThree'
+      color: 'blackThree',
+      cursor: 'pointer'
     }
   },
   styles: {
-    time:{
-      display:'inline',
+    time: {
+      display: 'inline',
       major: {
         fontSize: 4,
         fontWeight: 'bold'
       },
-      minor:{
+      minor: {
         fontSize: 1,
         fontWeight: 'semiBold',
         color: 'grayishBlue'
@@ -243,15 +271,15 @@ export default {
         variant: 'styles.statusBox.layout',
         bg: 'lightOrange',
         borderColor: 'orangeBorder',
-        color: 'orange',
+        color: 'orange'
       },
-      success : {
+      success: {
         variant: 'styles.statusBox.layout',
         bg: 'lightCyan',
         borderColor: 'darkCyan',
-        color: 'primaryActive',
-      },      
-    },    
+        color: 'primaryActive'
+      }
+    },
     h1: {
       variant: 'text.heading',
       fontSize: 7
@@ -275,6 +303,10 @@ export default {
     h5: {
       variant: 'text.heading',
       fontSize: 3
+    },
+    a: {
+      color: 'purple',
+      textDecoration: 'none'
     }
     // h6: {
     //   variant: 'text.heading',

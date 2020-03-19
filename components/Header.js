@@ -15,7 +15,7 @@ export default () => {
   const { pathname } = useRouter();
   const [showOtherUIs, setShow] = useState(false);
   const featureFlags = useSystemStore(state => state.featureFlags);
-  const hasFlag = featureFlags.includes('alpha-ui');
+  const hasFlag = true;
   const hasFlipFlag = featureFlags.includes('flip-ui');
   
   useEffect(() => {
