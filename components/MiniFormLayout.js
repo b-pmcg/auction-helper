@@ -75,7 +75,7 @@ const MiniFormLayout = ({
         setTxState(TX_SUCCESS);
         setTxMsg('Transaction Sucessful!');
         setInputState(undefined);
-        if (onTxFinished) onTxFinished();
+        if (onTxFinished) onTxFinished(TX_SUCCESS);
       },
       error: (_, err) => {
         const errorMsg = _.error.message.split('\n')[0];
@@ -83,7 +83,7 @@ const MiniFormLayout = ({
         setTxMsg(null);
 
         setTxErrorMsg(`Transaction failed with error: ${errorMsg}`);
-        if (onTxFinished) onTxFinished();
+        if (onTxFinished) onTxFinished(TX_ERROR);
       }
     });
     return txObject;
