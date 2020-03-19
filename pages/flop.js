@@ -27,7 +27,7 @@ const Index = () => {
   const allowances = useAllowances();
   const [{ isSyncing, lastSynced }, sync] = useState({});
   const featureFlags = useSystemStore(state => state.featureFlags);
-  const hasFlag = featureFlags.includes('alpha-ui');
+  const hasFlag = true;
 
   useEffect(() => {
     if (window !== undefined) {
