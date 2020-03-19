@@ -322,7 +322,7 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
               sender={fromAddress}
               lot={new BigNumber(eventLot).toFormat(4, 6)}
               bid={`${new BigNumber(eventBid).toFormat(2, 4)} DAI`}
-              currentBid={`${currentBid.toFormat(2, 4)} DAI/MKR`}
+              currentBid={`${currentBid.toFormat(2, 4)} MKR/DAI`}
               timestamp={
                 <Text>
                   <Moment format="HH:mm, DD MMM" withTitle>
