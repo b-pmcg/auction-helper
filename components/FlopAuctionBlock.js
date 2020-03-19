@@ -20,6 +20,7 @@ import {
 import useAuctionsStore, { selectors } from '../stores/auctionsStore';
 import InfoPill from './InfoPill';
 import { TX_SUCCESS } from '../constants';
+import ReactGA from 'react-ga';
 
 const AuctionEvent = ({
   type,
@@ -242,6 +243,11 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
                   onTxFinished={status => {
                     if (status === TX_SUCCESS) {
                       setJustBidded(true);
+                      ReactGA.event({
+                        category: 'bid',
+                        action: 'instant',
+                        label: auctionId
+                      });
                     }
                     fetchAuctionsSet([auctionId]);
                   }}
@@ -263,7 +269,17 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
                   text={'Enter the amount of MKR requested for this auction'}
                   inputUnit="MKR"
                   onSubmit={handleTendCTA}
-                  onTxFinished={() => fetchAuctionsSet([auctionId])}
+                  onTxFinished={(status) => {
+                    if (status === TX_SUCCESS) {
+                      setJustBidded(true);
+                      ReactGA.event({
+                        category: 'bid',
+                        action: 'bid_custom',
+                        label: auctionId
+                      });
+                    }
+
+                    fetchAuctionsSet([auctionId])}}
                   small={inputState =>
                     `Bidding ${BigNumber(latestBid).toFixed(
                       2
@@ -289,7 +305,17 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
                   disabled={auctionStatus !== CAN_BE_DEALT}
                   text={'Call deal to end auction and mint MKR'}
                   buttonOnly
-                  onTxFinished={() => fetchAuctionsSet([auctionId])}
+                  onTxFinished={(status) => {
+                    if (status === TX_SUCCESS) {
+                      setJustBidded(true);
+                      ReactGA.event({
+                        category: 'bid',
+                        action: 'bid_deal',
+                        label: auctionId
+                      });
+                    }
+
+                    fetchAuctionsSet([auctionId])}}
                   onSubmit={() => callFlopDeal(auctionId)}
                   small={''}
                   actionText={'Call deal'}
@@ -299,6 +325,7 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
           />
         )
       }
+      
       auctionEvents={events.map(
         (
           { type, ilk, lot, bid, timestamp, hash, fromAddress, price },
