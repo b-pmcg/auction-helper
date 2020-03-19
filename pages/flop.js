@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import useMaker from '../hooks/useMaker';
 import * as _ from 'lodash';
-import { Text, jsx, Flex, Heading, Grid, Box, Spinner, Button } from 'theme-ui';
+import { Text, jsx, Flex, Heading, Box, Spinner, Button } from 'theme-ui';
 import AccountManager from '../components/FlopAccountManager';
 import GuttedLayout from '../components/GuttedLayout';
 import AuctionsLayout from '../components/AuctionsLayout';
@@ -13,18 +13,27 @@ import Footer from '../components/Footer';
 import TermsConfirm from '../components/TermsConfirm';
 import useAllowances from '../hooks/useAllowances';
 import Moment from 'react-moment';
-import useAuctionsStore, { selectors } from '../stores/auctionsStore';
+import useAuctionsStore from '../stores/auctionsStore';
+import ReactGA from 'react-ga';
+import useSystemStore from '../stores/systemStore';
 
 const Index = () => {
   const { maker, web3Connected } = useMaker();
   const auctions = useAuctionsStore(state => state.auctions);
   const fetchAuctions = useAuctionsStore(state => state.fetchAll);
-  const fetchAuctionsSet = useAuctionsStore(state => state.fetchSet);
   const fetchFlopStepSize = useAuctionsStore(state => state.fetchFlopStepSize);
   const stepSize = useAuctionsStore(state => state.flopStepSize);
   const [TOCAccepted, setTOCAccepted] = useState(false);
   const allowances = useAllowances();
   const [{ isSyncing, lastSynced }, sync] = useState({});
+  const featureFlags = useSystemStore(state => state.featureFlags);
+  const hasFlag = featureFlags.includes('alpha-ui');
+
+  useEffect(() => {
+    if (window !== undefined) {
+      ReactGA.pageview(window.location.pathname + window.location.search);
+    }
+  }, []);
 
   useEffect(() => {
     if (web3Connected) {
@@ -35,6 +44,7 @@ const Index = () => {
     }
   }, [web3Connected]);
 
+  useEffect(() => {}, [auctions]);
   useEffect(() => {
     if (isSyncing) {
       sync({
@@ -44,10 +54,37 @@ const Index = () => {
     }
   }, [auctions]);
 
+  if (!hasFlag)
+    return (
+      <GuttedLayout>
+        <>
+          <Heading
+            variant="h1"
+            sx={{
+              py: 7
+            }}
+          >
+            Debt Auctions
+            <Text
+              variant="caps"
+              sx={{
+                color: 'orange',
+                display: 'inline-block',
+                ml: 4
+              }}
+            >
+              BETA{' '}
+            </Text>
+          </Heading>
+
+          <Text>Coming soon.</Text>
+        </>
+      </GuttedLayout>
+    );
   return (
     <GuttedLayout>
       <Head>
-        <title>Debt Auctions - Maker Auctions</title>
+        <title>Debt Auctions (Beta) - Maker Auctions</title>
       </Head>
       {!maker ? (
         <Flex
@@ -67,6 +104,16 @@ const Index = () => {
             }}
           >
             Debt Auctions
+            <Text
+              variant="caps"
+              sx={{
+                color: 'orange',
+                display: 'inline-block',
+                ml: 4
+              }}
+            >
+              BETA{' '}
+            </Text>
           </Heading>
 
           <IntroInfoCard
@@ -153,7 +200,6 @@ const Index = () => {
           </Box>
         </>
       )}
-      {/* </Box> */}
       <Footer />
     </GuttedLayout>
   );

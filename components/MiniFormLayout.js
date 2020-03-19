@@ -50,11 +50,14 @@ const MiniFormLayout = ({
     errorMessages.push(txErrorMsg);
   }
 
+  // console.log(txState === TX_PENDING)
+
   const _disabled =
     disabled ||
     (!buttonOnly && !inputState) ||
-    (inputState && inputState.eq(ZERO));
-  !!errors.length || txState === TX_PENDING;
+    (inputState && inputState.eq(ZERO)) ||
+    !!errors.length ||
+    txState === TX_PENDING;
 
   const _onSubmit = () => {
     const txObject = onSubmit(inputState);
@@ -73,7 +76,7 @@ const MiniFormLayout = ({
         setTxState(TX_SUCCESS);
         setTxMsg('Transaction Sucessful!');
         setInputState(undefined);
-        if (onTxFinished) onTxFinished();
+        if (onTxFinished) onTxFinished(TX_SUCCESS);
       },
       error: (_, err) => {
         const errorMsg = _.error.message.split('\n')[0];
@@ -81,7 +84,7 @@ const MiniFormLayout = ({
         setTxMsg(null);
 
         setTxErrorMsg(`Transaction failed with error: ${errorMsg}`);
-        if (onTxFinished) onTxFinished();
+        if (onTxFinished) onTxFinished(TX_ERROR);
       }
     });
     return txObject;

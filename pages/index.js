@@ -17,6 +17,9 @@ import {
   Flex
 } from 'theme-ui';
 import GuttedLayout from '../components/GuttedLayout';
+import ReactGA from 'react-ga';
+
+
 export function fromRad(value) {
   return BigNumber(value).shiftedBy(-45);
 }
@@ -24,13 +27,15 @@ export function fromRad(value) {
 const Index = () => {
   const { maker, web3Connected } = useMaker();
 
+  useEffect(() => {
+    if (window !== undefined) {
+      ReactGA.pageview(window.location.pathname + window.location.search);
+    }
+  }, []);
+
   return (
     <GuttedLayout>
-      <Box
-        sx={{
-          py: 5
-        }}
-      >
+      <Box>
         <Head>
           <title>Maker Auctions</title>
         </Head>

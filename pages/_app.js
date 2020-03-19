@@ -4,15 +4,33 @@ import MakerProvider from '../providers/MakerProvider';
 import { ThemeProvider, Styled, Box } from 'theme-ui';
 import theme from '../theme';
 import Header from '../components/Header';
+import ReactGA from 'react-ga';
+import {sysAPI} from '../stores/systemStore';
+
 class MyApp extends App {
   state = {
     network: ''
   };
 
   componentDidMount() {
+  const setFeatureFlag = sysAPI.getState().setFeatureFlag;
+
     this.setState({
       network: window.location.search.includes('kovan') ? 'kovan' : 'mainnet'
     });
+
+    if (window && (window.location.search.includes('show-test-ui') || window.location.search.includes('kovan'))) {
+      setFeatureFlag('alpha-ui');
+    }
+
+    if (window && window.location.search.includes('show-flip-ui')) {
+      setFeatureFlag('flip-ui');
+    }
+
+    if (window !== undefined) {
+      ReactGA.initialize('UA-65766767-8');
+      // ReactGA.pageview(window.location.pathname + window.location.search);
+    }
   }
 
   render() {

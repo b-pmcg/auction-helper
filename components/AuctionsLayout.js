@@ -3,22 +3,35 @@ import FlipAuctionBlock from './FlipAuctionBlock';
 import FlopAuctionBlock from './FlopAuctionBlock';
 import { Button, Grid, Input, Flex, Select } from 'theme-ui';
 import useAuctionsStore, { selectors } from '../stores/auctionsStore';
+import useSystemStore from '../stores/systemStore';
 import AuctionFilters from './AuctionFilters';
 import useMaker from '../hooks/useMaker';
+import { REFETCH_BLOCK_INTERVAL } from '../constants';
 
 const AuctionsLayout = ({ auctions, allowances, stepSize, type }) => {
-  const { blockHeight } = useMaker();
+  // const { blockHeight } = useMaker();
   const { hasPrevPageSelector, hasNextPageSelector } = selectors;
+  const blockHeight = useSystemStore(state => state.blockHeight);
+  const [localBlockHeight, setLocalBlockHeight] = useState(0);
   const next = useAuctionsStore(state => state.nextPage);
   const prev = useAuctionsStore(state => state.prevPage);
+  const fetchAuctionsSet = useAuctionsStore(state => state.fetchSet);
+
   const filteredAuctions = useAuctionsStore(selectors.filteredAuctions());
   const auctionsPage = useAuctionsStore(
     selectors.auctionsPage(filteredAuctions)
   );
 
   useEffect(() => {
-    const ids = auctionsPage.map(a => a.auctionId);
-  }, [blockHeight, auctionsPage]);
+    if (auctionsPage.length && blockHeight && blockHeight > localBlockHeight) {
+      if (blockHeight % REFETCH_BLOCK_INTERVAL === 0) {
+        console.log('block based set fetch', blockHeight);
+        const ids = auctionsPage.map(a => a.auctionId);
+        fetchAuctionsSet(ids);
+        setLocalBlockHeight(blockHeight);
+      }
+    }
+  }, [blockHeight, localBlockHeight]);
 
   const hasPrev = useAuctionsStore(hasPrevPageSelector());
   const hasNext = useAuctionsStore(hasNextPageSelector(filteredAuctions));

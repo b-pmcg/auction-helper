@@ -47,12 +47,14 @@ export const getBlockNumber = async rpcUrl => {
       Accept: 'application/json',
       'Content-Type': 'application/json'
     },
+
     body: JSON.stringify({
       jsonrpc: '2.0',
       method: 'eth_blockNumber',
       id: 1
     })
   });
+  
   const { result } = await rawResponse.json();
   if (!result) throw new Error('Failed to fetch block number');
   return parseInt(result, 16);

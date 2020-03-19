@@ -70,62 +70,65 @@ const filters = {
   }
 };
 
-const sorters = {
-  byLatest: auctions => {
-    return Object.keys(auctions || []).reverse();
-  },
-
-  byBidPrice: auctions => {
-    return Object.keys(auctions || [])
-      .map(auctionId => {
-        return auctions[auctionId].events.find(event => event.type !== 'Deal');
-      })
-      .map(event => {
-        const bid = new BigNumber(event.bid);
-        const lot = new BigNumber(event.lot);
-        const bidPrice = lot.eq(new BigNumber(0)) ? lot : bid.div(lot);
-        return {
-          ...event,
-          bid,
-          lot,
-          bidPrice
-        };
-      })
-      .sort((prev, next) => {
-        if (next.bidPrice.gt(prev.bidPrice)) return 1;
-        if (next.bidPrice.lt(prev.bidPrice)) return -1;
-        return 0;
-      })
-      .map(event => {
-        return event.auctionId;
-      });
-  },
-
-  byTime: auctions => {
-    return Object.keys(auctions || []).sort((prevId, nextId) => {
-      const now = new Date().getTime();
-
-      const prev = auctions[prevId];
-      const next = auctions[nextId];
-
-      const prevTicEndMin = prev.tic.lt(prev.end) ? prev.tic : prev.end;
-      const prevEndTime = prev.tic.eq(0) ? prev.end : prevTicEndMin;
-      const prevTimeRemaining = prevEndTime.lte(now)
-        ? new BigNumber(0)
-        : prevEndTime.minus(now);
-
-      const nextTicEndMin = next.tic.lt(next.end) ? next.tic : next.end;
-      const nextEndTime = next.tic.eq(0) ? next.end : nextTicEndMin;
-      const nextTimeRemaining = nextEndTime.lte(now)
-        ? new BigNumber(0)
-        : nextEndTime.minus(now);
-
-      if (prevTimeRemaining.eq(0) || nextTimeRemaining.eq(0)) return -1;
-      if (prevTimeRemaining.eq(nextTimeRemaining)) return 0;
-      else if (prevTimeRemaining.lt(nextTimeRemaining)) return -1;
-      else return 1;
+function sortByBidPrice(auctions, asc) {
+  return Object.keys(auctions || [])
+    .map(auctionId => {
+      return auctions[auctionId].events.find(event => event.type !== 'Deal');
+    })
+    .map(event => {
+      const bid = new BigNumber(event.bid);
+      const lot = new BigNumber(event.lot);
+      const bidPrice = lot.eq(new BigNumber(0)) ? lot : bid.div(lot);
+      return {
+        bidPrice,
+        auctionId: event.auctionId,
+      };
+    })
+    .sort((prev, next) => {
+      if (next.bidPrice.gt(prev.bidPrice)) return asc ? -1 : 1;
+      if (next.bidPrice.lt(prev.bidPrice)) return asc ? 1 : -1;
+      return 0;
+    })
+    .map(event => {
+      return event.auctionId;
     });
-  }
+}
+
+function sortByTime(auctions, asc) {
+  return Object.keys(auctions || []).sort((prevId, nextId) => {
+    const now = new Date().getTime();
+
+    const prev = auctions[prevId];
+    const next = auctions[nextId];
+
+    const prevTicEndMin = prev.tic.lt(prev.end) ? prev.tic : prev.end;
+    const prevEndTime = prev.tic.eq(0) ? prev.end : prevTicEndMin;
+    const prevTimeRemaining = prevEndTime.lte(now)
+      ? new BigNumber(0)
+      : prevEndTime.minus(now);
+
+    const nextTicEndMin = next.tic.lt(next.end) ? next.tic : next.end;
+    const nextEndTime = next.tic.eq(0) ? next.end : nextTicEndMin;
+    const nextTimeRemaining = nextEndTime.lte(now)
+      ? new BigNumber(0)
+      : nextEndTime.minus(now);
+
+    if (prevTimeRemaining.eq(0) || nextTimeRemaining.eq(0)) return asc ? -1 : 0;
+    if (prevTimeRemaining.eq(nextTimeRemaining)) return 0;
+    else if (prevTimeRemaining.lt(nextTimeRemaining)) return asc ? -1 : 1;
+    else return asc ? 1 : -1;
+  });
+}
+
+const sorters = {
+  byLatestAsc: auctions => Object.keys(auctions || []),
+  byLatestDesc: auctions => Object.keys(auctions || []).reverse(),
+
+  byBidPriceAsc: auctions => sortByBidPrice(auctions, true),
+  byBidPriceDesc: auctions => sortByBidPrice(auctions, false),
+
+  byTimeAsc: auctions => sortByTime(auctions, true),
+  byTimeDesc: auctions => sortByTime(auctions, false),
 };
 
 const selectors = {
@@ -174,7 +177,7 @@ const [useAuctionsStore] = create((set, get) => ({
   pageStart: 0,
   pageEnd: 10,
   pageStep: 10,
-  sortBy: 'byLatest',
+  sortBy: 'byLatestDesc',
   filterByIdValue: '',
   filterByBidderBalue: '',
   filterByComplete: false,

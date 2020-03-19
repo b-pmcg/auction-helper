@@ -1,4 +1,5 @@
 /** @jsx jsx */
+import { useState, useEffect } from 'react';
 
 import { Heading, Text, jsx, Button, NavLink, Box, Flex } from 'theme-ui';
 import Link from 'next/link';
@@ -6,10 +7,22 @@ import useMaker from '../hooks/useMaker';
 import GuttedLayout from './GuttedLayout';
 import Logo from './Logo';
 import { useRouter } from 'next/router';
+import ReactGA from 'react-ga';
+import useSystemStore from '../stores/systemStore';
 
 export default () => {
   const { maker, network, web3Connected, setWeb3Connected } = useMaker();
   const { pathname } = useRouter();
+  const [showOtherUIs, setShow] = useState(false);
+  const featureFlags = useSystemStore(state => state.featureFlags);
+  const hasFlag = featureFlags.includes('alpha-ui');
+  const hasFlipFlag = featureFlags.includes('flip-ui');
+  
+  useEffect(() => {
+    if (window) {
+      setShow(window.location.search.includes('show-test-ui'));
+    }
+  }, []);
 
   async function connectBrowserWallet() {
     try {
@@ -22,6 +35,11 @@ export default () => {
           );
 
         setWeb3Connected(true);
+        ReactGA.event({
+          category: 'account',
+          action: 'connected',
+          label: maker.currentAddress()
+        });
       }
     } catch (err) {
       window.alert(err);
@@ -59,6 +77,8 @@ export default () => {
             <Logo />
           </Flex>
         </Link>
+        {!hasFlag ? null :
+        <>
         <Flex
           as="nav"
           sx={{
@@ -66,18 +86,20 @@ export default () => {
             mr: [null, 6]
           }}
         >
-          {/* <Link href="/flip">
-            <NavLink
-              sx={{
-                fontWeight: pathname === '/flip' ? 'bold' : 'normal',
-                cursor: 'default',
-                p: 2,
-                px: [4, 6]
-              }}
-            >
-              Collateral auctions
-            </NavLink>
-          </Link> */}
+          {!hasFlipFlag ? null : (
+            <Link href="/flip">
+              <NavLink
+                sx={{
+                  fontWeight: pathname === '/flip' ? 'bold' : 'normal',
+                  cursor: 'default',
+                  p: 2,
+                  px: [4, 6]
+                }}
+              >
+                Collateral auctions
+              </NavLink>
+            </Link>
+          )}
           <Link href="/flop">
             <NavLink
               p={2}
@@ -147,6 +169,8 @@ export default () => {
             </Flex>
           )}
         </Flex>
+        </>
+}
       </Flex>
     </GuttedLayout>
   );
