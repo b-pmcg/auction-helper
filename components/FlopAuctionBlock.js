@@ -154,7 +154,14 @@ const OrderSummary = ({
         }}
       >
         {fields.map(([title, value, styling]) => {
-          return <SummaryLine title={title} value={value} styling={styling} />;
+          return (
+            <SummaryLine
+              key={title}
+              title={title}
+              value={value}
+              styling={styling}
+            />
+          );
         })}
       </Grid>
       <Grid
@@ -167,6 +174,7 @@ const OrderSummary = ({
         }}
       >
         <SummaryLine
+          key={'VAT balance after bid'}
           title={'VAT balance after bid'}
           value={remainingBal}
           styling={{ fontWeight: 600 }}
