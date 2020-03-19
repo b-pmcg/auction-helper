@@ -5,6 +5,7 @@ import { ThemeProvider, Styled, Box } from 'theme-ui';
 import theme from '../theme';
 import Header from '../components/Header';
 import ReactGA from 'react-ga';
+import {sysAPI} from '../stores/systemStore';
 
 class MyApp extends App {
   state = {
@@ -12,9 +13,15 @@ class MyApp extends App {
   };
 
   componentDidMount() {
+  const setFeatureFlag = sysAPI.getState().setFeatureFlag;
+
     this.setState({
       network: window.location.search.includes('kovan') ? 'kovan' : 'mainnet'
     });
+
+    if (window && window.location.search.includes('show-test-ui')) {
+      setFeatureFlag('alpha-ui')
+    }
 
     if (window !== undefined) {
       ReactGA.initialize('UA-65766767-8');

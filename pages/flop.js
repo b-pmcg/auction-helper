@@ -15,6 +15,7 @@ import useAllowances from '../hooks/useAllowances';
 import Moment from 'react-moment';
 import useAuctionsStore from '../stores/auctionsStore';
 import ReactGA from 'react-ga';
+import useSystemStore from '../stores/systemStore';
 
 const Index = () => {
   const { maker, web3Connected } = useMaker();
@@ -25,6 +26,8 @@ const Index = () => {
   const [TOCAccepted, setTOCAccepted] = useState(false);
   const allowances = useAllowances();
   const [{ isSyncing, lastSynced }, sync] = useState({});
+  const featureFlags = useSystemStore(state => state.featureFlags);
+  const hasFlag = featureFlags.includes('alpha-ui');
 
   useEffect(() => {
     if (window !== undefined) {
@@ -51,6 +54,33 @@ const Index = () => {
     }
   }, [auctions]);
 
+  if (!hasFlag)
+    return (
+      <GuttedLayout>
+        <>
+          <Heading
+            variant="h1"
+            sx={{
+              py: 7
+            }}
+          >
+            Debt Auctions
+            <Text
+              variant="caps"
+              sx={{
+                color: 'orange',
+                display: 'inline-block',
+                ml: 4
+              }}
+            >
+              BETA{' '}
+            </Text>
+          </Heading>
+
+          <Text>Coming soon.</Text>
+        </>
+      </GuttedLayout>
+    );
   return (
     <GuttedLayout>
       <Head>

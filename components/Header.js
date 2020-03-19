@@ -8,17 +8,20 @@ import GuttedLayout from './GuttedLayout';
 import Logo from './Logo';
 import { useRouter } from 'next/router';
 import ReactGA from 'react-ga';
+import useSystemStore from '../stores/systemStore';
 
 export default () => {
   const { maker, network, web3Connected, setWeb3Connected } = useMaker();
   const { pathname } = useRouter();
   const [showOtherUIs, setShow] = useState(false);
-
+  const featureFlags = useSystemStore(state => state.featureFlags);
+  const hasFlag = featureFlags.includes('alpha-ui');
   useEffect(() => {
     if (window) {
       setShow(window.location.search.includes('show-test-ui'));
     }
   }, []);
+
   async function connectBrowserWallet() {
     try {
       if (maker) {
@@ -72,6 +75,8 @@ export default () => {
             <Logo />
           </Flex>
         </Link>
+        {!hasFlag ? null :
+        <>
         <Flex
           as="nav"
           sx={{
@@ -162,6 +167,8 @@ export default () => {
             </Flex>
           )}
         </Flex>
+        </>
+};
       </Flex>
     </GuttedLayout>
   );
