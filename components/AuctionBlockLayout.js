@@ -44,15 +44,23 @@ export default ({
 
   const { lot: latestLot, bid: latestBid } = latestEvent;
 
-  const latestPrice = latestLot.eq(ZERO)
-  ? latestLot
-  : latestBid.div(latestLot);
+  const latestPrice = latestLot.eq(ZERO) ? latestLot : latestBid.div(latestLot);
 
   const onCollapseData = [
-    {label:'Bid', value: latestBid.toFormat(2,4), notation: 'DAI',} ,
-    {label:'Lot', value: latestLot.toFormat(4,6), notation: 'MKR', styling: { color: 'primary' }},
-    {label:'Price', value: latestPrice.toFormat(2,4), notation: 'MKR/DAI', styling:{ fontWeight: 600 } }
-  ]
+    { label: 'Bid', value: latestBid.toFormat(2, 4), notation: 'DAI' },
+    {
+      label: 'Lot',
+      value: latestLot.toFormat(4, 6),
+      notation: 'MKR',
+      styling: { color: 'primary' }
+    },
+    {
+      label: 'Price',
+      value: latestPrice.toFormat(2, 4),
+      notation: 'MKR/DAI',
+      styling: { fontWeight: 600 }
+    }
+  ];
 
   useEffect(() => {
     // if there is no Dent first will be Kick
@@ -112,17 +120,20 @@ export default ({
         <Flex
           sx={{
             margin: 'auto',
-            alignItems: 'center',
-          }}        
+            alignItems: 'center'
+          }}
         >
           {!pill ? null : <Box ml="4">{pill}</Box>}
-          {
-            collapsed && auctionStatus === IN_PROGRESS && 
-            <Flex sx={{
-              flex: '2 1 0',
-              flexDirection: ['column', 'row'],
-            }}> {onCollapseData.map(
-              data => {
+          {collapsed && auctionStatus === IN_PROGRESS && (
+            <Flex
+              sx={{
+                flex: '2 1 0',
+                // ml: '4',
+                flexDirection: ['column', 'row']
+              }}
+            >
+              {' '}
+              {onCollapseData.map(data => {
                 return (
                   <Heading
                     key={`${auctionId}-${data.label}`}
@@ -130,28 +141,17 @@ export default ({
                     variant="h2"
                     sx={{
                       fontSize: 4,
-                      ml: [0, 'auto'],
-                      mr: [0, 20]
+                      ml: [0, '6'],
+                      // mr: [0, 20],
+                      ...data.styling
                     }}
                   >
-                    <Flex sx={{
-                        alignItems:'baseline',
-                        justifyContent: 'center'
-                      }}>
-                      <Text variant="caps" sx={{
-                        fontSize: 1,
-                        mr: 2
-                      }}>
-                        {data.label}
-                      </Text>  
-                      <Text sx={data.styling}>{data.value} {data.notation}</Text>
-                    </Flex>
+                    {data.value} {data.notation}
                   </Heading>
-                )
-              })
-            }
+                );
+              })}
             </Flex>
-          }
+          )}
         </Flex>
         <Heading
           as="h5"
