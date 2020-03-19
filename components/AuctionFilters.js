@@ -21,6 +21,8 @@ import useMaker from '../hooks/useMaker';
 const AuctionFilters = ({ title, text, action, forceExpanded }) => {
   const { maker, web3Connected } = useMaker();
   const [collapsed, setCollapsed] = useState(true);
+  const [collapsedGloss, setCollapsedGloss] = useState(true);
+
   const sortCriteria = useAuctionsStore(state => state.sortBy);
   const filterByCurrentBidder = useAuctionsStore(
     state => state.filterByCurrentBidder
@@ -116,7 +118,14 @@ const AuctionFilters = ({ title, text, action, forceExpanded }) => {
         >
           Filter By...
         </Button>
-
+        <Box>
+          <Button
+            variant={collapsedGloss ? 'pillInactive' : 'pill'}
+            onClick={() => setCollapsedGloss(!collapsedGloss)}
+          >
+            Glossary
+          </Button>
+        </Box>
         <Box ml="auto">
           <Select
             sx={{
@@ -133,7 +142,21 @@ const AuctionFilters = ({ title, text, action, forceExpanded }) => {
           </Select>
         </Box>
       </Flex>
-
+      {collapsedGloss ? null : (
+        <Box>
+          <Box
+            px="6"
+            pb="4"
+            mt="4"
+            sx={{
+              variant: 'styles.roundedCard'
+            }}
+          > <Text>
+            glossary, kick, tend, dent, deal, vat, flop, flip, bid, lot, price, tau, tll, adapter, end...
+            </Text>
+          </Box>
+        </Box>
+      )}
       {collapsed ? null : (
         <Box
           px="6"
