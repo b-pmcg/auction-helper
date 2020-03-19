@@ -168,12 +168,14 @@ const AuctionFilters = ({ title, text, action, forceExpanded }) => {
         sx={{
           // p: 6,
           py: 0,
-          alignItems: ['flex-start', 'center'],
+          alignItems: ['flex-start', 'flex-end'],
           flexDirection: ['column', 'row'],
           width: '100%'
         }}
       >
-        <Flex>
+        <Flex sx={{
+          alignItems: 'flex-end'
+        }}>
           <Button
             key={``}
             variant={collapsed ? 'pillInactive' : 'pill'}
@@ -193,10 +195,12 @@ const AuctionFilters = ({ title, text, action, forceExpanded }) => {
             </Button>
           </Box>
         </Flex>
-        <Box ml={[0, 'auto']} mt={[4, null]}>
+        <Box ml={[0, 'auto']} mt={[4, 0]}>
           <Select
             sx={{
               width: ['100%', '300px'],
+              // height: 7,
+              // fontSize: 0,
               borderColor: 'border',
               bg: 'white'
             }}
