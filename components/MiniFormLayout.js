@@ -96,7 +96,7 @@ const MiniFormLayout = ({
   };
 
   useEffect(() => {
-    small(inputState);
+    if (typeof small === 'function') small(inputState);
   }, [inputState]);
 
   return (
