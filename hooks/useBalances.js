@@ -44,42 +44,37 @@ const useBalances = () => {
     })();
   }, [maker, web3Connected]);
 
-  async function joinDaiToAdapter(amount) {
-    const DaiJoinAdapter = maker
-      .service('smartContract')
-      .getContract('MCD_JOIN_DAI');
-
-    //amount set in MiniFormLayout is cast a BigNumber
+  function joinDaiToAdapter(amount) {
+    // amount set in MiniFormLayout is cast a BigNumber
     const joinAmountInDai = maker
       .service('web3')
       ._web3.utils.toWei(amount.toFixed());
 
-    await DaiJoinAdapter.join(
-      maker.currentAddress(),
-      BigNumber(joinAmountInDai).toFixed()
-    );
+    return maker
+      .service('validator')
+      .joinDaiToAdapter(
+        maker.currentAddress(),
+        BigNumber(joinAmountInDai).toFixed()
+      );
+  }
 
+  async function updateDaiBalances() {
     const [vatBal, daiBal] = await fetchBalances();
     setVatDaiBalance(fromRad(vatBal).toFixed());
     setDaiBalance(daiBal.toNumber());
   }
 
-  async function exitDaiFromAdapter(amount) {
-    const DaiJoinAdapter = maker
-      .service('smartContract')
-      .getContract('MCD_JOIN_DAI');
-
+  function exitDaiFromAdapter(amount) {
     const exitAmountInDai = maker
       .service('web3')
       ._web3.utils.toWei(amount.toFixed());
 
-    await DaiJoinAdapter.exit(
-      maker.currentAddress(),
-      BigNumber(exitAmountInDai).toFixed()
-    );
-    const [vatBal, daiBal] = await fetchBalances();
-    setVatDaiBalance(fromRad(vatBal).toFixed());
-    setDaiBalance(daiBal.toNumber());
+    return maker
+      .service('validator')
+      .exitDaiFromAdapter(
+        maker.currentAddress(),
+        BigNumber(exitAmountInDai).toFixed()
+      );
   }
 
   return {
@@ -87,7 +82,8 @@ const useBalances = () => {
     daiBalance,
     mkrBalance,
     joinDaiToAdapter,
-    exitDaiFromAdapter
+    exitDaiFromAdapter,
+    updateDaiBalances
   };
 };
 

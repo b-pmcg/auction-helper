@@ -250,11 +250,14 @@ export default class ValidatorService extends PublicService {
     return fromWad(beg);
   }
 
-  async joinDaiToAdapter(address, amount) {
-    await this._joinDaiAdapter.join(address, amount);
+  @tracksTransactions
+  async joinDaiToAdapter(address, amount, { promise }) {
+    await this._joinDaiAdapter().join(address, amount, { promise });
   }
-  async exitDaiFromAdapter(address, amount) {
-    await this._joinDaiAdapter.join(address, amount);
+
+  @tracksTransactions
+  async exitDaiFromAdapter(address, amount, { promise }) {
+    await this._joinDaiAdapter().exit(address, amount, { promise });
   }
 
   get flipEthAddress() {

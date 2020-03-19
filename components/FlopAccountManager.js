@@ -17,7 +17,8 @@ export default ({ allowances }) => {
     daiBalance,
     mkrBalance,
     joinDaiToAdapter,
-    exitDaiFromAdapter
+    exitDaiFromAdapter,
+    updateDaiBalances
   } = useBalances();
 
   daiBalance = formatBalance(daiBalance);
@@ -204,6 +205,7 @@ export default ({ allowances }) => {
                           disabled={false}
                           inputUnit="DAI"
                           onSubmit={joinDaiToAdapter}
+                          onTxFinished={updateDaiBalances}
                           small={''}
                           actionText={'Deposit'}
                         />
@@ -225,6 +227,7 @@ export default ({ allowances }) => {
                           disabled={false}
                           inputUnit="DAI"
                           onSubmit={exitDaiFromAdapter}
+                          onTxFinished={updateDaiBalances}
                           small={''}
                           actionText={'Withdraw'}
                         />
