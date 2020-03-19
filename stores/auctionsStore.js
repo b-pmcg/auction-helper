@@ -151,7 +151,6 @@ const selectors = {
       filterByNotCompleted
     } = state;
     if (!auctions) return null;
-    console.log('sortBy', sortBy);
     let ids = sorters[sortBy](auctions);
 
     if (filterByBidderValue) {

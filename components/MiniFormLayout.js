@@ -50,7 +50,7 @@ const MiniFormLayout = ({
     errorMessages.push(txErrorMsg);
   }
 
-  console.log(txState === TX_PENDING)
+  // console.log(txState === TX_PENDING)
 
   const _disabled = disabled 
   || (!buttonOnly && !inputState) 

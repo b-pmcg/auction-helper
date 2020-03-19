@@ -18,7 +18,7 @@ import ReactGA from 'react-ga';
 
 const Index = () => {
 
-  const { maker, web3Connected, blockHeight } = useMaker();
+  const { maker, web3Connected } = useMaker();
   const auctions = useAuctionsStore(state => state.auctions);
   const fetchAuctions = useAuctionsStore(state => state.fetchAll);
   const fetchAuctionsSet = useAuctionsStore(state => state.fetchSet);
@@ -28,9 +28,7 @@ const Index = () => {
   const allowances = useAllowances();
   const [{ isSyncing, lastSynced }, sync] = useState({});
 
-  useEffect(() => {
-    console.log(blockHeight);
-  }, [blockHeight])
+
   useEffect(() => {
     if (window !== undefined) {
       ReactGA.pageview(window.location.pathname + window.location.search);

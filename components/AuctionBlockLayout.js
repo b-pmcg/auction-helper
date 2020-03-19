@@ -89,7 +89,7 @@ export default ({
     }, 1000);
 
     return () => {
-      console.log('Called with:', timerId);
+      // console.log('Called with:', timerId);
 
       clearInterval(timerId);
     };

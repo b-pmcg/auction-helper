@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import useMaker from '../hooks/useMaker';
 import * as _ from 'lodash';
-import { Text, jsx, Flex, Heading, Grid, Box, Spinner, Button } from 'theme-ui';
+import { Text, jsx, Flex, Heading, Box, Spinner, Button } from 'theme-ui';
 import AccountManager from '../components/FlopAccountManager';
 import GuttedLayout from '../components/GuttedLayout';
 import AuctionsLayout from '../components/AuctionsLayout';
@@ -13,21 +13,18 @@ import Footer from '../components/Footer';
 import TermsConfirm from '../components/TermsConfirm';
 import useAllowances from '../hooks/useAllowances';
 import Moment from 'react-moment';
-import useAuctionsStore, { selectors } from '../stores/auctionsStore';
+import useAuctionsStore from '../stores/auctionsStore';
 import ReactGA from 'react-ga';
-
 
 const Index = () => {
   const { maker, web3Connected } = useMaker();
   const auctions = useAuctionsStore(state => state.auctions);
   const fetchAuctions = useAuctionsStore(state => state.fetchAll);
-  const fetchAuctionsSet = useAuctionsStore(state => state.fetchSet);
   const fetchFlopStepSize = useAuctionsStore(state => state.fetchFlopStepSize);
   const stepSize = useAuctionsStore(state => state.flopStepSize);
   const [TOCAccepted, setTOCAccepted] = useState(false);
   const allowances = useAllowances();
   const [{ isSyncing, lastSynced }, sync] = useState({});
-
 
   useEffect(() => {
     if (window !== undefined) {
@@ -44,6 +41,7 @@ const Index = () => {
     }
   }, [web3Connected]);
 
+  useEffect(() => {}, [auctions]);
   useEffect(() => {
     if (isSyncing) {
       sync({
@@ -76,11 +74,16 @@ const Index = () => {
             }}
           >
             Debt Auctions
-            <Text variant="caps" sx={{
-              color: 'orange',
-              display: 'inline-block',
-              ml: 4
-            }}>BETA </Text>
+            <Text
+              variant="caps"
+              sx={{
+                color: 'orange',
+                display: 'inline-block',
+                ml: 4
+              }}
+            >
+              BETA{' '}
+            </Text>
           </Heading>
 
           <IntroInfoCard
@@ -167,7 +170,6 @@ const Index = () => {
           </Box>
         </>
       )}
-      {/* </Box> */}
       <Footer />
     </GuttedLayout>
   );
