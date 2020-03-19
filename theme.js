@@ -41,7 +41,8 @@ export default {
     primaryHover: '#139D8D',
     primaryActive: '#098C7D',
     lightGreen: '#B6EDE7',
-
+    lightCyan: '#E7FCFA',
+    darkCyan: '#2DC1B1',
     graphite: '#48495F',
     lightGraphite: '#7E7E88',
     purple: '#447AFB',
@@ -49,7 +50,9 @@ export default {
     border: '#D4D9E1',
     white: '#fff',
     yellow: '#FFF1CF',
-    orange: '#E67002'
+    orange: '#E67002',
+    lightOrange: '#FFF9ED',
+    borderOrange: '#FBCC5F'
 
     // text: '#000',
     // background: '#fff',
@@ -211,6 +214,31 @@ export default {
       borderRadius: 6,
       bg: 'white'
     },
+    statusBox: {
+      layout: {
+        border: '1px solid',
+        borderRadius: 6,
+        fontSize: 2,
+        fontWeight: 'bold',
+        py: 3,
+        px: 4,
+        mt: 7,
+        lineHeight: 'body',
+        width: '100%'
+      },
+      warning: {
+        variant: 'styles.statusBox.layout',
+        bg: 'lightOrange',
+        borderColor: 'orangeBorder',
+        color: 'orange',
+      },
+      success : {
+        variant: 'styles.statusBox.layout',
+        bg: 'lightCyan',
+        borderColor: 'darkCyan',
+        color: 'primaryActive',
+      },      
+    },    
     h1: {
       variant: 'text.heading',
       fontSize: 7
