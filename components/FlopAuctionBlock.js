@@ -125,6 +125,7 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
     event => event.type != 'Deal'
   );
 
+  BigNumber.set({ DECIMAL_PLACES: 18, ROUNDING_MODE: BigNumber.ROUND_DOWN });
   const minMkrAsk = new BigNumber(latestLot).div(stepSize);
 
   const hasDent = sortedEvents[0].type === 'Dent';
@@ -149,7 +150,6 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
   };
 
   const handleInstantBid = () => {
-    BigNumber.set({ DECIMAL_PLACES: 18, ROUNDING_MODE: BigNumber.ROUND_DOWN });
     return callFlopDent(auctionId, minMkrAsk, latestBid);
   };
 
