@@ -19,6 +19,7 @@ import {
 } from '../constants';
 import useAuctionsStore, { selectors } from '../stores/auctionsStore';
 import InfoPill from './InfoPill';
+import { TX_SUCCESS, } from '../constants';
 
 const AuctionEvent = ({
   type,
@@ -240,8 +241,10 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
                     text={'Bid for the next minimum increment'}
                     buttonOnly
                     onSubmit={handleInstantBid}
-                    onTxFinished={() => {
-                      setJustBidded(true);
+                    onTxFinished={(status) => {
+                      if(status === TX_SUCCESS) {
+                        setJustBidded(true);
+                      }
                       fetchAuctionsSet([auctionId])
                     }}
                     small={`Bidding ${BigNumber(latestBid).toFixed(
