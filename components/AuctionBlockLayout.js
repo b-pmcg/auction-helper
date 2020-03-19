@@ -131,7 +131,7 @@ export default ({
           justifyContent: 'flex-start',
           borderBottom: collapsed ? null : '1px solid',
           borderColor: 'border',
-          alignItems: 'center'
+          alignItems: ['flex-start', 'center']
         }}
       >
         <Heading as="h5" variant="h2">
@@ -143,7 +143,7 @@ export default ({
             alignItems: 'center'
           }}
         >
-          {!pill ? null : <Box ml="4">{pill}</Box>}
+          {!pill ? null : <Box ml={[0, 4]}>{pill}</Box>}
           {collapsed && auctionStatus === IN_PROGRESS && (
             <Flex
               sx={{

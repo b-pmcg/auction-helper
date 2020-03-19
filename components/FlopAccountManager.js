@@ -93,7 +93,7 @@ export default ({ allowances }) => {
           {web3Connected ? (
             <Grid
               gap={4}
-              columns={3}
+              columns={[1, 3]}
               sx={{
                 pt: 0,
                 pb: 4

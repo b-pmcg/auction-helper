@@ -327,7 +327,10 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
             actions={[
               [
                 'Instant Bid',
-                <Flex>
+                <Flex sx={{
+          flexDirection: ['column', 'row'],
+
+                }}>
                   <Box>
                 <MiniFormLayout
                   disabled={auctionStatus !== IN_PROGRESS || !canBid}
@@ -372,7 +375,9 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
               ],
               [
                 'Custom Bid',
-                <Flex>
+                <Flex sx={{
+                  flexDirection: ['column', 'row']
+                }}>
                   <Box>
                     <MiniFormLayout
                       disabled={auctionStatus !== IN_PROGRESS || !canBid}
