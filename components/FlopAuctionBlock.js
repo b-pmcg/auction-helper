@@ -252,6 +252,7 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
                   )} MKR (${BigNumber(latestBid)
                     .div(minMkrAsk)
                     .toFixed(2)} MKR/DAI)`}
+                  inputValidation={bidValidationTests}
                   actionText={'Bid Now'}
                 />
               ],
