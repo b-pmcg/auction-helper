@@ -193,7 +193,7 @@ export default ({ allowances }) => {
               <ActionTabs
                 actions={[
                   [
-                    'Deposit DAI to Adapter',
+                    'Deposit DAI into the VAT',
                     <Grid>
                       <Box
                         sx={{
@@ -222,7 +222,7 @@ export default ({ allowances }) => {
                     </Grid>
                   ],
                   [
-                    'Withdraw DAI From Adapter',
+                    'Withdraw DAI From VAT',
                     <Grid>
                       <Box
                         sx={{
