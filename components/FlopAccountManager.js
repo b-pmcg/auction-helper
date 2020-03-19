@@ -71,8 +71,9 @@ export default ({ allowances }) => {
             </Text>
           ) : allowanceMissing ? (
             <Text as="h2" variant="boldBody">
-              To participate in auctions you need to first sign the approval
-              transactions below.
+              To participate in auctions you need to sign the approval
+              transactions below and move Dai that will be used for bidding to
+              the Vat.
             </Text>
           ) : null}
           <Grid
@@ -125,7 +126,7 @@ export default ({ allowances }) => {
                 }
               />
               <BalanceOf
-                type={'Dai locked in the adapter'}
+                type={'Dai locked in the Vat '}
                 balance={`${vatDaiBalance} DAI`}
                 shouldUnlock={!hasJoinDaiHope}
                 unlock={

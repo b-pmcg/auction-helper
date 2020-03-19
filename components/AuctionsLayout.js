@@ -19,6 +19,7 @@ const AuctionsLayout = ({ auctions, allowances, stepSize, type }) => {
   useEffect(() => {
     const ids = auctionsPage.map(a => a.auctionId);
   }, [blockHeight, auctionsPage]);
+
   const hasPrev = useAuctionsStore(hasPrevPageSelector());
   const hasNext = useAuctionsStore(hasNextPageSelector(filteredAuctions));
   const AuctionBlockLayout =
