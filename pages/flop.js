@@ -76,6 +76,11 @@ const Index = () => {
             }}
           >
             Debt Auctions
+            <Text variant="caps" sx={{
+              color: 'orange',
+              display: 'inline-block',
+              ml: 4
+            }}>BETA </Text>
           </Heading>
 
           <IntroInfoCard

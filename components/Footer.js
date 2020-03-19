@@ -12,7 +12,8 @@ import {
   Label,
   Input,
   Flex,
-  NavLink
+  NavLink,
+  Link as ExternalLink
 } from 'theme-ui';
 import Link from 'next/link';
 
@@ -23,16 +24,31 @@ const Footer = () => {
       sx={{
         ml: [0, 'auto'],
         width: '100%',
+        py: 6,
         justifyContent: 'flex-end'
         // mr: [null, 6]
       }}
     >
+            <ExternalLink href="https://chat.makerdao.com/channel/help" target="_blank">
+        <NavLink
+          p={2}
+          variant="footer"
+          sx={{
+            // px: [4, 6],
+            pr: 0
+          }}
+        >
+          Chat
+        </NavLink>
+      </ExternalLink>
+
       <Link href="/terms">
         <NavLink
           p={2}
           variant="footer"
           sx={{
             // px: [4, 6],
+            ml: [0, 6],
             pr: 0
           }}
         >
