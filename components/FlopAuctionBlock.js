@@ -42,7 +42,7 @@ const AuctionEvent = ({
     ['Timestamp', timestamp],
 
     [
-      'Sender',
+      'Bidder',
       <a href={etherscanLink(sender, network)} target="_blank">
         {' '}
         {sender.slice(0, 7) + '...' + sender.slice(-4)}
