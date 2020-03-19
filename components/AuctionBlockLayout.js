@@ -26,11 +26,21 @@ export default ({
   hasDent,
   pill
 }) => {
-  const [timer, setTimer] = useState([]);
+  const [timer, setTimer] = useState({
+    end: undefined,
+    tic: undefined
+  });
   const [collapsed, setCollapsed] = useState(false);
   const auctionStatusHeadings = {
     [COMPLETED]: 'Auction completed',
-    [IN_PROGRESS]: `Time remaining: ${timer}`,
+    [IN_PROGRESS]: (
+      <Box>
+        {
+         timer.tic && <Text variant={'styles.time.major'}>{timer.tic}</Text>
+        }
+        <Text variant={timer.tic ? 'styles.time.minor' : 'styles.time.major'}>{timer.end}</Text>        
+      </Box>
+    ),
     [CAN_BE_DEALT]: 'Auction Can Be Dealt',
     [CAN_BE_RESTARTED]: 'Auction Can Be Restarted'
   };
@@ -41,7 +51,6 @@ export default ({
     [CAN_BE_DEALT]: 'text',
     [CAN_BE_RESTARTED]: 'text'
   };
-
   const { lot: latestLot, bid: latestBid } = latestEvent;
 
   const latestPrice = latestLot.eq(ZERO) ? latestLot : latestBid.div(latestLot);
@@ -62,26 +71,38 @@ export default ({
     }
   ];
 
+  const parseRemainingTime = time => {
+    var days = Math.floor(time / (1000 * 60 * 60 * 24));
+    var hours = Math.floor(
+      (time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
+    var minutes = Math.floor((time % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((time % (1000 * 60)) / 1000);
+
+    return {days, hours, minutes, seconds};
+  }
+
+  const formatRemainingTime = (time) => {
+    const { days, hours, minutes } = time;
+    return `${days}d ${hours}h ${minutes}m`;
+  }
+
   useEffect(() => {
-    // if there is no Dent first will be Kick
+    // if there is no Dent first will be Kic
     // If there is Deal first will be Deal
     // If first is Dent it's an ongoing auction
 
     var countDownDate = new Date((hasDent ? tic : end).toNumber()).getTime();
+    var overallDownDate = new Date(end.toNumber()).getTime();
 
     var timerId = setInterval(function() {
       var now = new Date().getTime();
+      const distance = hasDent ? countDownDate - now : overallDownDate - now;
 
-      var distance = countDownDate - now;
-
-      var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      var hours = Math.floor(
-        (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-      );
-      var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-      setTimer(days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's ');
+      setTimer({
+        end: formatRemainingTime(parseRemainingTime(overallDownDate - now)),
+        tic: hasDent ? formatRemainingTime(parseRemainingTime(distance)) : undefined
+      });
 
       if (distance <= 0) {
         clearInterval(timerId);
@@ -89,8 +110,6 @@ export default ({
     }, 1000);
 
     return () => {
-      // console.log('Called with:', timerId);
-
       clearInterval(timerId);
     };
   }, [end, tic]);

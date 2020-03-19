@@ -49,6 +49,7 @@ export default {
     blackThree: '#333',
     border: '#D4D9E1',
     white: '#fff',
+    grayishBlue: '#708390',
     yellow: '#FFF1CF',
     orange: '#E67002',
     lightOrange: '#FFF9ED',
@@ -202,6 +203,18 @@ export default {
     }
   },
   styles: {
+    time:{
+      display:'inline',
+      major: {
+        fontSize: 4,
+        fontWeight: 'bold'
+      },
+      minor:{
+        fontSize: 1,
+        fontWeight: 'semiBold',
+        color: 'grayishBlue'
+      }
+    },
     root: {
       fontFamily: 'body',
       lineHeight: 'body',
