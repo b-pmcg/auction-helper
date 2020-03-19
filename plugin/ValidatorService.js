@@ -3,6 +3,7 @@ import tracksTransactions from './tracksTransactions';
 import BigNumber from 'bignumber.js';
 import { toRad, fromWei, toWei, fromWad } from './utils';
 import * as gqlQueries from '../queries';
+import getConfig from 'next/config';
 
 export default class ValidatorService extends PublicService {
   flipAuctionsLastSynced = 0;
@@ -149,10 +150,7 @@ export default class ValidatorService extends PublicService {
   }
 
   connect() {
-    this._cacheAPI =
-      this.get('web3').networkName === 'kovan'
-        ? 'https://kovan-auctions.oasis.app/api/v1'
-        : 'https://auctions.oasis.app/api/v1';
+    this._cacheAPI = getConfig().publicRuntimeConfig[this.get('web3').networkName].CACHE_API;
   }
 
   async getLots(id) {

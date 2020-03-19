@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { getBlockNumber } from '../utils';
 import { instantiateMaker } from '../maker';
+import getConfig from 'next/config';
 
 export const MakerObjectContext = createContext();
 
@@ -16,18 +17,19 @@ function MakerProvider({ children, network }) {
     });
   }, [network]);
 
-  // useEffect(() => {
-  //   if (maker && web3Connected) {
-  //     const rpcUrl = `https://${network}.infura.io/v3/${process.env.INFURA_KEY}`;
+  useEffect(() => {
+    if (maker && web3Connected) {
+      const { INFURA_KEY, SYNC_INTERVAL } = getConfig().publicRuntimeConfig;
+      const rpcUrl = `https://${network}.infura.io/v3/${INFURA_KEY}`;
 
-  //     const interval = setInterval(async () => {
-  //       const _blockHeight = await getBlockNumber(rpcUrl);
-  //       if (_blockHeight !== blockHeight) setBlockHeight(_blockHeight);
-  //     }, 2000);
+      const interval = setInterval(async () => {
+        const _blockHeight = await getBlockNumber(rpcUrl);
+        if (_blockHeight !== blockHeight) setBlockHeight(_blockHeight);
+      }, SYNC_INTERVAL);
 
-  //     return () => clearInterval(interval);
-  //   }
-  // }, [blockHeight, maker, web3Connected]);
+      return () => clearInterval(interval);
+    }
+  }, [blockHeight, maker, web3Connected]);
 
   return (
     <MakerObjectContext.Provider
