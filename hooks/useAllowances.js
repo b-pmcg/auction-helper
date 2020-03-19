@@ -85,6 +85,25 @@ const useAllowances = () => {
     })();
   }, [maker, web3Connected]);
 
+  useEffect(() => {
+    if (!web3Connected) return;
+    window.removeAllowances = () => {
+
+      const joinDaiAdapterAddress = maker
+        .service('smartContract')
+        .getContractByName('MCD_JOIN_DAI').address;
+
+      maker
+        .getToken('MDAI')
+        .approve(joinDaiAdapterAddress, 0);
+
+      maker
+        .service('smartContract')
+        .getContract('MCD_VAT')
+        .nope(joinDaiAdapterAddress);
+    }
+  }, [web3Connected, maker]);
+
   const giveDaiAllowance = async address => {
     // setDaiApprovePending(true);
     try {
