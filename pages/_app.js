@@ -20,7 +20,11 @@ class MyApp extends App {
     });
 
     if (window && window.location.search.includes('show-test-ui')) {
-      setFeatureFlag('alpha-ui')
+      setFeatureFlag('alpha-ui');
+    }
+
+    if (window && window.location.search.includes('show-flip-ui')) {
+      setFeatureFlag('flip-ui');
     }
 
     if (window !== undefined) {

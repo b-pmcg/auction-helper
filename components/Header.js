@@ -16,6 +16,8 @@ export default () => {
   const [showOtherUIs, setShow] = useState(false);
   const featureFlags = useSystemStore(state => state.featureFlags);
   const hasFlag = featureFlags.includes('alpha-ui');
+  const hasFlipFlag = featureFlags.includes('flip-ui');
+  
   useEffect(() => {
     if (window) {
       setShow(window.location.search.includes('show-test-ui'));
@@ -84,7 +86,7 @@ export default () => {
             mr: [null, 6]
           }}
         >
-          {!showOtherUIs ? null : (
+          {!hasFlipFlag ? null : (
             <Link href="/flip">
               <NavLink
                 sx={{
@@ -168,7 +170,7 @@ export default () => {
           )}
         </Flex>
         </>
-};
+}
       </Flex>
     </GuttedLayout>
   );
