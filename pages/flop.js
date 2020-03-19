@@ -93,6 +93,7 @@ const Index = () => {
               <Flex
                 sx={{
                   py: 4,
+                  pt: 7,
                   alignItems: 'center'
                 }}
               >

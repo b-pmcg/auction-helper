@@ -4,7 +4,10 @@ import FlopAuctionBlock from './FlopAuctionBlock';
 import { Button, Grid, Input, Flex, Select } from 'theme-ui';
 import useAuctionsStore, { selectors } from '../stores/auctionsStore';
 import AuctionFilters from './AuctionFilters';
+import useMaker from '../hooks/useMaker';
+
 const AuctionsLayout = ({ auctions, stepSize, type }) => {
+  const { blockHeight } = useMaker();
   const { hasPrevPageSelector, hasNextPageSelector } = selectors;
   const next = useAuctionsStore(state => state.nextPage);
   const prev = useAuctionsStore(state => state.prevPage);
@@ -12,62 +15,20 @@ const AuctionsLayout = ({ auctions, stepSize, type }) => {
   const auctionsPage = useAuctionsStore(
     selectors.auctionsPage(filteredAuctions)
   );
+
+  useEffect(() => {
+    const ids = auctionsPage.map(a => a.auctionId);
+  }, [blockHeight, auctionsPage]);
   const hasPrev = useAuctionsStore(hasPrevPageSelector());
   const hasNext = useAuctionsStore(hasNextPageSelector(filteredAuctions));
-  // const sortCriteria = useAuctionsStore(state => state.sortBy);
-  // const setSortBy = useAuctionsStore(state => state.setSortBy);
-  // const setFilterByIdValue = useAuctionsStore(
-  //   state => state.setFilterByIdValue
-  // );
-
   const AuctionBlockLayout =
     type === 'flip' ? FlipAuctionBlock : FlopAuctionBlock;
-  const initialPage = { pageStart: 0, pageEnd: 10, pageStep: 10 };
-
-  // hooks
-  const [idFilter, updateFilterById] = useState(undefined);
-  const [auctionIds, filterAuctionIds] = useState([]);
-  // const [sortCriteria, sortBy] = useState(undefined);
-  const [page, updatePage] = useState(initialPage);
-
-  // effects
-
-  console.log(filteredAuctions, 'fultereddd');
-  // useEffect(() => {
-  //   switch (sortCriteria) {
-  //     case 'byBidPrice': {
-  //       console.log('Sorted by Bid Price');
-  //       filterAuctionIds(filterById(sortByBidPrice(auctions), idFilter));
-  //       break;
-  //     }
-  //     case 'byTime': {
-  //       console.log('Sorted by Time Remaining');
-  //       filterAuctionIds(filterById(sortByTime(auctions), idFilter));
-  //       break;
-  //     }
-  //     default: {
-  //       console.log('Sorted by Latest');
-  //       filterAuctionIds(filterById(sortByLatest(auctions), idFilter));
-  //     }
-  //   }
-  // }, [sortCriteria, idFilter]);
 
   return (
     <>
-      {/* <Flex
-        sx={{
-          justifyContent: ['center', 'space-between'],
-          flexDirection: ['column', 'row'],
-          mb: 5
-        }}
-      > */}
-        <AuctionFilters />
-
-        
-      {/* </Flex> */}
+      <AuctionFilters />
       <Grid gap={5}>
         {auctionsPage.map(({ events, end, tic, auctionId }) => {
-          // const { events, end, tic } = auctions[auctionId];
           return (
             <AuctionBlockLayout
               stepSize={stepSize}

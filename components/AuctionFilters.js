@@ -25,7 +25,9 @@ const AuctionFilters = ({ title, text, action, forceExpanded }) => {
   const filterByCurrentBidder = useAuctionsStore(
     state => state.filterByCurrentBidder
   );
-  const filterByComplete = useAuctionsStore(state => state.filterByComplete);
+  const filterByNotCompleted = useAuctionsStore(
+    state => state.filterByNotCompleted
+  );
   const setSortBy = useAuctionsStore(state => state.setSortBy);
   const setFilterByIdValue = useAuctionsStore(
     state => state.setFilterByIdValue
@@ -37,8 +39,8 @@ const AuctionFilters = ({ title, text, action, forceExpanded }) => {
     state => state.toggleFilterByCurrentBidder
   );
 
-  const toggleFilterByComplete = useAuctionsStore(
-    state => state.toggleFilterByComplete
+  const toggleFilterByNotCompleted = useAuctionsStore(
+    state => state.toggleFilterByNotCompleted
   );
 
   const filters = [
@@ -72,8 +74,8 @@ const AuctionFilters = ({ title, text, action, forceExpanded }) => {
     [
       '',
       <Button
-        variant={filterByComplete ? 'pill' : 'pillInactive'}
-        onClick={toggleFilterByComplete}
+        variant={filterByNotCompleted ? 'pill' : 'pillInactive'}
+        onClick={toggleFilterByNotCompleted}
       >
         Hide Complete Auctions
       </Button>
@@ -143,11 +145,7 @@ const AuctionFilters = ({ title, text, action, forceExpanded }) => {
         >
           <Flex>
             {toggles.map(([text, body]) => {
-              return (
-                <Box mr="4">
-                  {body}
-                </Box>
-              );
+              return <Box mr="4">{body}</Box>;
             })}
           </Flex>
           <Flex mt="4">

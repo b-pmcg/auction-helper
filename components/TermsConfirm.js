@@ -19,7 +19,6 @@ import Link from 'next/link';
 
 const TermsConfirm = ({ onConfirm, confirmed }) => {
   const _onConfirm = () => {
-    console.log('here');
     onConfirm();
   };
   return (

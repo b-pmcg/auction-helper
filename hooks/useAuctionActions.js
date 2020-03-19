@@ -5,7 +5,7 @@ const useAuctionActions = () => {
 
   //ETH tend
   async function callTend(auctionId, lotSize, bidAmount) {
-    console.log('auctionId, lotSize, bidAmount', auctionId, lotSize, bidAmount);
+    console.log('tend, auctionId, lotSize, bidAmount', auctionId, lotSize, bidAmount);
     try {
       const tend = await maker
         .service('validator')
@@ -17,7 +17,7 @@ const useAuctionActions = () => {
 
   //ETH dent
   async function callEthDent(auctionId, lotSize, bidAmount) {
-    console.log('auctionId, lotSize, bidAmount', auctionId, lotSize, bidAmount);
+    console.log('eth dent, auctionId, lotSize, bidAmount', auctionId, lotSize, bidAmount);
     try {
       const tend = await maker
         .service('validator')
@@ -28,7 +28,7 @@ const useAuctionActions = () => {
   }
 
   function callFlopDent(auctionId, lotSize, bidAmount) {
-    console.log('auctionId, lotSize, bidAmount', auctionId, lotSize, bidAmount);
+    console.log('flop dent, auctionId, lotSize, bidAmount', auctionId, lotSize, bidAmount);
     try {
       return maker.service('validator').flopDent(auctionId, lotSize, bidAmount);
     } catch (err) {
@@ -37,7 +37,7 @@ const useAuctionActions = () => {
   }
 
   function callFlopDeal(auctionId) {
-    console.log('auctionId', auctionId);
+    console.log('flop deal, auctionId:', auctionId);
     try {
       return maker.service('validator').flopDeal(auctionId);
     } catch (err) {

@@ -157,7 +157,6 @@ export default class ValidatorService extends PublicService {
 
   async getLots(id) {
     const bids = await this._flipEthAdapter().bids(id);
-    console.log('bids', bids);
     const lotSize = bids[0];
     return lotSize;
   }

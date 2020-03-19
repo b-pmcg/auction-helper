@@ -11645,6 +11645,11 @@ react-moment@^0.9.7:
   resolved "https://registry.yarnpkg.com/react-moment/-/react-moment-0.9.7.tgz#ca570466595b1aa4f7619e62da18b3bb2de8b6f3"
   integrity sha512-ifzUrUGF6KRsUN2pRG5k56kO0mJBr8kRkWb0wNvtFIsBIxOuPxhUpL1YlXwpbQCbHq23hUu6A0VEk64HsFxk9g==
 
+react-timer-hook@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/react-timer-hook/-/react-timer-hook-2.0.0.tgz#d94b51df963d3d282f1801e87c0f101b638a3311"
+  integrity sha512-gcV/0k22se7T9XkirKXJhyEQBmgADgn0MMhR6J9XGxqkn1Gqmomh6grqUU7xN7tMmVTEXGq6SgwXfMpLjofrFA==
+
 react@16.12.0:
   version "16.12.0"
   resolved "https://registry.yarnpkg.com/react/-/react-16.12.0.tgz#0c0a9c6a142429e3614834d5a778e18aa78a0b83"

@@ -16,6 +16,8 @@ import {
   CAN_BE_RESTARTED
 } from '../constants';
 import useAuctionsStore, { selectors } from '../stores/auctionsStore';
+// import useMaker from '../hooks/useMaker';
+import InfoPill from './InfoPill';
 
 const AuctionEvent = ({
   type,
@@ -28,6 +30,7 @@ const AuctionEvent = ({
   tx,
   sender
 }) => {
+  const { maker } = useMaker();
   const fields = [
     ['Event Type', type],
     ['Bid Value', bid],
@@ -41,7 +44,10 @@ const AuctionEvent = ({
       <a href={`https://etherscan.io/address/${sender}`} target="_blank">
         {' '}
         {sender.slice(0, 7) + '...' + sender.slice(-4)}
-      </a>
+      </a>,
+      {
+        fontWeight: maker.currentAddress() === sender ? 500 : 400
+      }
     ],
     [
       'Tx',
@@ -102,39 +108,14 @@ const byTimestamp = (prev, next) => {
   return 0;
 };
 
-const PillInfo = ({ bg = 'primary', color = 'white', text }) => {
-  return (
-    <Box
-      sx={{
-        py: 1,
-        px: 4,
-        borderRadius: 12,
-        bg,
-        
-      }}
-    >
-      <Text variant="caps" sx={{
-        color
-      }}>{text}</Text>
-    </Box>
-  );
-};
-
 export default ({ events, id: auctionId, end, tic, stepSize }) => {
   const { maker } = useMaker();
   const { callFlopDent, callFlopDeal } = useAuctionActions();
   const fetchAuctionsSet = useAuctionsStore(state => state.fetchSet);
   const [inputState, setInputState] = useState(new BigNumber(0));
-
   const sortedEvents = events.sort(byTimestamp); // DEAL , [...DENT] , KICK ->
   const chickenDinner = maker.currentAddress() === sortedEvents[0].fromAddress;
 
-  // console.log(
-  //   chickenDinner,
-  //   maker.currentAddress(),
-  //   sortedEvents[0].sender,
-  //   sortedEvents[0]
-  // );
   const { bid: latestBid, lot: latestLot } = sortedEvents.find(
     event => event.type != 'Deal'
   );
@@ -168,13 +149,10 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
 
   useEffect(() => {
     const timerID = setTimeout(async () => {
-      // console.log('Syncing events for specific Auction', auctionId);
+      console.log('hello');
       const newEvents = await maker
         .service('validator')
         .fetchFlopAuctionsByIds([auctionId]);
-      // console.log(
-      //   `Auction with ID ${auctionId} has ${newEvents.length} Events`
-      // );
     }, 1000);
     return () => {
       clearInterval(timerID);
@@ -216,7 +194,13 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
       }}
       auctionStatus={auctionStatus}
       auctionId={auctionId}
-      pill={!chickenDinner ? null : <PillInfo text="Current Winning Bidder" bg="yellow" color="orange" />}
+      pill={
+        !chickenDinner ? null : (
+          <InfoPill bg="yellow" color="orange">
+            Current Winning Bidder
+          </InfoPill>
+        )
+      }
       hasDent={hasDent}
       end={end}
       tic={tic}
@@ -230,6 +214,7 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
                 text={'Bid for the next minimum increment'}
                 buttonOnly
                 onSubmit={handleInstantBid}
+                onTxFinished={() => fetchAuctionsSet([auctionId])}
                 small={''}
                 actionText={'Bid Now'}
               />
@@ -258,6 +243,7 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
                 disabled={auctionStatus !== CAN_BE_DEALT}
                 text={'Call deal to end auction and mint MKR'}
                 buttonOnly
+                onTxFinished={() => fetchAuctionsSet([auctionId])}
                 onSubmit={() => callFlopDeal(auctionId)}
                 small={''}
                 actionText={'Call deal'}
@@ -290,11 +276,10 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
               bid={`${new BigNumber(eventBid).toFormat(2, 4)} DAI`}
               currentBid={`${currentBid.toFormat(2, 4)} MKR/DAI`}
               timestamp={
-                <Text title={new Date(timestamp)}>
-                  <Moment fromNow ago>
+                <Text>
+                  <Moment format="HH:mm, DD MMM" withTitle>
                     {timestamp}
-                  </Moment>{' '}
-                  ago
+                  </Moment>
                 </Text>
               }
             />

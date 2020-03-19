@@ -6,15 +6,11 @@ const initialPageState = { pageStart: 0, pageEnd: 10, pageStep: 10 };
 
 const transformEvents = async (auctions, service) => {
   const groupedEvents = _.groupBy(auctions, auction => auction.auctionId);
-
   let auctionsData = {};
 
   await Promise.all(
     Object.keys(groupedEvents).map(async id => {
       const { end, tic } = await service.getFlopDuration(id);
-
-      // console.log(tic.valueOf(), end.valueOf());
-      
       auctionsData[id.toString()] = {
         auctionId: id,
         end,
@@ -41,7 +37,6 @@ const filters = {
     const { auctions } = state;
     const filteredIds = ids.reduce((p, n) => {
       const auction = auctions[n];
-      // console.log(n, auction, 'red', ids);
       if (!auction) return p;
 
       const hasEventWithBidder = !!auction.events.find(
@@ -50,7 +45,6 @@ const filters = {
           value &&
           fromAddress.toLowerCase() === value.toLowerCase()
       );
-      // console.log(hasEventWithBidder, 'bidderrr');
 
       if (hasEventWithBidder) {
         return [n, ...p];
@@ -59,7 +53,19 @@ const filters = {
       }
     }, []);
 
-    // console.log(filteredIds, 'idsss');
+    return filteredIds;
+  },
+  byNotCompleted: (ids, state) => {
+    const { auctions } = state;
+    const filteredIds = ids
+      .map(id => {
+        const auction = auctions[id];
+        if (!auction) return false;
+        const hasDeal = auction.events.find(e => e.type === 'Deal');
+        if (!hasDeal) return id;
+        return false;
+      })
+      .filter(Boolean);
     return filteredIds;
   }
 };
@@ -134,13 +140,25 @@ const selectors = {
   },
 
   filteredAuctions: () => state => {
-    const { filterByIdValue, auctions, sortBy, filterByBidderValue } = state;
+    const {
+      filterByIdValue,
+      auctions,
+      sortBy,
+      filterByBidderValue,
+      filterByNotCompleted
+    } = state;
     if (!auctions) return null;
     let ids = sorters[sortBy](Object.keys(auctions));
+
     if (filterByBidderValue) {
       ids = filters.byBidderAddr(ids, filterByBidderValue, state);
     }
+
     ids = filters.byId(ids, filterByIdValue);
+
+    if (filterByNotCompleted) {
+      ids = filters.byNotCompleted(ids, state);
+    }
     return ids.map(id => auctions[id]);
   },
 
@@ -161,6 +179,7 @@ const [useAuctionsStore] = create((set, get) => ({
   filterByBidderBalue: '',
   filterByComplete: false,
   filterByCurrentBidder: false,
+  filterByNotCompleted: false,
 
   nextPage: () => {
     const { pageStart, pageEnd, pageStep } = get();
@@ -198,25 +217,24 @@ const [useAuctionsStore] = create((set, get) => ({
     });
   },
 
-  toggleFilterByCurrentBidder: (val) => {
-    const {filterByCurrentBidder} = get();
+  toggleFilterByCurrentBidder: val => {
+    const { filterByCurrentBidder } = get();
 
     set({
-      filterByBidderValue: filterByCurrentBidder ? "" : val,
+      filterByBidderValue: filterByCurrentBidder ? '' : val,
       filterByCurrentBidder: !filterByCurrentBidder,
       ...initialPageState
     });
   },
 
-  toggleFilterByComplete: () => {
-    const {filterByCurrentBidder} = get();
+  toggleFilterByNotCompleted: () => {
+    const { filterByNotCompleted } = get();
 
     set({
-      filterByComplete: !filterByCurrentBidder,
+      filterByNotCompleted: !filterByNotCompleted,
       ...initialPageState
     });
   },
-
 
   fetchAll: async maker => {
     const service = maker.service(AUCTION_DATA_FETCHER);
