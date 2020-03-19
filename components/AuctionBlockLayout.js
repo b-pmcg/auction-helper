@@ -29,7 +29,7 @@ export default ({
   const [timer, setTimer] = useState([]);
   const [collapsed, setCollapsed] = useState(false);
   const auctionStatusHeadings = {
-    [COMPLETED]: 'Auction Completed',
+    [COMPLETED]: 'Auction completed',
     [IN_PROGRESS]: `Time remaining: ${timer}`,
     [CAN_BE_DEALT]: 'Auction Can Be Dealt',
     [CAN_BE_RESTARTED]: 'Auction Can Be Restarted'
@@ -182,7 +182,11 @@ export default ({
         <>
           <Box p="6">
             <EventsList events={auctionEvents} />
-            <Box pt="6">{actions}</Box>
+            { 
+              auctionStatus === COMPLETED
+              ? <Box variant="styles.statusBox.warning"> { auctionStatusHeadings[COMPLETED] }. </Box>
+              : <Box pt="6">{actions}</Box>
+            }
           </Box>
         </>
       )}

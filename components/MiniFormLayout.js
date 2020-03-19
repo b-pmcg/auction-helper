@@ -57,7 +57,7 @@ const MiniFormLayout = ({
   || (inputState && inputState.eq(ZERO))
   || !! errors.length 
   || txState === TX_PENDING;
-
+  
   const _onSubmit = () => {
     const txObject = onSubmit(inputState);
     setTxErrorMsg(undefined);
