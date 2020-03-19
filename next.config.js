@@ -7,6 +7,7 @@ module.exports = withMDX({
   // exportTrailingSlash: true,
   publicRuntimeConfig: {
     INFURA_KEY: process.env.INFURA_KEY,
+    SYNC_INTERVAL: process.env.SYNC_INTERVAL,
     kovan: {
       CACHE_API: process.env.KOVAN_CACHE_API
     },

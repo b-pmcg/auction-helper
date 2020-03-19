@@ -19,14 +19,13 @@ function MakerProvider({ children, network }) {
 
   useEffect(() => {
     if (maker && web3Connected) {
-      const INFURA_KEY = getConfig().publicRuntimeConfig.INFURA_KEY;
-      console.log(INFURA_KEY);
+      const { INFURA_KEY, SYNC_INTERVAL } = getConfig().publicRuntimeConfig;
       const rpcUrl = `https://${network}.infura.io/v3/${INFURA_KEY}`;
 
       const interval = setInterval(async () => {
         const _blockHeight = await getBlockNumber(rpcUrl);
         if (_blockHeight !== blockHeight) setBlockHeight(_blockHeight);
-      }, 2000);
+      }, SYNC_INTERVAL);
 
       return () => clearInterval(interval);
     }
