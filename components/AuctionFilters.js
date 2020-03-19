@@ -49,7 +49,7 @@ const gloss = [
   ],
   [
     'Current Bid Price',
-    'The current price that is being paid for per MKR. Has each bid is for a decreasing amount of MKR, the price each time will increase.'
+    'The current price that is being bid for MKR in Dai. As each bid is for a decreasing amount of MKR, the bid price after each bid will increase.'
   ],
   [
     'Sender',
