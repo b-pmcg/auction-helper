@@ -1,6 +1,6 @@
 /** @jsx jsx */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import BigNumber from 'bignumber.js';
 import {
   Heading,
@@ -50,12 +50,11 @@ const MiniFormLayout = ({
     errorMessages.push(txErrorMsg);
   }
 
-
-  const _disabled = disabled 
-  || (!buttonOnly && !inputState) 
-  || (inputState && inputState.eq(ZERO))
-  !! errors.length 
-  || txState === TX_PENDING;
+  const _disabled =
+    disabled ||
+    (!buttonOnly && !inputState) ||
+    (inputState && inputState.eq(ZERO));
+  !!errors.length || txState === TX_PENDING;
 
   const _onSubmit = () => {
     const txObject = onSubmit(inputState);
@@ -92,6 +91,10 @@ const MiniFormLayout = ({
     const value = event.target.value;
     setInputState(BigNumber(value));
   };
+
+  useEffect(() => {
+    small(inputState);
+  }, [inputState]);
 
   return (
     <Grid gap={2}>

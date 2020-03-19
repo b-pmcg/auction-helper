@@ -95,6 +95,85 @@ const AuctionEvent = ({
     </Grid>
   );
 };
+const OrderSummary = ({
+  currentBid,
+  minMkrAsk,
+  calculatedBidPrice,
+  remainingBal
+}) => {
+  const fields = [
+    ['Max bid amount', minMkrAsk, { fontWeight: 600 }],
+    ['Current bid amount', currentBid, { fontWeight: 600 }],
+    ['VAT balance after bid', calculatedBidPrice, { fontWeight: 600 }]
+  ];
+
+  const SummaryLine = ({ title, value, styling }) => (
+    <Grid
+      columns={2}
+      sx={{
+        justifyContent: 'space-between'
+      }}
+    >
+      <Text
+        sx={{
+          fontSize: 1
+        }}
+      >
+        {title}
+      </Text>
+      <Text
+        sx={{
+          fontSize: 1,
+          ...styling
+        }}
+      >
+        {value}
+      </Text>
+    </Grid>
+  );
+
+  return (
+    <Grid gap={2}>
+      <Text
+        variant="caps"
+        sx={{
+          fontSize: '13px'
+        }}
+      >
+        {'Order Summary'}
+      </Text>
+      <Grid
+        width={'500px'}
+        gap={2}
+        rows={[2, 4, 7]}
+        sx={{
+          bg: 'background',
+          p: 5,
+          borderRadius: 5
+        }}
+      >
+        {fields.map(([title, value, styling]) => {
+          return <SummaryLine title={title} value={value} styling={styling} />;
+        })}
+      </Grid>
+      <Grid
+        gap={2}
+        rows={[2, 4, 7]}
+        sx={{
+          bg: 'background',
+          p: 5,
+          borderRadius: 5
+        }}
+      >
+        <SummaryLine
+          title={'Balance Remaining'}
+          value={remainingBal}
+          styling={{ fontWeight: 600 }}
+        />
+      </Grid>
+    </Grid>
+  );
+};
 
 const byTimestamp = (prev, next) => {
   const nextTs = new Date(next.timestamp).getTime();
@@ -112,6 +191,7 @@ const byTimestamp = (prev, next) => {
 
 export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
   const { maker } = useMaker();
+  const [calculatedBidPrice, setCalculatedBidPrice] = useState(BigNumber(0));
   const { hasDaiAllowance, hasFlopHope, hasJoinDaiHope } = allowances;
   let { vatDaiBalance } = useBalances();
   const { callFlopDent, callFlopDeal } = useAuctionActions();
@@ -167,16 +247,6 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
     };
   }, []);
 
-  /**
-   * disabled when:
-   * - allowances & hopes not set
-   * - 'deal' has been called (if deal event exists for auctionId)
-   * - 'end' has passed
-   * - MKR 'bid' is gt DAI 'lot' size
-   * - MKR 'bid' is gte the current 'bid' (must be smaller by a certain % [3?])
-   * - when the latest bid duration (ttl) has passed
-   * - OR when the auction duration (tau) has passed.
-   */
   // const bidDisabled = state.error;
   const mainValidation = [];
 
@@ -202,6 +272,20 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
       )} DAI in the Vat to bid`
     ]
   ];
+
+  const calculateBidPrice = inputState => {
+    if (!inputState || inputState.eq(0) || inputState.isNaN()) {
+      const bidPrice = BigNumber(latestBid)
+        .div(minMkrAsk)
+        .toFixed(2);
+      setCalculatedBidPrice(bidPrice);
+    } else {
+      const bidPrice = BigNumber(latestBid)
+        .div(inputState)
+        .toFixed(2);
+      setCalculatedBidPrice(bidPrice);
+    }
+  };
 
   return (
     <AuctionBlockLayout
@@ -232,13 +316,7 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
                 buttonOnly
                 onSubmit={handleInstantBid}
                 onTxFinished={() => fetchAuctionsSet([auctionId])}
-                small={`Bidding ${BigNumber(latestBid).toFixed(
-                  2
-                )} DAI in exchange for ${minMkrAsk.toFixed(4)} MKR (${BigNumber(
-                  latestBid
-                )
-                  .div(minMkrAsk)
-                  .toFixed(2)} MKR/DAI)`}
+                small={calculateBidPrice}
                 actionText={'Bid Now'}
               />
             ],
@@ -250,21 +328,7 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
                 inputUnit="MKR"
                 onSubmit={handleTendCTA}
                 onTxFinished={() => fetchAuctionsSet([auctionId])}
-                small={inputState =>
-                  `Bidding ${BigNumber(latestBid).toFixed(
-                    2
-                  )} DAI in exchange for ${
-                    !inputState || inputState.eq(0) || inputState.isNaN()
-                      ? '---'
-                      : inputState
-                  } MKR (${
-                    !inputState || inputState.eq(0) || inputState.isNaN()
-                      ? '---'
-                      : BigNumber(latestBid)
-                          .div(inputState)
-                          .toFixed(2)
-                  } MKR/DAI)`
-                }
+                small={calculateBidPrice}
                 inputValidation={bidValidationTests}
                 actionText={'Bid Now'}
               />
@@ -318,6 +382,20 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
           );
         }
       )}
+      orderSummary={
+        <OrderSummary
+          key={`${latestLot}-${vatDaiBalance}`}
+          remainingBal={
+            vatDaiBalance &&
+            `${BigNumber(vatDaiBalance)
+              .minus(BigNumber(latestBid))
+              .toFormat(0, 4)} DAI`
+          }
+          currentBid={`${new BigNumber(latestLot).toFixed(2, 1)} MKR`}
+          minMkrAsk={`${minMkrAsk.toFixed(2, 1)} MKR`}
+          calculatedBidPrice={`${calculatedBidPrice} MKR/DAI`}
+        />
+      }
     />
   );
 };

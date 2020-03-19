@@ -24,7 +24,8 @@ export default ({
   actions,
   forceExpanded,
   hasDent,
-  pill
+  pill,
+  orderSummary
 }) => {
   const [timer, setTimer] = useState([]);
   const [collapsed, setCollapsed] = useState(false);
@@ -182,7 +183,10 @@ export default ({
         <>
           <Box p="6">
             <EventsList events={auctionEvents} />
-            <Box pt="6">{actions}</Box>
+            <Grid columns={2}>
+              <Box pt="6">{actions}</Box>
+              <Box pt="6">{orderSummary}</Box>
+            </Grid>
           </Box>
         </>
       )}
