@@ -6,7 +6,7 @@ export default {
   breakpoints: ['40em', '52em', '64em'],
 
   space: [0, 4, 8, 12, 14, 16, 24, 32, 64, 128, 256, 512],
-
+  sizes: [0, 4, 8, 12, 14, 16, 24, 32, 64, 128, 256, 512],
   fonts: {
     body:
       '-apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu',

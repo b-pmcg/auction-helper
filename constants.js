@@ -1,3 +1,5 @@
+import BigNumber from "bignumber.js";
+
 export const AUCTION_DATA_FETCHER = 'validator'; //TODO update this when we change the name
 
 // possible auction statuses --------
@@ -17,3 +19,7 @@ export const balanceRounding = {
   oneTo10K: 2,
   over10K: 0
 };
+
+
+// Numbers
+export const ZERO = new BigNumber(0);
