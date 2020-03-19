@@ -117,7 +117,7 @@ export default ({
         >
           {!pill ? null : <Box ml="4">{pill}</Box>}
           {
-            collapsed &&
+            collapsed && auctionStatus === IN_PROGRESS && 
             <Flex sx={{
               flex: '2 1 0',
               flexDirection: ['column', 'row'],
