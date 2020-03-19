@@ -34,6 +34,31 @@ const filters = {
 
   byId: (ids, id) => {
     return ids.filter(auctionId => (id ? auctionId === id : auctionId));
+  },
+  byBidderAddr: (ids, value, state) => {
+    const { auctions } = state;
+    const filteredIds = ids.reduce((p, n) => {
+      const auction = auctions[n];
+      // console.log(n, auction, 'red', ids);
+      if (!auction) return p;
+
+      const hasEventWithBidder = !!auction.events.find(
+        ({ fromAddress }) =>
+          fromAddress &&
+          value &&
+          fromAddress.toLowerCase() === value.toLowerCase()
+      );
+      // console.log(hasEventWithBidder, 'bidderrr');
+
+      if (hasEventWithBidder) {
+        return [n, ...p];
+      } else {
+        return p;
+      }
+    }, []);
+
+    // console.log(filteredIds, 'idsss');
+    return filteredIds;
   }
 };
 
@@ -107,12 +132,13 @@ const selectors = {
   },
 
   filteredAuctions: () => state => {
-    const { filterByIdValue, auctions, sortBy } = state;
+    const { filterByIdValue, auctions, sortBy, filterByBidderValue } = state;
     if (!auctions) return null;
-
-    let ids = Object.keys(auctions);
-    ids = filters.byId(sorters[sortBy](auctions), filterByIdValue);
-
+    let ids = sorters[sortBy](Object.keys(auctions));
+    if (filterByBidderValue) {
+      ids = filters.byBidderAddr(ids, filterByBidderValue, state);
+    }
+    ids = filters.byId(ids, filterByIdValue);
     return ids.map(id => auctions[id]);
   },
 
@@ -130,6 +156,9 @@ const [useAuctionsStore] = create((set, get) => ({
   pageStep: 10,
   sortBy: 'byLatest',
   filterByIdValue: '',
+  filterByBidderBalue: '',
+  filterByComplete: false,
+  filterByCurrentBidder: false,
 
   nextPage: () => {
     const { pageStart, pageEnd, pageStep } = get();
@@ -159,6 +188,33 @@ const [useAuctionsStore] = create((set, get) => ({
       ...initialPageState
     });
   },
+  setFilterByBidderValue: val => {
+    set({
+      filterByBidderValue: val,
+      filterByCurrentBidder: false,
+      ...initialPageState
+    });
+  },
+
+  toggleFilterByCurrentBidder: (val) => {
+    const {filterByCurrentBidder} = get();
+
+    set({
+      filterByBidderValue: filterByCurrentBidder ? "" : val,
+      filterByCurrentBidder: !filterByCurrentBidder,
+      ...initialPageState
+    });
+  },
+
+  toggleFilterByComplete: () => {
+    const {filterByCurrentBidder} = get();
+
+    set({
+      filterByComplete: !filterByCurrentBidder,
+      ...initialPageState
+    });
+  },
+
 
   fetchAll: async maker => {
     const service = maker.service(AUCTION_DATA_FETCHER);

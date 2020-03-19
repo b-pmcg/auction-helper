@@ -3,7 +3,7 @@ import FlipAuctionBlock from './FlipAuctionBlock';
 import FlopAuctionBlock from './FlopAuctionBlock';
 import { Button, Grid, Input, Flex, Select } from 'theme-ui';
 import useAuctionsStore, { selectors } from '../stores/auctionsStore';
-
+import AuctionFilters from './AuctionFilters';
 const AuctionsLayout = ({ auctions, stepSize, type }) => {
   const { hasPrevPageSelector, hasNextPageSelector } = selectors;
   const next = useAuctionsStore(state => state.nextPage);
@@ -14,11 +14,11 @@ const AuctionsLayout = ({ auctions, stepSize, type }) => {
   );
   const hasPrev = useAuctionsStore(hasPrevPageSelector());
   const hasNext = useAuctionsStore(hasNextPageSelector(filteredAuctions));
-  const sortCriteria = useAuctionsStore(state => state.sortBy);
-  const setSortBy = useAuctionsStore(state => state.setSortBy);
-  const setFilterByIdValue = useAuctionsStore(
-    state => state.setFilterByIdValue
-  );
+  // const sortCriteria = useAuctionsStore(state => state.sortBy);
+  // const setSortBy = useAuctionsStore(state => state.setSortBy);
+  // const setFilterByIdValue = useAuctionsStore(
+  //   state => state.setFilterByIdValue
+  // );
 
   const AuctionBlockLayout =
     type === 'flip' ? FlipAuctionBlock : FlopAuctionBlock;
@@ -54,36 +54,17 @@ const AuctionsLayout = ({ auctions, stepSize, type }) => {
 
   return (
     <>
-      <Flex
+      {/* <Flex
         sx={{
           justifyContent: ['center', 'space-between'],
           flexDirection: ['column', 'row'],
           mb: 5
         }}
-      >
-        <Input
-          sx={{
-            bg: 'white',
-            borderColor: 'border',
-            maxWidth: ['100%', '180px']
-          }}
-          placeholder="Filter by ID"
-          onChange={({ target: { value } }) => setFilterByIdValue(value)}
-        />
-        <Select
-          sx={{
-            width: ['100%', '200px'],
-            borderColor: 'border',
-            bg: 'white'
-          }}
-          defaultValue="Sort By Id (Desc)"
-          onChange={({ target: { value } }) => setSortBy(value)}
-        >
-          <option value="byLatest">Sort By Id (Desc)</option>
-          <option value="byTime">Time Remaining</option>
-          <option value="byBidPrice">Current Bid Price</option>
-        </Select>
-      </Flex>
+      > */}
+        <AuctionFilters />
+
+        
+      {/* </Flex> */}
       <Grid gap={5}>
         {auctionsPage.map(({ events, end, tic, auctionId }) => {
           // const { events, end, tic } = auctions[auctionId];
@@ -112,10 +93,10 @@ const AuctionsLayout = ({ auctions, stepSize, type }) => {
           disabled={!hasPrev}
           onClick={prev}
         >
-          PREV
+          Prev
         </Button>
         <Button variant="primary" disabled={!hasNext} onClick={next}>
-          NEXT
+          Next
         </Button>
       </Flex>
     </>

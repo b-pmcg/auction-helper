@@ -83,6 +83,23 @@ export default {
         cursor: 'not-allowed'
       }
     },
+    outline: {
+      variant: 'buttons.primary',
+      bg: 'transparent',
+      color: 'graphite',
+      border: '1px solid',
+      borderColor: 'border',
+      '&:hover': {
+        bg: 'transparent',
+        color: 'lightGraphite',
+        borderColor: 'lightGraphite'
+      },
+      '&:active': {
+        borderColor: 'text',
+        color: 'text'
+      }
+    },
+
     pill: {
       outline: 'none',
       variant: 'text.caps',
@@ -90,7 +107,9 @@ export default {
       py: 2,
       px: 4,
       color: 'white',
-      bg: 'primary'
+      bg: 'primary',
+      border: '1px solid',
+      borderColor: 'primary'
     },
     pillInactive: {
       variant: 'buttons.pill',

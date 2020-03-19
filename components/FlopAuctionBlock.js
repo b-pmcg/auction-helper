@@ -127,12 +127,12 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
   const sortedEvents = events.sort(byTimestamp); // DEAL , [...DENT] , KICK ->
   const chickenDinner = maker.currentAddress() === sortedEvents[0].fromAddress;
 
-  console.log(
-    chickenDinner,
-    maker.currentAddress(),
-    sortedEvents[0].sender,
-    sortedEvents[0]
-  );
+  // console.log(
+  //   chickenDinner,
+  //   maker.currentAddress(),
+  //   sortedEvents[0].sender,
+  //   sortedEvents[0]
+  // );
   const { bid: latestBid, lot: latestLot } = sortedEvents.find(
     event => event.type != 'Deal'
   );
