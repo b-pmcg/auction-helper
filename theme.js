@@ -47,7 +47,9 @@ export default {
     purple: '#447AFB',
     blackThree: '#333',
     border: '#D4D9E1',
-    white: '#fff'
+    white: '#fff',
+    yellow: '#FFF1CF',
+    orange: '#E67002'
 
     // text: '#000',
     // background: '#fff',

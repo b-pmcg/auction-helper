@@ -110,10 +110,12 @@ const PillInfo = ({ bg = 'primary', color = 'white', text }) => {
         px: 4,
         borderRadius: 12,
         bg,
-        color
+        
       }}
     >
-      <Text variant="caps">{text}</Text>
+      <Text variant="caps" sx={{
+        color
+      }}>{text}</Text>
     </Box>
   );
 };
@@ -214,7 +216,7 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
       }}
       auctionStatus={auctionStatus}
       auctionId={auctionId}
-      pill={!chickenDinner ? null : <PillInfo text="Current Winning Bidder" />}
+      pill={!chickenDinner ? null : <PillInfo text="Current Winning Bidder" bg="yellow" color="orange" />}
       hasDent={hasDent}
       end={end}
       tic={tic}

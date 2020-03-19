@@ -100,13 +100,13 @@ export default ({
           p: 6,
           py: 5,
           flexDirection: ['column', 'row'],
-          justifyContent: 'space-between',
+          justifyContent: 'flex-start',
           borderBottom: collapsed ? null : '1px solid',
           borderColor: 'border',
           alignItems: 'center'
         }}
       >
-        <Heading as="h5" variant="h2" sx={{ flex: '1 0 0 ',}}>
+        <Heading as="h5" variant="h2">
           Auction ID: {auctionId}
         </Heading>
         <Flex
