@@ -58,7 +58,7 @@ const useBalances = () => {
       maker.currentAddress(),
       BigNumber(joinAmountInDai).toFixed()
     );
-    
+
     const [vatBal, daiBal] = await fetchBalances();
     setVatDaiBalance(fromRad(vatBal).toFixed());
     setDaiBalance(daiBal.toNumber());

@@ -16,7 +16,6 @@ import {
   CAN_BE_RESTARTED
 } from '../constants';
 import useAuctionsStore, { selectors } from '../stores/auctionsStore';
-// import useMaker from '../hooks/useMaker';
 import InfoPill from './InfoPill';
 
 const AuctionEvent = ({
@@ -108,8 +107,9 @@ const byTimestamp = (prev, next) => {
   return 0;
 };
 
-export default ({ events, id: auctionId, end, tic, stepSize }) => {
+export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
   const { maker } = useMaker();
+  const { hasDaiAllowance, hasFlopHope, hasJoinDaiHope } = allowances;
   const { callFlopDent, callFlopDeal } = useAuctionActions();
   const fetchAuctionsSet = useAuctionsStore(state => state.fetchSet);
   const [inputState, setInputState] = useState(new BigNumber(0));
@@ -172,6 +172,8 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
   // const bidDisabled = state.error;
   const mainValidation = [];
 
+  const canBid = hasDaiAllowance && hasJoinDaiHope && hasFlopHope;
+
   const bidValidationTests = [
     // [() => !web3Connected],
     [
@@ -210,7 +212,7 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
             [
               'Instant Bid',
               <MiniFormLayout
-                disabled={auctionStatus !== IN_PROGRESS}
+                disabled={auctionStatus !== IN_PROGRESS || !canBid}
                 text={'Bid for the next minimum increment'}
                 buttonOnly
                 onSubmit={handleInstantBid}
@@ -222,7 +224,7 @@ export default ({ events, id: auctionId, end, tic, stepSize }) => {
             [
               'Custom Bid',
               <MiniFormLayout
-                disabled={auctionStatus !== IN_PROGRESS}
+                disabled={auctionStatus !== IN_PROGRESS || !canBid}
                 text={'Enter the amount of MKR requested for this auction'}
                 inputUnit="MKR"
                 onSubmit={handleTendCTA}

@@ -11,8 +11,9 @@ import IntroInfoCard from '../components/IntroInfoCard';
 import IntroMDX from '../text/flopIntro.mdx';
 import Footer from '../components/Footer';
 import TermsConfirm from '../components/TermsConfirm';
+import useAllowances from '../hooks/useAllowances';
 import Moment from 'react-moment';
-import useAuctionsStore, {selectors} from '../stores/auctionsStore';
+import useAuctionsStore, { selectors } from '../stores/auctionsStore';
 
 const Index = () => {
   const { maker, web3Connected } = useMaker();
@@ -22,7 +23,8 @@ const Index = () => {
   const fetchFlopStepSize = useAuctionsStore(state => state.fetchFlopStepSize);
   const stepSize = useAuctionsStore(state => state.flopStepSize);
   const [TOCAccepted, setTOCAccepted] = useState(false);
-  const [{isSyncing, lastSynced}, sync] = useState({})
+  const allowances = useAllowances();
+  const [{ isSyncing, lastSynced }, sync] = useState({});
 
   useEffect(() => {
     if (web3Connected) {
@@ -34,13 +36,13 @@ const Index = () => {
   }, [web3Connected]);
 
   useEffect(() => {
-      if(isSyncing) {
-        sync({
-          lastSynced,
-          isSyncing:false
-        })
-      } ;
-  }, [auctions])
+    if (isSyncing) {
+      sync({
+        lastSynced,
+        isSyncing: false
+      });
+    }
+  }, [auctions]);
 
   return (
     <GuttedLayout>
@@ -87,7 +89,7 @@ const Index = () => {
               pointerEvents: TOCAccepted ? 'auto' : 'none'
             }}
           >
-            <AccountManager web3Connected={web3Connected} />
+            <AccountManager allowances={allowances} />
 
             {!web3Connected ? null : (
               <Flex
@@ -98,24 +100,27 @@ const Index = () => {
                 }}
               >
                 <Text variant="h2">Active Auctions</Text>
-                {
-                  isSyncing 
-                    ? <Spinner
-                        sx={{
-                          height: 7,
-                          ml: 5
-                        }}
-                      />
-                    : <Button
-                        variant="pill"
-                        sx={{ ml: 5 }}
-                        disabled={!web3Connected}
-                        onClick={() => { sync({isSyncing: true, lastSynced: new Date()}); fetchAuctions(maker) }}
-                       >
-                      Sync
-                    </Button>
-                }
-               
+                {isSyncing ? (
+                  <Spinner
+                    sx={{
+                      height: 7,
+                      ml: 5
+                    }}
+                  />
+                ) : (
+                  <Button
+                    variant="pill"
+                    sx={{ ml: 5 }}
+                    disabled={!web3Connected}
+                    onClick={() => {
+                      sync({ isSyncing: true, lastSynced: new Date() });
+                      fetchAuctions(maker);
+                    }}
+                  >
+                    Sync
+                  </Button>
+                )}
+
                 {lastSynced && (
                   <Text title={lastSynced} sx={{ ml: 5, fontSize: 2 }}>
                     (Last synced: <Moment local>{lastSynced.getTime()}</Moment>)
@@ -139,6 +144,7 @@ const Index = () => {
               </Flex>
             ) : (
               <AuctionsLayout
+                allowances={allowances}
                 stepSize={stepSize}
                 auctions={auctions}
                 type="flop"

@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import useMaker from '../hooks/useMaker';
 import useBalances from '../hooks/useBalances';
-import useAllowances from '../hooks/useAllowances';
 import { Text, jsx, Box, Button, Grid } from 'theme-ui';
 import BalanceOf from './BalanceOf';
 import AccountManagerLayout from '../components/AccountManagerLayout';
@@ -11,7 +10,7 @@ import ActionTabs from './ActionTabs';
 import MiniFormLayout from './MiniFormLayout';
 import { formatBalance } from '../utils';
 
-export default () => {
+export default ({ allowances }) => {
   const { maker, web3Connected } = useMaker();
   let {
     vatDaiBalance,
@@ -23,7 +22,7 @@ export default () => {
 
   daiBalance = formatBalance(daiBalance);
   vatDaiBalance = formatBalance(vatDaiBalance);
-  // mkrBalance = formatBalance(mkrBalance);
+  mkrBalance = formatBalance(mkrBalance);
 
   const {
     hasDaiAllowance,
@@ -36,7 +35,7 @@ export default () => {
     giveFlipEthHope,
     giveJoinDaiHope,
     giveFlopHope
-  } = useAllowances();
+  } = allowances;
 
   const [daiApprovePending, setDaiApprovePending] = useState(false);
   const [mkrApprovePending, setMkrApprovePending] = useState(false);
@@ -232,7 +231,6 @@ export default () => {
                       </Box>
                     </Grid>
                   ]
-                  
                 ]}
               />
             </Grid>

@@ -148,7 +148,7 @@ const selectors = {
       filterByNotCompleted
     } = state;
     if (!auctions) return null;
-    let ids = sorters[sortBy](Object.keys(auctions));
+    let ids = sorters[sortBy](auctions);
 
     if (filterByBidderValue) {
       ids = filters.byBidderAddr(ids, filterByBidderValue, state);

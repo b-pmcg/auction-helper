@@ -6,7 +6,7 @@ import useAuctionsStore, { selectors } from '../stores/auctionsStore';
 import AuctionFilters from './AuctionFilters';
 import useMaker from '../hooks/useMaker';
 
-const AuctionsLayout = ({ auctions, stepSize, type }) => {
+const AuctionsLayout = ({ auctions, allowances, stepSize, type }) => {
   const { blockHeight } = useMaker();
   const { hasPrevPageSelector, hasNextPageSelector } = selectors;
   const next = useAuctionsStore(state => state.nextPage);
@@ -31,6 +31,7 @@ const AuctionsLayout = ({ auctions, stepSize, type }) => {
         {auctionsPage.map(({ events, end, tic, auctionId }) => {
           return (
             <AuctionBlockLayout
+              allowances={allowances}
               stepSize={stepSize}
               key={auctionId}
               events={events}
