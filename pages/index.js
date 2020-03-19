@@ -35,11 +35,7 @@ const Index = () => {
 
   return (
     <GuttedLayout>
-      <Box
-        sx={{
-          py: 5
-        }}
-      >
+      <Box>
         <Head>
           <title>Maker Auctions</title>
         </Head>
