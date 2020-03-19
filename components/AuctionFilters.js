@@ -151,8 +151,11 @@ const AuctionFilters = ({ title, text, action, forceExpanded }) => {
             sx={{
               variant: 'styles.roundedCard'
             }}
-          > <Text>
-            glossary, kick, tend, dent, deal, vat, flop, flip, bid, lot, price, tau, tll, adapter, end...
+          >
+            {' '}
+            <Text>
+              glossary, kick, tend, dent, deal, vat, flop, flip, bid, lot,
+              price, tau, tll, adapter, end...
             </Text>
           </Box>
         </Box>
@@ -167,14 +170,18 @@ const AuctionFilters = ({ title, text, action, forceExpanded }) => {
           }}
         >
           <Flex>
-            {toggles.map(([text, body]) => {
-              return <Box mr="4">{body}</Box>;
+            {toggles.map(([text, body], index) => {
+              return (
+                <Box mr="4" key={index}>
+                  {body}
+                </Box>
+              );
             })}
           </Flex>
           <Flex mt="4">
-            {filters.map(([text, body]) => {
+            {filters.map(([text, body], index) => {
               return (
-                <Box mr="4">
+                <Box mr="4" key={index}>
                   <Text
                     variant="caps"
                     sx={{

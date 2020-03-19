@@ -7,6 +7,7 @@ import BigNumber from 'bignumber.js';
 import Moment from 'react-moment';
 import MiniFormLayout from './MiniFormLayout';
 import useAuctionActions from '../hooks/useAuctionActions';
+import useBalances from '../hooks/useBalances';
 import ActionTabs from './ActionTabs';
 import AuctionBlockLayout from './AuctionBlockLayout';
 import {
@@ -110,6 +111,7 @@ const byTimestamp = (prev, next) => {
 export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
   const { maker } = useMaker();
   const { hasDaiAllowance, hasFlopHope, hasJoinDaiHope } = allowances;
+  let { vatDaiBalance } = useBalances();
   const { callFlopDent, callFlopDeal } = useAuctionActions();
   const fetchAuctionsSet = useAuctionsStore(state => state.fetchSet);
   const sortedEvents = events.sort(byTimestamp); // DEAL , [...DENT] , KICK ->
@@ -186,6 +188,14 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
         .minus(1)
         .multipliedBy(100)
         .toString()}% less MKR than the current lot`
+    ],
+    [
+      () => {
+        return new BigNumber(latestBid).gt(vatDaiBalance);
+      },
+      `Must have at least ${new BigNumber(latestBid).toFixed(
+        2
+      )} DAI in the Vat to bid`
     ]
   ];
 
