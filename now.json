@@ -4,6 +4,6 @@
     "alias": ["mkr-auction-helper"],
     "public": false,
     "routes": [{ "src": "/(.*)", "dest": "/$1" }],
-    "github": { "enabled": false }
+    "github": { "enabled": true }
   }
   
