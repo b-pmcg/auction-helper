@@ -29,7 +29,7 @@ const gloss = [
   ],
   [
     'Kick',
-    'The first event in an auction, and refers to the auction starting. It sets the initial price (200 Dai/MKR) and allows you to start bidding on it.'
+    'The first event in an auction, and refers to the auction starting. It sets the initial price (200 MKR/DAI) and allows you to start bidding on it.'
   ],
   [
     'Dent',
@@ -45,15 +45,15 @@ const gloss = [
   ],
   [
     'Lot Size',
-    'The amount of MKR that is currently being bid for the Bid Value (10,000 Dai). Each new bid will have to bid a lower Lot Size (amount of MKR) to be successful.'
+    'The amount of MKR that is currently being bid for the Bid Value (50,000 Dai). Each new bid will have to bid a lower Lot Size (amount of MKR) to be successful.'
   ],
   [
     'Current Bid Price',
-    'The current price that is being bid for MKR in Dai. As each bid is for a decreasing amount of MKR, the bid price after each bid will increase.'
+    'The current price that is being bid for MKR in Dai. As each bid is for a decreasing amount of MKR, the bid price will increase after each successful bid.'
   ],
   [
     'Sender',
-    'The address of the user who made the bid. This can be clicked on to view their address in Etherscan.'
+    'The address of the user who made the bid(dent), kick or deal event.'
   ],
   [
     'Instant Bid',
