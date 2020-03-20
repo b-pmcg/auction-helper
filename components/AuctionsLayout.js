@@ -40,7 +40,7 @@ const AuctionsLayout = ({ auctions, allowances, stepSize, type }) => {
 
   return (
     <>
-      <AuctionFilters />
+      <AuctionFilters/>
       <Grid gap={5}>
         {auctionsPage.map(({ events, end, tic, auctionId }) => {
           return (
