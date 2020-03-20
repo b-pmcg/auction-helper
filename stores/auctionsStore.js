@@ -7,7 +7,7 @@ const initialPageState = { pageStart: 0, pageEnd: 10, pageStep: 10 };
 const transformEvents = async (auctions, service) => {
   const groupedEvents = _.groupBy(auctions, auction => auction.auctionId);
   let auctionsData = {};
-
+  console.log('fetched events')
   await Promise.all(
     Object.keys(groupedEvents).map(async id => {
       try {
@@ -19,7 +19,7 @@ const transformEvents = async (auctions, service) => {
           events: groupedEvents[id]
         };
       } catch (error) {
-        alert('failed to load onchain data, please refresh.');
+        console.log('failed to load onchain data, please refresh.', error);
       }
     })
   );

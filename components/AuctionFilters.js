@@ -48,7 +48,7 @@ const gloss = [
     'The amount of MKR that is currently being bid for the Bid Value (50,000 Dai). Each new bid will have to bid a lower Lot Size (amount of MKR) to be successful.'
   ],
   [
-    'Current Bid Price',
+    'MKR Price',
     'The current price that is being bid for MKR in Dai. As each bid is for a decreasing amount of MKR, the bid price will increase after each successful bid.'
   ],
   [
