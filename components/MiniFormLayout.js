@@ -25,10 +25,9 @@ const MiniFormLayout = ({
   inputUnit,
   inputType = 'number',
   onSubmit,
-  inputValidation,
   onChange,
+  inputValidation,
   onTxFinished,
-  error,
   onMount,
   small
 }) => {
@@ -97,12 +96,12 @@ const MiniFormLayout = ({
   };
 
   useEffect(() => {
-    if (onMount) onMount();
-  }, []);
+    if (onChange) onChange(BigNumber(inputState));
+  });
 
   return (
     <Grid gap={2}>
-      <Text >{text}</Text>
+      <Text>{text}</Text>
       <Flex
         sx={{
           flexDirection: ['column', 'row']

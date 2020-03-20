@@ -95,6 +95,7 @@ const AuctionEvent = ({
     </Grid>
   );
 };
+
 const OrderSummary = ({
   currentBid,
   minMkrAsk,
@@ -332,9 +333,6 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
                       text={'Bid for the next minimum increment'}
                       buttonOnly
                       onSubmit={handleInstantBid}
-                      onMount={() => {
-                        setCalculatedBidPrice(BigNumber(0));
-                      }}
                       onTxFinished={status => {
                         if (status === TX_SUCCESS) {
                           setJustBidded(true);
@@ -346,7 +344,13 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
                         }
                         fetchAuctionsSet([auctionId]);
                       }}
-                      small={calculateBidPrice}
+                      onChange={() => {
+                        setCalculatedBidPrice(
+                          BigNumber(latestBid)
+                            .div(minMkrAsk)
+                            .toFixed(2)
+                        );
+                      }}
                       inputValidation={bidValidationTests}
                       actionText={'Bid Now'}
                     />
@@ -360,7 +364,10 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
                           .minus(BigNumber(latestBid))
                           .toFormat(0, 4)} DAI`
                       }
-                      currentBid={`${minMkrAsk.toFixed(2, 1)} MKR`}
+                      currentBid={`${new BigNumber(latestLot).toFixed(
+                        2,
+                        1
+                      )} MKR`}
                       minMkrAsk={`${minMkrAsk.toFixed(2, 1)} MKR`}
                       calculatedBidPrice={`${calculatedBidPrice} MKR/DAI`}
                     />
@@ -384,9 +391,6 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
                       }
                       inputUnit="MKR"
                       onSubmit={handleTendCTA}
-                      onMount={() => {
-                        setCalculatedBidPrice(BigNumber(0));
-                      }}
                       onTxFinished={status => {
                         if (status === TX_SUCCESS) {
                           setJustBidded(true);
@@ -399,7 +403,25 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
 
                         fetchAuctionsSet([auctionId]);
                       }}
-                      small={calculateBidPrice}
+                      onChange={inputState => {
+                        if (
+                          !inputState ||
+                          inputState.eq(0) ||
+                          inputState.isNaN()
+                        ) {
+                          setCalculatedBidPrice(
+                            BigNumber(latestBid)
+                              .div(minMkrAsk)
+                              .toFixed(2)
+                          );
+                        } else {
+                          setCalculatedBidPrice(
+                            BigNumber(latestBid)
+                              .div(inputState)
+                              .toFixed(2)
+                          );
+                        }
+                      }}
                       inputValidation={bidValidationTests}
                       actionText={'Bid Now'}
                     />
