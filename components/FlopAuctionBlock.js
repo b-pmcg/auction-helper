@@ -280,20 +280,6 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
     ]
   ];
 
-  const calculateBidPrice = inputState => {
-    if (!inputState || inputState.eq(0) || inputState.isNaN()) {
-      const bidPrice = BigNumber(latestBid)
-        .div(minMkrAsk)
-        .toFixed(2);
-      setCalculatedBidPrice(bidPrice);
-    } else {
-      const bidPrice = BigNumber(latestBid)
-        .div(inputState)
-        .toFixed(2);
-      setCalculatedBidPrice(bidPrice);
-    }
-  };
-
   return (
     <AuctionBlockLayout
       latestEvent={{
