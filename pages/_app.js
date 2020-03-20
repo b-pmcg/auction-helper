@@ -6,6 +6,7 @@ import theme from '../theme';
 import Header from '../components/Header';
 import ReactGA from 'react-ga';
 import {sysAPI} from '../stores/systemStore';
+import { updateState } from '../stores/auctionsStore';
 
 class MyApp extends App {
   state = {
@@ -14,6 +15,7 @@ class MyApp extends App {
 
   componentDidMount() {
   const setFeatureFlag = sysAPI.getState().setFeatureFlag;
+  
 
     this.setState({
       network: window.location.search.includes('kovan') ? 'kovan' : 'mainnet'
@@ -30,6 +32,13 @@ class MyApp extends App {
     if (window !== undefined) {
       ReactGA.initialize('UA-65766767-8');
       // ReactGA.pageview(window.location.pathname + window.location.search);
+    }
+
+    const searchQuery =  new URL(window.location.href).searchParams;
+
+    if(window && searchQuery){
+      const auctionId = searchQuery.get('auctionId');
+      updateState.getState().setFilterByIdValue(auctionId);
     }
   }
 

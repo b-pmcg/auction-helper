@@ -84,7 +84,9 @@ const gloss = [
 
 const AuctionFilters = ({ title, text, action, forceExpanded }) => {
   const { maker, web3Connected } = useMaker();
-  const [collapsed, setCollapsed] = useState(true);
+
+  const filterByIdValue = useAuctionsStore (state => state.filterByIdValue);
+  const [collapsed, setCollapsed] = useState(filterByIdValue ? false : true);
   const [collapsedGloss, setCollapsedGloss] = useState(true);
 
   const sortCriteria = useAuctionsStore(state => state.sortBy);
@@ -118,6 +120,7 @@ const AuctionFilters = ({ title, text, action, forceExpanded }) => {
           borderColor: 'border',
           width: ['100%', '280px']
         }}
+        value={filterByIdValue}
         placeholder="Auction ID"
         onChange={({ target: { value } }) => setFilterByIdValue(value)}
       />

@@ -171,7 +171,7 @@ const selectors = {
   }
 };
 
-const [useAuctionsStore] = create((set, get) => ({
+const [useAuctionsStore, updateState] = create((set, get) => ({
   auctions: null,
   flopStepSize: 0,
   pageStart: 0,
@@ -267,4 +267,4 @@ const [useAuctionsStore] = create((set, get) => ({
 }));
 
 export default useAuctionsStore;
-export { filters, selectors };
+export { filters, selectors, updateState };
