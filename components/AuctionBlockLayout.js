@@ -67,7 +67,7 @@ export default ({
     {
       label: 'Price',
       value: latestPrice.toFormat(2, 4),
-      notation: 'MKR/DAI',
+      notation: 'DAI',
       styling: { fontWeight: 600 }
     }
   ];

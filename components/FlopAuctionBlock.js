@@ -39,7 +39,7 @@ const AuctionEvent = ({
     ['Event Type', type],
     ['Bid Value', bid],
     ['Lot Size', `${lot} MKR`, { color: 'primary' }],
-    ['Current Bid Price', currentBid, { fontWeight: 600 }],
+    ['MKR Price', currentBid, { fontWeight: 600 }],
     // ['Price', price],
     ['Timestamp', timestamp],
 
@@ -104,7 +104,7 @@ const OrderSummary = ({
 }) => {
   const fields = [
     ['Max lot amount', minMkrAsk, { fontWeight: 600 }],
-    ['Current lot amount', currentBid, { fontWeight: 600 }],
+    ['Requested lot amount', currentBid, { fontWeight: 600 }],
     ['Bid price per MKR', calculatedBidPrice, { fontWeight: 600 }]
   ];
 
@@ -485,7 +485,7 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
               sender={fromAddress}
               lot={new BigNumber(eventLot).toFormat(4, 6)}
               bid={`${new BigNumber(eventBid).toFormat(2, 4)} DAI`}
-              currentBid={`${currentBid.toFormat(2, 4)} MKR/DAI`}
+              currentBid={`${currentBid.toFormat(2, 4)} DAI`}
               timestamp={
                 <Text>
                   <Moment format="HH:mm, DD MMM" withTitle>
