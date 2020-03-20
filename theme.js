@@ -233,11 +233,11 @@ export default {
       display: 'inline',
       major: {
         fontSize: 4,
-        fontWeight: 'bold'
+        fontWeight: 'semiBold'
       },
       minor: {
         fontSize: 1,
-        fontWeight: 'semiBold',
+        fontWeight: 'body',
         color: 'grayishBlue'
       }
     },

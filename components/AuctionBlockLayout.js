@@ -57,7 +57,7 @@ export default ({
   const latestPrice = latestLot.eq(ZERO) ? latestLot : latestBid.div(latestLot);
 
   const onCollapseData = [
-    { label: 'Bid', value: latestBid.toFormat(2, 4), notation: 'DAI' },
+    // { label: 'Bid', value: latestBid.toFormat(2, 4), notation: 'DAI' },
     {
       label: 'Lot',
       value: latestLot.toFormat(4, 6),

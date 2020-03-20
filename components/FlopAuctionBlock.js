@@ -103,8 +103,8 @@ const OrderSummary = ({
   remainingBal
 }) => {
   const fields = [
-    ['Max bid amount', minMkrAsk, { fontWeight: 600 }],
-    ['Current bid amount', currentBid, { fontWeight: 600 }],
+    ['Max lot amount', minMkrAsk, { fontWeight: 600 }],
+    ['Current lot amount', currentBid, { fontWeight: 600 }],
     ['Bid price per MKR', calculatedBidPrice, { fontWeight: 600 }]
   ];
 
@@ -196,7 +196,7 @@ const byTimestamp = (prev, next) => {
 
 export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
   const { maker } = useMaker();
-  const [calculatedBidPrice, setCalculatedBidPrice] = useState(BigNumber(0));
+  const [currentLotBidAmount, setCurrentLotBidAmount] = useState(BigNumber(0));
   const { hasDaiAllowance, hasFlopHope, hasJoinDaiHope } = allowances;
   let { vatDaiBalance } = useBalances();
   const { callFlopDent, callFlopDeal } = useAuctionActions();
@@ -280,8 +280,24 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
     ]
   ];
 
+  const calculatedBidPrice = BigNumber(latestBid).div(currentLotBidAmount);
+
+  const printedLot =
+    !currentLotBidAmount ||
+    currentLotBidAmount.isNaN() ||
+    !currentLotBidAmount.isFinite()
+      ? '---'
+      : currentLotBidAmount.toFixed(2);
+  const printedPrice =
+    !calculatedBidPrice ||
+    calculatedBidPrice.isNaN() ||
+    !calculatedBidPrice.isFinite()
+      ? '---'
+      : calculatedBidPrice.toFixed(2);
+
   return (
     <AuctionBlockLayout
+      key={auctionId}
       latestEvent={{
         bid: new BigNumber(latestBid),
         lot: new BigNumber(latestLot)
@@ -331,11 +347,7 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
                         fetchAuctionsSet([auctionId]);
                       }}
                       onChange={() => {
-                        setCalculatedBidPrice(
-                          BigNumber(latestBid)
-                            .div(minMkrAsk)
-                            .toFixed(2)
-                        );
+                        setCurrentLotBidAmount(minMkrAsk);
                       }}
                       inputValidation={bidValidationTests}
                       actionText={'Bid Now'}
@@ -350,12 +362,11 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
                           .minus(BigNumber(latestBid))
                           .toFormat(0, 4)} DAI`
                       }
-                      currentBid={`${new BigNumber(latestLot).toFixed(
-                        2,
-                        1
-                      )} MKR`}
+                      currentBid={`${minMkrAsk.toFixed(2, 1)} MKR`}
                       minMkrAsk={`${minMkrAsk.toFixed(2, 1)} MKR`}
-                      calculatedBidPrice={`${calculatedBidPrice} MKR/DAI`}
+                      calculatedBidPrice={`${BigNumber(latestBid)
+                        .div(minMkrAsk)
+                        .toFixed(2)} DAI`}
                     />
                   </Box>
                 </Flex>,
@@ -390,22 +401,16 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
                         fetchAuctionsSet([auctionId]);
                       }}
                       onChange={inputState => {
-                        if (
-                          !inputState ||
-                          inputState.eq(0) ||
-                          inputState.isNaN()
-                        ) {
-                          setCalculatedBidPrice(
-                            BigNumber(latestBid)
-                              .div(minMkrAsk)
-                              .toFixed(2)
-                          );
-                        } else {
-                          setCalculatedBidPrice(
-                            BigNumber(latestBid)
-                              .div(inputState)
-                              .toFixed(2)
-                          );
+                        // console.log(
+                        //   currentLotBidAmount,
+                        //   inputState,
+                        //   currentLotBidAmount.eq(inputState)
+                        // );
+                        // if (inputState) {
+                        const val = new BigNumber(inputState);
+
+                        if (!currentLotBidAmount.eq(val)) {
+                          setCurrentLotBidAmount(val);
                         }
                       }}
                       inputValidation={bidValidationTests}
@@ -414,19 +419,16 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
                   </Box>
                   <Box ml="auto">
                     <OrderSummary
-                      key={`${latestLot}-${vatDaiBalance}`}
+                      key={`${currentLotBidAmount}-${vatDaiBalance}`}
                       remainingBal={
                         vatDaiBalance &&
                         `${BigNumber(vatDaiBalance)
                           .minus(BigNumber(latestBid))
                           .toFormat(0, 4)} DAI`
                       }
-                      currentBid={`${new BigNumber(latestLot).toFixed(
-                        2,
-                        1
-                      )} MKR`}
+                      currentBid={`${printedLot} MKR`}
                       minMkrAsk={`${minMkrAsk.toFixed(2, 1)} MKR`}
-                      calculatedBidPrice={`${calculatedBidPrice} MKR/DAI`}
+                      calculatedBidPrice={`${printedPrice} DAI`}
                     />
                   </Box>
                 </Flex>,

@@ -10,13 +10,17 @@ const transformEvents = async (auctions, service) => {
 
   await Promise.all(
     Object.keys(groupedEvents).map(async id => {
-      const { end, tic } = await service.getFlopDuration(id);
-      auctionsData[id.toString()] = {
-        auctionId: id,
-        end,
-        tic,
-        events: groupedEvents[id]
-      };
+      try {
+        const { end, tic } = await service.getFlopDuration(id);
+        auctionsData[id.toString()] = {
+          auctionId: id,
+          end,
+          tic,
+          events: groupedEvents[id]
+        };
+      } catch (error) {
+        alert('failed to load onchain data, please refresh.');
+      }
     })
   );
 
@@ -81,7 +85,7 @@ function sortByBidPrice(auctions, asc) {
       const bidPrice = lot.eq(new BigNumber(0)) ? lot : bid.div(lot);
       return {
         bidPrice,
-        auctionId: event.auctionId,
+        auctionId: event.auctionId
       };
     })
     .sort((prev, next) => {
@@ -128,7 +132,7 @@ const sorters = {
   byBidPriceDesc: auctions => sortByBidPrice(auctions, false),
 
   byTimeAsc: auctions => sortByTime(auctions, true),
-  byTimeDesc: auctions => sortByTime(auctions, false),
+  byTimeDesc: auctions => sortByTime(auctions, false)
 };
 
 const selectors = {
@@ -252,12 +256,11 @@ const [useAuctionsStore, updateState] = create((set, get) => ({
       const service = maker.service(AUCTION_DATA_FETCHER);
       const auctions = await service.fetchFlopAuctionsByIds(ids);
       const transformedAuctions = await transformEvents(auctions, service);
-  
+
       const currentState = get().auctions || {};
       const updatedState = Object.assign({}, currentState, transformedAuctions);
       set({ auctions: updatedState });
     }, 500);
-
   },
 
   fetchFlopStepSize: async maker => {

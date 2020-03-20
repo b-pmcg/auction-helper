@@ -5,7 +5,7 @@ import { ThemeProvider, Styled, Box } from 'theme-ui';
 import theme from '../theme';
 import Header from '../components/Header';
 import ReactGA from 'react-ga';
-import {sysAPI} from '../stores/systemStore';
+import { sysAPI } from '../stores/systemStore';
 import { updateState } from '../stores/auctionsStore';
 
 class MyApp extends App {
@@ -14,31 +14,25 @@ class MyApp extends App {
   };
 
   componentDidMount() {
-  const setFeatureFlag = sysAPI.getState().setFeatureFlag;
-  
+    const setFeatureFlag = sysAPI.getState().setFeatureFlag;
 
     this.setState({
       network: window.location.search.includes('kovan') ? 'kovan' : 'mainnet'
     });
 
-    if (window && (window.location.search.includes('show-test-ui') || window.location.search.includes('kovan'))) {
-      setFeatureFlag('alpha-ui');
-    }
-
-    if (window && window.location.search.includes('show-flip-ui')) {
-      setFeatureFlag('flip-ui');
-    }
-
     if (window !== undefined) {
       ReactGA.initialize('UA-65766767-8');
+
+      if (window.location.search.includes('show-flip-ui')) {
+        setFeatureFlag('flip-ui');
+      }
+      const searchQuery = new URL(window.location.href).searchParams;
+
+      if (searchQuery) {
+        const auctionId = searchQuery.get('auctionId');
+        updateState.getState().setFilterByIdValue(auctionId);
+      }
       // ReactGA.pageview(window.location.pathname + window.location.search);
-    }
-
-    const searchQuery =  new URL(window.location.href).searchParams;
-
-    if(window && searchQuery){
-      const auctionId = searchQuery.get('auctionId');
-      updateState.getState().setFilterByIdValue(auctionId);
     }
   }
 

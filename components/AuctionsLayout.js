@@ -24,8 +24,8 @@ const AuctionsLayout = ({ auctions, allowances, stepSize, type }) => {
 
   useEffect(() => {
     if (auctionsPage.length && blockHeight && blockHeight > localBlockHeight) {
-      if (blockHeight % REFETCH_BLOCK_INTERVAL === 0) {
-        console.log('block based set fetch', blockHeight);
+      if (blockHeight - localBlockHeight > REFETCH_BLOCK_INTERVAL) {
+        console.log('block based set fetch', blockHeight, 'lastBlockFetch', localBlockHeight);
         const ids = auctionsPage.map(a => a.auctionId);
         fetchAuctionsSet(ids);
         setLocalBlockHeight(blockHeight);

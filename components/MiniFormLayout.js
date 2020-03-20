@@ -15,7 +15,6 @@ import {
   Flex
 } from 'theme-ui';
 import { TX_PENDING, TX_SUCCESS, TX_ERROR, ZERO } from '../constants';
-import useAuctionsStore, { selectors } from '../stores/auctionsStore';
 
 const MiniFormLayout = ({
   text,
@@ -25,14 +24,14 @@ const MiniFormLayout = ({
   inputUnit,
   inputType = 'number',
   onSubmit,
+  initialValue = undefined,
   onChange,
   inputValidation,
   onTxFinished,
   onMount,
   small
 }) => {
-  const fetchAuctions = useAuctionsStore(state => state.fetchAll);
-  const [inputState, setInputState] = useState(undefined);
+  const [inputState, setInputState] = useState(initialValue);
   const [txState, setTxState] = useState(undefined);
   const [txMsg, setTxMsg] = useState(undefined);
   const [txErrorMsg, setTxErrorMsg] = useState(undefined);
@@ -93,11 +92,12 @@ const MiniFormLayout = ({
   const handleInputChange = event => {
     const value = event.target.value;
     setInputState(BigNumber(value));
+    if (onChange) onChange(BigNumber(value));
   };
 
   useEffect(() => {
     if (onChange) onChange(BigNumber(inputState));
-  });
+  }, []);
 
   return (
     <Grid gap={2}>
