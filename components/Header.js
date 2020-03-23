@@ -42,7 +42,9 @@ export default () => {
         });
       }
     } catch (err) {
-      window.alert(err);
+      window.alert(
+        'There was a problem connecting to your wallet, please reload and try again.'
+      );
     }
   }
 

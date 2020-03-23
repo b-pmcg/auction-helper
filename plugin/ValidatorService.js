@@ -41,39 +41,6 @@ export default class ValidatorService extends PublicService {
     return this.queryPromises[cacheKey];
   }
 
-  async request(route, method, url = this._url, body = {}) {
-    return new Promise(async (resolve, reject) => {
-      let options = {};
-      if (this._email) options = { headers: { 'X-User-Email': this._email } };
-      if (method === 'GET') {
-        options = { ...options, method };
-      } else if (method === 'DELETE') {
-        options = {
-          ...options,
-          method,
-          body
-        };
-      } else {
-        options = {
-          ...options,
-          method,
-          body,
-          headers: {
-            ...options.headers,
-            'Content-Type': 'application/json'
-          }
-        };
-      }
-      try {
-        const result = await fetch(`${url}/${route}`, options);
-        const { status, ...data } = await result.json();
-        !status ? resolve(data) : reject(data);
-      } catch (err) {
-        reject(err);
-      }
-    }).catch(err => console.error(err));
-  }
-
   async fetchFlipAuctions(shouldSync = false) {
     let currentTime = new Date().getTime();
     const timePassed = currentTime - this.flipAuctionsLastSynced;
@@ -143,11 +110,6 @@ export default class ValidatorService extends PublicService {
     return response.allLeveragedEvents.nodes;
   }
 
-  initialize(settings) {
-    console.log('settings', settings);
-    this._url = 'https://api.prylabs.net';
-  }
-
   connect() {
     this._cacheAPI =
       this.get('web3').networkName === 'kovan'
@@ -165,43 +127,30 @@ export default class ValidatorService extends PublicService {
     const lotSizeInWei = this.get('web3')._web3.utils.toWei(size.toString());
     const bidAmountRad = toRad(amount);
 
-    console.log('id', id);
-    console.log('lotSizeInWei', lotSizeInWei);
-    console.log('bidAmountRad', bidAmountRad.toFixed());
     const tend = await this._flipEthAdapter().tend(
       id,
       lotSizeInWei,
       bidAmountRad.toFixed()
     );
-    console.log('tend in service', tend);
   }
 
   async flipEthDent(id, size, amount) {
     const lotSizeInWei = this.get('web3')._web3.utils.toWei(size.toString());
     const bidAmountRad = toRad(amount);
 
-    console.log('id', id);
-    console.log('lotSizeInWei', lotSizeInWei);
-    console.log('bidAmountRad', bidAmountRad.toFixed());
-
     const dent = await this._flipEthAdapter().dent(
       id,
       lotSizeInWei,
       bidAmountRad.toFixed()
     );
-    console.log('dent in service', dent);
   }
 
   async flipEthDeal(id) {
-    console.log('id', id);
     const deal = await this._flipEthAdapter().deal(id);
-    console.log('^^^eth deal in service', deal);
   }
 
   async flipBatDeal(id) {
-    console.log('id', id);
     const deal = await this._flipBatAdapter().deal(id);
-    console.log('^^^bat deal in service', deal);
   }
 
   // FLOP
@@ -276,7 +225,7 @@ export default class ValidatorService extends PublicService {
     return this._joinDaiAdapter.address;
   }
 
-  _flipEthAdapter({ web3js = false } = {}) {
+  _flipEthAdapter() {
     return this.get('smartContract').getContractByName('MCD_FLIP_ETH_A');
   }
 
@@ -288,7 +237,7 @@ export default class ValidatorService extends PublicService {
     return this.get('smartContract').getContractByName('MCD_FLOP');
   }
 
-  _joinDaiAdapter({ web3js = false } = {}) {
+  _joinDaiAdapter() {
     return this.get('smartContract').getContractByName('MCD_JOIN_DAI');
   }
 }
