@@ -222,7 +222,7 @@ export default class ValidatorService extends PublicService {
   }
 
   get joinDaiAdapterAddress() {
-    return this._joinDaiAdapter.address;
+    return this._joinDaiAdapter().address;
   }
 
   _flipEthAdapter() {

@@ -10,6 +10,7 @@ import ActionTabs from './ActionTabs';
 import MiniFormLayout from './MiniFormLayout';
 import { formatBalance } from '../utils';
 import ReactGA from 'react-ga';
+import { AUCTION_DATA_FETCHER } from '../constants';
 
 export default ({ allowances }) => {
   const { maker, web3Connected } = useMaker();
@@ -39,20 +40,13 @@ export default ({ allowances }) => {
     giveFlopHope
   } = allowances;
 
-  const [daiApprovePending, setDaiApprovePending] = useState(false);
-  const [mkrApprovePending, setMkrApprovePending] = useState(false);
-  const [hopeApprovePending, setHopeApprovePending] = useState(false);
-
   const [joinAddress, setJoinAddress] = useState('');
 
   useEffect(() => {
     if (web3Connected) {
-      (async () => {
-        const joinDaiAdapterAddress = maker
-          .service('smartContract')
-          .getContractByName('MCD_JOIN_DAI').address;
-        setJoinAddress(joinDaiAdapterAddress);
-      })();
+      const joinDaiAdapterAddress = maker.service(AUCTION_DATA_FETCHER)
+        .joinDaiAdapterAddress;
+      setJoinAddress(joinDaiAdapterAddress);
     }
   }, [maker, web3Connected]);
 

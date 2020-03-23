@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import useMaker from './useMaker';
 import { fromRad } from '../pages/index';
 import BigNumber from 'bignumber.js';
+import { AUCTION_DATA_FETCHER } from '../constants';
 
 const useBalances = () => {
   const { maker, web3Connected } = useMaker();
@@ -51,7 +52,7 @@ const useBalances = () => {
       ._web3.utils.toWei(amount.toFixed());
 
     return maker
-      .service('validator')
+      .service(AUCTION_DATA_FETCHER)
       .joinDaiToAdapter(
         maker.currentAddress(),
         BigNumber(joinAmountInDai).toFixed()
@@ -70,7 +71,7 @@ const useBalances = () => {
       ._web3.utils.toWei(amount.toFixed());
 
     return maker
-      .service('validator')
+      .service(AUCTION_DATA_FETCHER)
       .exitDaiFromAdapter(
         maker.currentAddress(),
         BigNumber(exitAmountInDai).toFixed()

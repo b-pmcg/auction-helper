@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import useMaker from './useMaker';
+import { AUCTION_DATA_FETCHER } from '../constants';
 
 const REQUIRED_ALLOWANCE = 0;
 
@@ -15,9 +16,8 @@ const useAllowances = () => {
   useEffect(() => {
     if (!web3Connected) return;
     (async () => {
-      const joinDaiAdapterAddress = maker
-        .service('smartContract')
-        .getContractByName('MCD_JOIN_DAI').address;
+      const joinDaiAdapterAddress = maker.service(AUCTION_DATA_FETCHER)
+        .joinDaiAdapterAddress;
       const daiAllowance = await maker
         .getToken('MDAI')
         .allowance(maker.currentAddress(), joinDaiAdapterAddress);
@@ -29,9 +29,8 @@ const useAllowances = () => {
   useEffect(() => {
     if (!web3Connected) return;
     (async () => {
-      const joinDaiAdapterAddress = maker
-        .service('smartContract')
-        .getContractByName('MCD_JOIN_DAI').address;
+      const joinDaiAdapterAddress = maker.service(AUCTION_DATA_FETCHER)
+        .joinDaiAdapterAddress;
       const mkrAllowance = await maker
         .getToken('MDAI')
         .allowance(maker.currentAddress(), joinDaiAdapterAddress);
@@ -43,9 +42,7 @@ const useAllowances = () => {
   useEffect(() => {
     if (!web3Connected) return;
     (async () => {
-      const flipEthAddress = maker
-        .service('smartContract')
-        .getContractByName('MCD_FLIP_ETH_A').address;
+      const flipEthAddress = maker.service(AUCTION_DATA_FETCHER).flipEthAddress;
       const can = await maker
         .service('smartContract')
         .getContract('MCD_VAT')
@@ -58,14 +55,12 @@ const useAllowances = () => {
   useEffect(() => {
     if (!web3Connected) return;
     (async () => {
-      const joinDaiAdapterAddress = maker
-        .service('smartContract')
-        .getContractByName('MCD_JOIN_DAI').address;
+      const joinDaiAdapterAddress = maker.service(AUCTION_DATA_FETCHER)
+        .joinDaiAdapterAddress;
       const can = await maker
         .service('smartContract')
         .getContract('MCD_VAT')
         .can(maker.currentAddress(), joinDaiAdapterAddress);
-      console.log('joinDai CAN', can.toNumber());
       setHasJoinDaiHope(can.toNumber() === 1 ? true : false);
     })();
   }, [maker, web3Connected]);
@@ -74,9 +69,7 @@ const useAllowances = () => {
   useEffect(() => {
     if (!web3Connected) return;
     (async () => {
-      const flopAddress = maker
-        .service('smartContract')
-        .getContractByName('MCD_FLOP').address;
+      const flopAddress = maker.service(AUCTION_DATA_FETCHER).flopAddress;
       const can = await maker
         .service('smartContract')
         .getContract('MCD_VAT')
@@ -86,7 +79,6 @@ const useAllowances = () => {
   }, [maker, web3Connected]);
 
   const giveDaiAllowance = async address => {
-    // setDaiApprovePending(true);
     try {
       await maker.getToken('MDAI').approveUnlimited(address);
       setHasDaiAllowance(true);
@@ -95,11 +87,9 @@ const useAllowances = () => {
       const errMsg = `unlock dai tx failed ${message}`;
       console.error(errMsg);
     }
-    // setDaiApprovePending(false);
   };
 
   const giveMkrAllowance = async address => {
-    // setMkrApprovePending(true);
     try {
       await maker.getToken('MKR').approveUnlimited(address);
       setHasMkrAllowance(true);
@@ -108,11 +98,9 @@ const useAllowances = () => {
       const errMsg = `unlock mkr tx failed ${message}`;
       console.error(errMsg);
     }
-    // setMkrApprovePending(false);
   };
 
   const giveFlipEthHope = async address => {
-    // setHopePending(true);
     try {
       await maker
         .service('smartContract')
@@ -124,10 +112,9 @@ const useAllowances = () => {
       const errMsg = `hope tx failed ${message}`;
       console.error(errMsg);
     }
-    // setHopeApprovePending(false);
   };
+
   const giveJoinDaiHope = async address => {
-    // setHopePending(true);
     try {
       await maker
         .service('smartContract')
@@ -139,10 +126,9 @@ const useAllowances = () => {
       const errMsg = `hope tx failed ${message}`;
       console.error(errMsg);
     }
-    // setHopeApprovePending(false);
   };
+
   const giveFlopHope = async address => {
-    // setHopePending(true);
     try {
       await maker
         .service('smartContract')
@@ -154,7 +140,6 @@ const useAllowances = () => {
       const errMsg = `hope tx failed ${message}`;
       console.error(errMsg);
     }
-    // setHopeApprovePending(false);
   };
 
   return {

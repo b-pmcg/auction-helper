@@ -19,7 +19,7 @@ import {
 } from '../constants';
 import useAuctionsStore, { selectors } from '../stores/auctionsStore';
 import InfoPill from './InfoPill';
-import { TX_SUCCESS } from '../constants';
+import { TX_SUCCESS, AUCTION_DATA_FETCHER } from '../constants';
 import ReactGA from 'react-ga';
 
 const AuctionEvent = ({
@@ -246,7 +246,7 @@ export default ({ events, id: auctionId, end, tic, stepSize, allowances }) => {
   useEffect(() => {
     const timerID = setTimeout(async () => {
       const newEvents = await maker
-        .service('validator')
+        .service(AUCTION_DATA_FETCHER)
         .fetchFlopAuctionsByIds([auctionId]);
     }, 1000);
     return () => {
