@@ -7,7 +7,7 @@ import * as gqlQueries from '../queries';
 export default class ValidatorService extends PublicService {
   flipAuctionsLastSynced = 0;
   flopAuctionsLastSynced = 0;
-  backInTime = 1000 * 60 * 60 * 240; // 68 hours;
+  backInTime = 1000 * 60 * 60 * 360; //  360 hours - 15days;
 
   constructor(name = 'validator') {
     super(name, ['web3', 'smartContract']);
