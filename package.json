@@ -21,7 +21,7 @@
     "bignumber.js": "^9.0.0",
     "dotenv": "^8.2.0",
     "ipfs": "^0.41.2",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "moment": "^2.24.0",
     "next": "latest",
     "prettier": "^1.19.1",
